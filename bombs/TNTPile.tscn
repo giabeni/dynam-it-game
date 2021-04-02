@@ -1,10 +1,16 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://tiles/models/TNT_002.material" type="Material" id=1]
 [ext_resource path="res://tiles/models/Paper.material" type="Material" id=2]
 [ext_resource path="res://tiles/models/Metal_002.material" type="Material" id=3]
 [ext_resource path="res://bombs/TNTPile.gd" type="Script" id=4]
 [ext_resource path="res://particles/explosion04.png" type="Texture" id=5]
+[ext_resource path="res://bombs/sounds/explosion2.wav" type="AudioStream" id=6]
+[ext_resource path="res://bombs/sounds/wick.wav" type="AudioStream" id=7]
+[ext_resource path="res://particles/particle_materials/WickSpark.material" type="Material" id=8]
+[ext_resource path="res://particles/particle_materials/ExplosionSmoke.material" type="Material" id=9]
+[ext_resource path="res://particles/particle_materials/ExplosionFlames.material" type="Material" id=10]
+[ext_resource path="res://particles/materials/explosion-smoke.material" type="Material" id=11]
 
 [sub_resource type="ArrayMesh" id=1]
 surfaces/0 = {
@@ -47,32 +53,7 @@ surfaces/2 = {
 [sub_resource type="ConvexPolygonShape" id=2]
 points = PoolVector3Array( 0.197641, 1.1739, 0.134398, 0.00660554, -1.4698, 0.134398, 0.00660554, -1.4698, 0.134398, 0.00660554, -1.4698, 0.134398, 0.221459, 1.1739, 0.175653, 0.125942, -1.4698, 0.341094, 0.125942, -1.4698, 0.341094, 0.125942, -1.4698, 0.341094, 0.269096, 1.1739, 0.175653, 0.364614, -1.4698, 0.341094, 0.364614, -1.4698, 0.341094, 0.364614, -1.4698, 0.341094, 0.292914, 1.1739, 0.134398, 0.483949, -1.4698, 0.134398, 0.483949, -1.4698, 0.134398, 0.483949, -1.4698, 0.134398, 0.269096, 1.1739, 0.0931434, 0.364614, -1.4698, -0.0722982, 0.364614, -1.4698, -0.0722982, 0.364614, -1.4698, -0.0722982, 0.221459, 1.1739, 0.0931434, 0.125942, -1.4698, -0.0722982, 0.125942, -1.4698, -0.0722982, 0.125942, -1.4698, -0.0722982, 0.00660554, 1.1739, 0.134398, 0.00660554, 1.1739, 0.134398, 0.00660554, 1.1739, 0.134398, 0.125942, 1.1739, 0.341094, 0.125942, 1.1739, 0.341094, 0.125942, 1.1739, 0.341094, 0.364614, 1.1739, 0.341094, 0.364614, 1.1739, 0.341094, 0.364614, 1.1739, 0.341094, 0.48395, 1.1739, 0.134398, 0.48395, 1.1739, 0.134398, 0.48395, 1.1739, 0.134398, 0.364614, 1.1739, -0.072298, 0.364614, 1.1739, -0.072298, 0.364614, 1.1739, -0.072298, 0.125942, 1.1739, -0.072298, 0.125942, 1.1739, -0.072298, 0.125942, 1.1739, -0.072298, -0.192224, 1.1739, 0.131075, -0.00118902, -1.4698, 0.131075, -0.00118902, -1.4698, 0.131075, -0.00118902, -1.4698, 0.131075, -0.216043, 1.1739, 0.0898201, -0.120525, -1.4698, -0.0756212, -0.120525, -1.4698, -0.0756212, -0.120525, -1.4698, -0.0756212, -0.263679, 1.1739, 0.0898201, -0.359197, -1.4698, -0.0756212, -0.359197, -1.4698, -0.0756212, -0.359197, -1.4698, -0.0756212, -0.287498, 1.1739, 0.131075, -0.478533, -1.4698, 0.131075, -0.478533, -1.4698, 0.131075, -0.478533, -1.4698, 0.131075, -0.263679, 1.1739, 0.172329, -0.359197, -1.4698, 0.337771, -0.359197, -1.4698, 0.337771, -0.359197, -1.4698, 0.337771, -0.216043, 1.1739, 0.172329, -0.120525, -1.4698, 0.337771, -0.120525, -1.4698, 0.337771, -0.120525, -1.4698, 0.337771, -0.00118902, 1.1739, 0.131075, -0.00118902, 1.1739, 0.131075, -0.00118902, 1.1739, 0.131075, -0.120525, 1.1739, -0.0756213, -0.120525, 1.1739, -0.0756213, -0.120525, 1.1739, -0.0756213, -0.359197, 1.1739, -0.0756213, -0.359197, 1.1739, -0.0756213, -0.359197, 1.1739, -0.0756213, -0.478533, 1.1739, 0.131075, -0.478533, 1.1739, 0.131075, -0.478533, 1.1739, 0.131075, -0.359197, 1.1739, 0.337771, -0.359197, 1.1739, 0.337771, -0.359197, 1.1739, 0.337771, -0.120525, 1.1739, 0.337771, -0.120525, 1.1739, 0.337771, -0.120525, 1.1739, 0.337771, 0.00563994, 1.1739, -0.21224, 0.00563984, -1.4698, -0.0212046, 0.00563984, -1.4698, -0.0212046, 0.00563984, -1.4698, -0.0212046, 0.0468945, 1.1739, -0.236058, 0.212336, -1.4698, -0.140541, 0.212336, -1.4698, -0.140541, 0.212336, -1.4698, -0.140541, 0.0468945, 1.1739, -0.283695, 0.212336, -1.4698, -0.379213, 0.212336, -1.4698, -0.379213, 0.212336, -1.4698, -0.379213, 0.00563994, 1.1739, -0.307513, 0.00563993, -1.4698, -0.498549, 0.00563993, -1.4698, -0.498549, 0.00563993, -1.4698, -0.498549, -0.0356146, 1.1739, -0.283695, -0.201056, -1.4698, -0.379213, -0.201056, -1.4698, -0.379213, -0.201056, -1.4698, -0.379213, -0.0356146, 1.1739, -0.236058, -0.201056, -1.4698, -0.140541, -0.201056, -1.4698, -0.140541, -0.201056, -1.4698, -0.140541, 0.0056399, 1.1739, -0.0212046, 0.0056399, 1.1739, -0.0212046, 0.0056399, 1.1739, -0.0212046, 0.212336, 1.1739, -0.140541, 0.212336, 1.1739, -0.140541, 0.212336, 1.1739, -0.140541, 0.212336, 1.1739, -0.379213, 0.212336, 1.1739, -0.379213, 0.212336, 1.1739, -0.379213, 0.00563999, 1.1739, -0.498549, 0.00563999, 1.1739, -0.498549, 0.00563999, 1.1739, -0.498549, -0.201056, 1.1739, -0.379213, -0.201056, 1.1739, -0.379213, -0.201056, 1.1739, -0.379213, -0.201056, 1.1739, -0.140541, -0.201056, 1.1739, -0.140541, -0.201056, 1.1739, -0.140541, 0.00563988, 0.29267, -0.0212047, 0.00563988, 0.29267, -0.0212047, 0.00563985, -0.588564, -0.0212046, 0.00563985, -0.588564, -0.0212046, 0.212336, -0.588564, -0.140541, 0.212336, -0.588564, -0.140541, 0.212336, 0.29267, -0.140541, 0.212336, 0.29267, -0.140541, 0.212336, -0.588564, -0.379213, 0.212336, -0.588564, -0.379213, 0.212336, 0.29267, -0.379213, 0.212336, 0.29267, -0.379213, 0.00563994, -0.588565, -0.498549, 0.00563994, -0.588565, -0.498549, 0.00563997, 0.29267, -0.498549, 0.00563997, 0.29267, -0.498549, -0.201056, -0.588565, -0.379213, -0.201056, -0.588565, -0.379213, -0.201056, 0.29267, -0.379213, -0.201056, 0.29267, -0.379213, -0.201056, -0.588565, -0.140541, -0.201056, -0.588565, -0.140541, -0.201056, 0.29267, -0.140541, -0.201056, 0.29267, -0.140541, -0.00118902, 0.29267, 0.131075, -0.00118902, 0.29267, 0.131075, -0.00118902, -0.588564, 0.131075, -0.00118902, -0.588564, 0.131075, -0.120525, -0.588564, -0.0756212, -0.120525, -0.588564, -0.0756212, -0.120525, 0.29267, -0.0756212, -0.120525, 0.29267, -0.0756212, -0.359197, -0.588565, -0.0756212, -0.359197, -0.588565, -0.0756212, -0.359197, 0.29267, -0.0756212, -0.359197, 0.29267, -0.0756212, -0.478533, -0.588565, 0.131075, -0.478533, -0.588565, 0.131075, -0.478533, 0.292669, 0.131075, -0.478533, 0.292669, 0.131075, -0.359197, -0.588565, 0.337771, -0.359197, -0.588565, 0.337771, -0.359197, 0.292669, 0.337771, -0.359197, 0.292669, 0.337771, -0.120525, -0.588565, 0.337771, -0.120525, -0.588565, 0.337771, -0.120525, 0.292669, 0.337771, -0.120525, 0.292669, 0.337771, 0.00660554, 0.29267, 0.134398, 0.00660554, 0.29267, 0.134398, 0.00660554, -0.588564, 0.134398, 0.00660554, -0.588564, 0.134398, 0.125942, -0.588564, 0.341094, 0.125942, -0.588564, 0.341094, 0.125942, 0.29267, 0.341094, 0.125942, 0.29267, 0.341094, 0.364614, -0.588565, 0.341094, 0.364614, -0.588565, 0.341094, 0.364614, 0.29267, 0.341094, 0.364614, 0.29267, 0.341094, 0.483949, -0.588565, 0.134398, 0.483949, -0.588565, 0.134398, 0.48395, 0.292669, 0.134398, 0.48395, 0.292669, 0.134398, 0.364614, -0.588565, -0.0722982, 0.364614, -0.588565, -0.0722982, 0.364614, 0.292669, -0.072298, 0.364614, 0.292669, -0.072298, 0.125942, -0.588565, -0.0722982, 0.125942, -0.588565, -0.0722982, 0.125942, 0.292669, -0.072298, 0.125942, 0.292669, -0.072298, 0.197641, 1.1739, 0.134398, 0.197641, 1.1739, 0.134398, 0.221459, 1.1739, 0.175653, 0.221459, 1.1739, 0.175653, 0.269096, 1.1739, 0.175653, 0.269096, 1.1739, 0.175653, 0.292914, 1.1739, 0.134398, 0.292914, 1.1739, 0.134398, 0.269096, 1.1739, 0.0931434, 0.269096, 1.1739, 0.0931434, 0.221459, 1.1739, 0.0931434, 0.221459, 1.1739, 0.0931434, 0.20283, 1.36455, 0.148975, 0.20283, 1.36455, 0.148975, 0.20283, 1.36455, 0.148975, 0.20283, 1.36455, 0.148975, 0.240847, 1.36861, 0.177392, 0.240847, 1.36861, 0.177392, 0.240847, 1.36861, 0.177392, 0.240847, 1.36861, 0.177392, 0.283294, 1.35264, 0.162815, 0.283294, 1.35264, 0.162815, 0.283294, 1.35264, 0.162815, 0.283294, 1.35264, 0.162815, 0.287725, 1.33261, 0.119821, 0.287725, 1.33261, 0.119821, 0.287725, 1.33261, 0.119821, 0.287725, 1.33261, 0.119821, 0.249709, 1.32855, 0.0914047, 0.249709, 1.32855, 0.0914047, 0.249709, 1.32855, 0.0914047, 0.249709, 1.32855, 0.0914047, 0.207261, 1.34452, 0.105982, 0.207261, 1.34452, 0.105982, 0.207261, 1.34452, 0.105982, 0.207261, 1.34452, 0.105982, 0.242008, 1.53935, 0.0715783, 0.242008, 1.53935, 0.0715783, 0.242008, 1.53935, 0.0715783, 0.280024, 1.54341, 0.0999948, 0.280024, 1.54341, 0.0999948, 0.280024, 1.54341, 0.0999948, 0.322472, 1.52744, 0.0854179, 0.322472, 1.52744, 0.0854179, 0.322472, 1.52744, 0.0854179, 0.326903, 1.50741, 0.0424243, 0.326903, 1.50741, 0.0424243, 0.326903, 1.50741, 0.0424243, 0.288886, 1.50335, 0.0140078, 0.288886, 1.50335, 0.0140078, 0.288886, 1.50335, 0.0140078, 0.246439, 1.51932, 0.0285848, 0.246439, 1.51932, 0.0285848, 0.246439, 1.51932, 0.0285848, -0.192224, 1.1739, 0.131075, -0.192224, 1.1739, 0.131075, -0.216043, 1.1739, 0.0898201, -0.216043, 1.1739, 0.0898201, -0.263679, 1.1739, 0.0898201, -0.263679, 1.1739, 0.0898201, -0.287498, 1.1739, 0.131075, -0.287498, 1.1739, 0.131075, -0.263679, 1.1739, 0.172329, -0.263679, 1.1739, 0.172329, -0.216043, 1.1739, 0.172329, -0.216043, 1.1739, 0.172329, -0.197414, 1.36455, 0.116498, -0.197414, 1.36455, 0.116498, -0.197414, 1.36455, 0.116498, -0.197414, 1.36455, 0.116498, -0.23543, 1.36861, 0.0880809, -0.23543, 1.36861, 0.0880809, -0.23543, 1.36861, 0.0880809, -0.23543, 1.36861, 0.0880809, -0.277878, 1.35264, 0.102658, -0.277878, 1.35264, 0.102658, -0.277878, 1.35264, 0.102658, -0.277878, 1.35264, 0.102658, -0.282309, 1.33261, 0.145651, -0.282309, 1.33261, 0.145651, -0.282309, 1.33261, 0.145651, -0.282309, 1.33261, 0.145651, -0.244292, 1.32855, 0.174068, -0.244292, 1.32855, 0.174068, -0.244292, 1.32855, 0.174068, -0.244292, 1.32855, 0.174068, -0.201845, 1.34452, 0.159491, -0.201845, 1.34452, 0.159491, -0.201845, 1.34452, 0.159491, -0.201845, 1.34452, 0.159491, -0.236591, 1.53935, 0.193894, -0.236591, 1.53935, 0.193894, -0.236591, 1.53935, 0.193894, -0.274608, 1.54341, 0.165478, -0.274608, 1.54341, 0.165478, -0.274608, 1.54341, 0.165478, -0.317055, 1.52744, 0.180055, -0.317055, 1.52744, 0.180055, -0.317055, 1.52744, 0.180055, -0.321486, 1.50741, 0.223048, -0.321486, 1.50741, 0.223048, -0.321486, 1.50741, 0.223048, -0.28347, 1.50335, 0.251465, -0.28347, 1.50335, 0.251465, -0.28347, 1.50335, 0.251465, -0.241022, 1.51932, 0.236888, -0.241022, 1.51932, 0.236888, -0.241022, 1.51932, 0.236888, 0.00563994, 1.1739, -0.21224, 0.00563994, 1.1739, -0.21224, 0.0468945, 1.1739, -0.236058, 0.0468945, 1.1739, -0.236058, 0.0468945, 1.1739, -0.283695, 0.0468945, 1.1739, -0.283695, 0.00563994, 1.1739, -0.307513, 0.00563994, 1.1739, -0.307513, -0.0356146, 1.1739, -0.283695, -0.0356146, 1.1739, -0.283695, -0.0356146, 1.1739, -0.236058, -0.0356146, 1.1739, -0.236058, 0.0202172, 1.36455, -0.217429, 0.0202172, 1.36455, -0.217429, 0.0202172, 1.36455, -0.217429, 0.0202172, 1.36455, -0.217429, 0.0486337, 1.36861, -0.255446, 0.0486337, 1.36861, -0.255446, 0.0486337, 1.36861, -0.255446, 0.0486337, 1.36861, -0.255446, 0.0340568, 1.35264, -0.297893, 0.0340568, 1.35264, -0.297893, 0.0340568, 1.35264, -0.297893, 0.0340568, 1.35264, -0.297893, -0.00893679, 1.33261, -0.302324, -0.00893679, 1.33261, -0.302324, -0.00893679, 1.33261, -0.302324, -0.00893679, 1.33261, -0.302324, -0.0373533, 1.32855, -0.264308, -0.0373533, 1.32855, -0.264308, -0.0373533, 1.32855, -0.264308, -0.0373533, 1.32855, -0.264308, -0.0227763, 1.34452, -0.22186, -0.0227763, 1.34452, -0.22186, -0.0227763, 1.34452, -0.22186, -0.0227763, 1.34452, -0.22186, -0.0571797, 1.53935, -0.256607, -0.0571797, 1.53935, -0.256607, -0.0571797, 1.53935, -0.256607, -0.0287632, 1.54341, -0.294623, -0.0287632, 1.54341, -0.294623, -0.0287632, 1.54341, -0.294623, -0.0433401, 1.52744, -0.337071, -0.0433401, 1.52744, -0.337071, -0.0433401, 1.52744, -0.337071, -0.0863337, 1.50741, -0.341502, -0.0863337, 1.50741, -0.341502, -0.0863337, 1.50741, -0.341502, -0.11475, 1.50335, -0.303485, -0.11475, 1.50335, -0.303485, -0.11475, 1.50335, -0.303485, -0.100173, 1.51932, -0.261038, -0.100173, 1.51932, -0.261038, -0.100173, 1.51932, -0.261038, 0.212336, -0.588564, -0.379213, 0.212336, -0.588564, -0.379213, 0.212336, 0.29267, -0.379213, 0.212336, 0.29267, -0.379213, 0.00563994, -0.588565, -0.498549, 0.00563994, -0.588565, -0.498549, 0.00563997, 0.29267, -0.498549, 0.00563997, 0.29267, -0.498549, -0.201056, -0.588565, -0.379213, -0.201056, -0.588565, -0.379213, -0.201056, 0.29267, -0.379213, -0.201056, 0.29267, -0.379213, -0.359197, -0.588565, -0.0756212, -0.359197, -0.588565, -0.0756212, -0.359197, 0.29267, -0.0756212, -0.359197, 0.29267, -0.0756212, -0.478533, -0.588565, 0.131075, -0.478533, -0.588565, 0.131075, -0.478533, 0.292669, 0.131075, -0.478533, 0.292669, 0.131075, -0.359197, -0.588565, 0.337771, -0.359197, -0.588565, 0.337771, -0.359197, 0.292669, 0.337771, -0.359197, 0.292669, 0.337771, -0.120525, -0.588565, 0.337771, -0.120525, -0.588565, 0.337771, -0.120525, 0.292669, 0.337771, -0.120525, 0.292669, 0.337771, 0.125942, -0.588564, 0.341094, 0.125942, -0.588564, 0.341094, 0.125942, 0.29267, 0.341094, 0.125942, 0.29267, 0.341094, 0.364614, -0.588565, 0.341094, 0.364614, -0.588565, 0.341094, 0.364614, 0.29267, 0.341094, 0.364614, 0.29267, 0.341094, 0.483949, -0.588565, 0.134398, 0.483949, -0.588565, 0.134398, 0.48395, 0.292669, 0.134398, 0.48395, 0.292669, 0.134398, 0.364614, -0.588565, -0.0722982, 0.364614, -0.588565, -0.0722982, 0.364614, 0.292669, -0.072298, 0.364614, 0.292669, -0.072298 )
 
-[sub_resource type="Curve" id=3]
-max_value = 3.0
-_data = [ Vector2( 0.00701755, 2.83413 ), 0.0, 0.0, 0, 0, Vector2( 0.8, 1.01202 ), -0.974359, -0.974359, 0, 0, Vector2( 1, 0.0552883 ), 0.0, 0.0, 0, 0 ]
-
-[sub_resource type="CurveTexture" id=4]
-curve = SubResource( 3 )
-
-[sub_resource type="ParticlesMaterial" id=5]
-flag_align_y = true
-direction = Vector3( 0, 0, 1 )
-spread = 14.6
-gravity = Vector3( 0, -4.869, 0 )
-initial_velocity = 5.18
-initial_velocity_random = 0.97
-angular_velocity = 0.64
-angular_velocity_random = 0.4
-linear_accel = 1.11
-linear_accel_random = 0.16
-radial_accel = 5.42
-radial_accel_random = 0.19
-scale_random = 1.0
-scale_curve = SubResource( 4 )
-hue_variation = 0.32
-hue_variation_random = 0.17
-
-[sub_resource type="SpatialMaterial" id=6]
+[sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.992157, 0.882353, 0, 1 )
 emission_enabled = true
 emission = Color( 0.996078, 1, 0.564706, 1 )
@@ -80,39 +61,11 @@ emission_energy = 1.44
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="CubeMesh" id=7]
-material = SubResource( 6 )
+[sub_resource type="CubeMesh" id=4]
+material = SubResource( 3 )
 size = Vector3( 0.01, 0.08, 0.01 )
 
-[sub_resource type="Curve" id=8]
-max_value = 9.07
-_data = [ Vector2( 0.0105263, 0.926622 ), 0.0, 0.0, 0, 0, Vector2( 0.487719, 1.97316 ), -1.81687, -1.81687, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
-
-[sub_resource type="CurveTexture" id=9]
-curve = SubResource( 8 )
-
-[sub_resource type="ParticlesMaterial" id=10]
-flag_align_y = true
-flag_rotate_y = true
-direction = Vector3( 0, 1, 0 )
-spread = 120.77
-gravity = Vector3( 0, 0, 0 )
-initial_velocity = 5.0
-initial_velocity_random = 0.41
-angular_velocity = 13.88
-angular_velocity_random = 0.59
-linear_accel = 5.0
-linear_accel_random = 0.5
-radial_accel = 5.0
-radial_accel_random = 0.57
-tangential_accel = 5.0
-tangential_accel_random = 0.42
-angle = 42.8
-angle_random = 1.0
-scale_random = 1.0
-scale_curve = SubResource( 9 )
-
-[sub_resource type="SpatialMaterial" id=11]
+[sub_resource type="SpatialMaterial" id=5]
 flags_transparent = true
 flags_unshaded = true
 params_billboard_mode = 3
@@ -121,44 +74,195 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 albedo_texture = ExtResource( 5 )
 
-[sub_resource type="QuadMesh" id=12]
-material = SubResource( 11 )
+[sub_resource type="QuadMesh" id=6]
+material = SubResource( 5 )
 size = Vector2( 25, 25 )
 
-[sub_resource type="ParticlesMaterial" id=15]
-flag_align_y = true
-flag_rotate_y = true
-direction = Vector3( 0, 1, 0 )
-spread = 120.77
-gravity = Vector3( 0, 0, 0 )
-initial_velocity = 5.0
-initial_velocity_random = 0.41
-angular_velocity = 13.88
-angular_velocity_random = 0.59
-linear_accel = 6.96
-linear_accel_random = 0.5
-radial_accel = 100.0
-radial_accel_random = 0.57
-tangential_accel = 25.9
-tangential_accel_random = 0.42
-angle = 42.8
-angle_random = 1.0
-scale_random = 1.0
-scale_curve = SubResource( 9 )
-
-[sub_resource type="SpatialMaterial" id=13]
-albedo_color = Color( 0.862745, 0.658824, 0.0509804, 1 )
-albedo_texture = ExtResource( 5 )
-metallic = 0.41
-metallic_specular = 0.16
-roughness = 0.8
-
-[sub_resource type="SphereMesh" id=14]
-material = SubResource( 13 )
+[sub_resource type="SphereMesh" id=8]
+material = ExtResource( 11 )
 radius = 5.0
 height = 10.0
 radial_segments = 8
 rings = 8
+
+[sub_resource type="SphereShape" id=9]
+radius = 0.254648
+
+[sub_resource type="Animation" id=10]
+resource_name = "Drop"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sparks/Spark:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sparks/Spark2:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sparks/Spark3:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Light:light_energy")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5, 0.5, 2.5, 1.5 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("WickSound:playing")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("WickSound:pitch_scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.8, 1.5 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Light:omni_range")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.5 ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "Explode"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("DamageArea/DamageCollisionShape:shape:radius")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.249111, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.254648, 17.199, 0.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Explosion:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Explosion2:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Light:omni_range")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.0400372, 0.399902, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 5.0, 25.0, 25.0, 0.0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Light:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.039534, 0.401422, 0.499497 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 1.5, 4.0, 4.0, 0.0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("ExplosionSound:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("WickSound:playing")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 
 [node name="TNTPile" type="RigidBody"]
 mass = 0.01
@@ -185,7 +289,7 @@ one_shot = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20757, 0, 0 )
 light_color = Color( 1, 0.831373, 0.0666667, 1 )
 light_energy = 0.0
-omni_attenuation = 1.8025
+omni_attenuation = 2.21914
 
 [node name="Sparks" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.852875, 0, 0 )
@@ -196,8 +300,8 @@ emitting = false
 amount = 256
 lifetime = 0.71
 speed_scale = 1.17
-process_material = SubResource( 5 )
-draw_pass_1 = SubResource( 7 )
+process_material = ExtResource( 8 )
+draw_pass_1 = SubResource( 4 )
 
 [node name="Spark2" type="Particles" parent="Sparks"]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.000995696, 0.317982, -0.0322895 )
@@ -205,8 +309,8 @@ emitting = false
 amount = 256
 lifetime = 0.71
 speed_scale = 1.17
-process_material = SubResource( 5 )
-draw_pass_1 = SubResource( 7 )
+process_material = ExtResource( 8 )
+draw_pass_1 = SubResource( 4 )
 
 [node name="Spark3" type="Particles" parent="Sparks"]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.000995696, 0.113871, 0.144181 )
@@ -214,8 +318,8 @@ emitting = false
 amount = 256
 lifetime = 0.71
 speed_scale = 1.17
-process_material = SubResource( 5 )
-draw_pass_1 = SubResource( 7 )
+process_material = ExtResource( 8 )
+draw_pass_1 = SubResource( 4 )
 
 [node name="Explosion" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -225,8 +329,8 @@ one_shot = true
 speed_scale = 4.0
 explosiveness = 1.0
 visibility_aabb = AABB( -44.2456, -34.8084, -31.9045, 88.4911, 69.6168, 63.8091 )
-process_material = SubResource( 10 )
-draw_pass_1 = SubResource( 12 )
+process_material = ExtResource( 10 )
+draw_pass_1 = SubResource( 6 )
 
 [node name="Explosion2" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -237,7 +341,32 @@ one_shot = true
 speed_scale = 4.0
 explosiveness = 1.0
 local_coords = false
-process_material = SubResource( 15 )
-draw_pass_1 = SubResource( 14 )
+process_material = ExtResource( 9 )
+draw_pass_1 = SubResource( 8 )
+
+[node name="DamageArea" type="Area" parent="."]
+monitorable = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="DamageCollisionShape" type="CollisionShape" parent="DamageArea"]
+shape = SubResource( 9 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Drop = SubResource( 10 )
+anims/Explode = SubResource( 11 )
+
+[node name="ExplosionSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 6 )
+unit_size = 15.0
+max_db = 4.0
+
+[node name="WickSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 7 )
+unit_size = 40.0
+max_db = 4.0
+pitch_scale = 0.8
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="body_entered" from="DamageArea" to="." method="_on_DamageArea_body_entered"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]

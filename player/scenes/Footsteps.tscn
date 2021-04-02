@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://player/sounds/footsteps/step1.mp3" type="AudioStream" id=1]
+[ext_resource path="res://player/sounds/footsteps/step2.mp3" type="AudioStream" id=2]
+[ext_resource path="res://player/sounds/footsteps/step3.mp3" type="AudioStream" id=3]
+[ext_resource path="res://player/sounds/footsteps/step4.mp3" type="AudioStream" id=4]
+[ext_resource path="res://player/sounds/footsteps/step5.mp3" type="AudioStream" id=5]
+[ext_resource path="res://player/sounds/footsteps/step6.mp3" type="AudioStream" id=6]
+[ext_resource path="res://player/sounds/footsteps/step7.mp3" type="AudioStream" id=7]
+[ext_resource path="res://player/sounds/footsteps/step8.mp3" type="AudioStream" id=8]
+[ext_resource path="res://player/scripts/Footsteps.gd" type="Script" id=9]
+
+[node name="Footsteps" type="Spatial"]
+script = ExtResource( 9 )
+
+[node name="1" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 5 )
+unit_db = 13.0
+unit_size = 3.0
+pitch_scale = 0.82
+
+[node name="2" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 2 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="3" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 1 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="4" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 8 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="5" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 3 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="6" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 4 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="7" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 6 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8
+
+[node name="8" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 7 )
+unit_db = 13.0
+unit_size = 2.0
+pitch_scale = 0.8

@@ -50,6 +50,7 @@ func _unhandled_input(event):
 			BUTTON_WHEEL_DOWN:
 				zoom_factor += 0.05
 		zoom_factor = clamp(zoom_factor, MAX_ZOOM, MIN_ZOOM)
+		
 	
 
 func _physics_process(delta):
