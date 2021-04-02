@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://controller/Controller.gd" type="Script" id=1]
+
+[node name="Controller" type="Spatial"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0 )
+script = ExtResource( 1 )
+
+[node name="h" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45646, 0 )
+
+[node name="v" type="Spatial" parent="h"]
+
+[node name="Camera" type="ClippedCamera" parent="h/v"]
+transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943141, 0, -0.0943141, 0.319712, 0, 0.4, 4 )
+current = true
