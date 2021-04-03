@@ -12,10 +12,11 @@ onready var bomb: Bomb
 onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
 onready var smoke_particles: Particles = $SmokeParticles
 onready var footsteps = $Footsteps
-
+onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 
+var has_bomb = false
 var should_drop_bomb = false
 var blend_carry: float = 0
 var target_blend_carry: float = 0
@@ -42,6 +43,7 @@ func _spawn_bomb():
 	bomb_loc.call_deferred("add_child", bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
+	has_bomb = true
 
 
 func _set_animations(delta):
@@ -72,11 +74,11 @@ func _set_animations(delta):
 		
 
 func _can_drop_bomb():
-	return true
+	return has_bomb
 
 	
 func _on_bomb_dropped():
-	print("dropped: ", available_bombs)
+	has_bomb = false
 	if available_bombs > 0:
 		_spawn_bomb()
 
@@ -92,6 +94,9 @@ func _input(event):
 		
 	elif event.is_action("reset"):
 		get_tree().reload_current_scene()
+		
+func is_alive():
+	return state in [States.ALIVE]
 		
 
 func _drop_bomb():

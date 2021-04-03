@@ -25,23 +25,6 @@ enum State {
 var state = State.CARRY
 
 func _ready():
-#	explosion.hide()
-#	explosion2.hide()
-#	sparks.hide()
-#	explosion.emitting = true
-#	explosion2.emitting = true
-#	spark1.emitting = true
-#	spark2.emitting = true
-#	spark3.emitting = true
-#	yield(get_tree().create_timer(0.5), "timeout")
-#	explosion.emitting = false
-#	explosion2.emitting = false
-#	spark1.emitting = false
-#	spark2.emitting = false
-#	spark3.emitting = false
-#	explosion.show()
-#	explosion2.show()
-#	sparks.show()
 	pass
 	
 
@@ -57,10 +40,13 @@ func drop():
 	timer.start()
 	anim_player.play("Drop")
 	light.light_energy = 1.5
+	yield(get_tree().create_timer(1), "timeout")
+	$Range.show()
 
 
 func _explode():
 	state = State.EXPLODED
+	$Range.hide()	
 	mesh.hide()
 	sparks.hide()
 	anim_player.play("Explode")
@@ -74,12 +60,20 @@ func _on_Timer_timeout():
 func _on_DamageArea_body_entered(body: Spatial):
 	if state == State.EXPLODED and body.has_method("on_explosion_hit"):
 		var space = get_world().direct_space_state
-		var ray_collision = space.intersect_ray(global_transform.origin, body.global_transform.origin, [], 1)
+		var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
+		var ray_collision = space.intersect_ray(global_transform.origin, hitpoint, [], 1)
+		print("Ray bomb:  ", ray_collision)
 		if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
+			body.on_explosion_hit()
+		# case collide with bomb that player is holding
+		elif not ray_collision.empty() and "bomb" in body and is_instance_valid(body.bomb) and ray_collision.collider.get_instance_id() == body.bomb.get_instance_id():
 			body.on_explosion_hit()
 	
 
 func _on_animation_finished(anim_name):
 	if anim_name == "Explode":
 		call_deferred("queue_free")
+		
+func is_dropped():
+	return state == State.DROPPED
 		
