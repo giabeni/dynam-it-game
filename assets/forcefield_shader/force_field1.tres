@@ -2,7 +2,7 @@
 
 [resource]
 code = "shader_type spatial;
-render_mode cull_disabled;
+render_mode cull_disabled, blend_add;
 
 uniform vec4 main_color : hint_color;
 uniform vec4 intersection_color : hint_color;

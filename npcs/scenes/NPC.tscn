@@ -1,9 +1,12 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://npcs/scripts/NPC.gd" type="Script" id=1]
 [ext_resource path="res://npcs/scenes/NPC-AI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://player/sounds/hurt.ogg" type="AudioStream" id=3]
+[ext_resource path="res://player/sounds/breathing.ogg" type="AudioStream" id=4]
 [ext_resource path="res://player/models/Pants.material" type="Material" id=5]
 [ext_resource path="res://particles/smoke_07.png" type="Texture" id=6]
+[ext_resource path="res://player/sounds/hehe.wav" type="AudioStream" id=7]
 [ext_resource path="res://particles/particle_materials/SmokeBurn.material" type="Material" id=9]
 [ext_resource path="res://player/scenes/Footsteps.tscn" type="PackedScene" id=10]
 
@@ -401,6 +404,30 @@ tracks/25/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector3( 0, 1.56037, -0.281316 ), Vector3( 0, 1.56037, 1.32033 ) ]
+}
+tracks/26/type = "value"
+tracks/26/path = NodePath("HurtSound:playing")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/keys = {
+"times": PoolRealArray( 1.25762 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/27/type = "value"
+tracks/27/path = NodePath("HeheSound:playing")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/keys = {
+"times": PoolRealArray( 0.973922, 2.20172 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=11]
@@ -3496,7 +3523,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.885281, 0.309572, 0.347049, 0.179247, -0.461459, 0.868865, 0.429125, 0.831398, 0.353032, -0.291412, 1.27466, 0.695447 )
+transform = Transform( -0.880467, 0.313499, 0.355663, 0.176022, -0.4804, 0.859204, 0.44022, 0.819107, 0.367795, -0.28726, 1.26659, 0.684513 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3588,6 +3615,19 @@ one_shot = true
 [node name="ForgetTargetTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 3 )
+unit_size = 5.0
+
+[node name="BreathSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 4 )
+autoplay = true
+
+[node name="HeheSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -22.897
+pitch_scale = 1.3
 
 [connection signal="timeout" from="TargetDetectionTimer" to="." method="_on_TargetDetectionTimer_timeout"]
 [connection signal="timeout" from="BombIntervalTimer" to="." method="_on_BombIntervalTimer_timeout"]

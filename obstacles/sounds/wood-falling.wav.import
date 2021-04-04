@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/wood-falling.wav-9b6920316b59c0e9ebdc6fb4d090e222.sample"
+
+[deps]
+
+source_file="res://obstacles/sounds/wood-falling.wav"
+dest_files=[ "res://.import/wood-falling.wav-9b6920316b59c0e9ebdc6fb4d090e222.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

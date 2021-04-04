@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/rocks-rolling.wav-a1f60a9a235280a860a8ed8e30b86eb2.sample"
+
+[deps]
+
+source_file="res://obstacles/sounds/rocks-rolling.wav"
+dest_files=[ "res://.import/rocks-rolling.wav-a1f60a9a235280a860a8ed8e30b86eb2.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

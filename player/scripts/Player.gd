@@ -13,8 +13,11 @@ onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
 onready var smoke_particles: Particles = $SmokeParticles
 onready var footsteps = $Footsteps
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
+onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
+onready var breath_sound: AudioStreamPlayer3D = $BreathSound
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
+export(bool) var is_static = false
 
 var has_bomb = false
 var should_drop_bomb = false
@@ -100,12 +103,14 @@ func is_alive():
 		
 
 func _drop_bomb():
+	print("PLAYER DROPPED")
 	bomb.drop()
 	should_drop_bomb = true
 	available_bombs -= 1
 	
 
 func on_explosion_hit():
+	breath_sound.stop()
 	smoke_particles.emitting = true
 	state = States.DEAD
 	controller.set_physics_process(false)

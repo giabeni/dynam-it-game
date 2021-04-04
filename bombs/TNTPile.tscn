@@ -56,8 +56,8 @@ points = PoolVector3Array( 0.197641, 1.1739, 0.134398, 0.00660554, -1.4698, 0.13
 
 [sub_resource type="ShaderMaterial" id=11]
 shader = ExtResource( 13 )
-shader_param/main_color = Color( 1, 1, 1, 0 )
-shader_param/intersection_color = Color( 1, 0, 0, 1 )
+shader_param/main_color = Color( 0.419608, 0.0431373, 0.0431373, 0 )
+shader_param/intersection_color = Color( 1, 0, 0, 0.466667 )
 shader_param/intersection_max_threshold = 2.0
 shader_param/displ_amount = 0.1
 shader_param/near = 0.15
@@ -244,10 +244,10 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.039534, 0.401422, 0.499497 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.00769009, 0.039534, 0.401422, 0.499497 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ 1.5, 4.0, 4.0, 0.0 ]
+"values": [ 0.0, 1.5, 4.0, 4.0, 0.0 ]
 }
 tracks/5/type = "value"
 tracks/5/path = NodePath("ExplosionSound:playing")
@@ -308,6 +308,32 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("DamageArea:monitoring")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0, 0.300768 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/11/type = "method"
+tracks/11/path = NodePath(".")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0.147765 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "_do_damage"
+} ]
 }
 
 [node name="TNTPile" type="RigidBody" groups=[
@@ -434,5 +460,4 @@ max_db = 4.0
 pitch_scale = 0.8
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="body_entered" from="DamageArea" to="." method="_on_DamageArea_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]

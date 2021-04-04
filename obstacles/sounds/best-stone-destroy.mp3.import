@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/best-stone-destroy.mp3-c501cbd899aaf681fabe019426c376f5.mp3str"
+
+[deps]
+
+source_file="res://obstacles/sounds/best-stone-destroy.mp3"
+dest_files=[ "res://.import/best-stone-destroy.mp3-c501cbd899aaf681fabe019426c376f5.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

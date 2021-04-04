@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=52 format=2]
 
 [ext_resource path="res://controller/3rdPersonController.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/models/Skin.material" type="Material" id=2]
@@ -10,6 +10,9 @@
 [ext_resource path="res://player/scripts/Player.gd" type="Script" id=8]
 [ext_resource path="res://particles/particle_materials/SmokeBurn.material" type="Material" id=9]
 [ext_resource path="res://player/scenes/Footsteps.tscn" type="PackedScene" id=10]
+[ext_resource path="res://player/sounds/hurt.ogg" type="AudioStream" id=11]
+[ext_resource path="res://player/sounds/breathing.ogg" type="AudioStream" id=12]
+[ext_resource path="res://player/sounds/background-mining.mp3" type="AudioStream" id=13]
 
 [sub_resource type="SpatialMaterial" id=1]
 flags_transparent = true
@@ -373,6 +376,18 @@ tracks/25/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector3( 0, 1.56037, -0.281316 ), Vector3( 0, 1.56037, 1.32033 ) ]
+}
+tracks/26/type = "value"
+tracks/26/path = NodePath("HurtSound:playing")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/keys = {
+"times": PoolRealArray( 1.13335 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -3296,7 +3311,7 @@ input_1/auto_advance = false
 [sub_resource type="AnimationNodeTimeScale" id=37]
 
 [sub_resource type="AnimationNodeBlendTree" id=38]
-graph_offset = Vector2( -204.981, -87.75 )
+graph_offset = Vector2( -205.981, 29.75 )
 nodes/Animation/node = SubResource( 24 )
 nodes/Animation/position = Vector2( 1180, 300 )
 nodes/BlendCarry/node = SubResource( 25 )
@@ -3416,7 +3431,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [  ]
+bones/15/bound_children = [ NodePath("HandRight") ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3465,7 +3480,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.971978, 0.186355, 0.143285, 0.0504008, -0.430153, 0.901348, 0.229605, 0.883314, 0.408707, -0.400666, 1.21285, 0.657284 )
+transform = Transform( -0.88046, 0.313515, 0.355666, 0.176135, -0.480184, 0.859302, 0.440189, 0.819228, 0.367563, -0.287244, 1.26671, 0.684644 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3517,3 +3532,17 @@ parameters/TimeScale/scale = 1.2
 "parameters/TimeScale 2/scale" = 1.2
 
 [node name="Footsteps" parent="." instance=ExtResource( 10 )]
+
+[node name="BreathSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 12 )
+autoplay = true
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 11 )
+unit_size = 5.0
+
+[node name="BackgroundSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -174.018 )
+stream = ExtResource( 13 )
+unit_size = 10.0
+autoplay = true

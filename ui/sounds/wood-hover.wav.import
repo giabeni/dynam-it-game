@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/wood-hover.wav-459f630aa54a3ff806aabf2efd65392d.sample"
+
+[deps]
+
+source_file="res://ui/sounds/wood-hover.wav"
+dest_files=[ "res://.import/wood-hover.wav-459f630aa54a3ff806aabf2efd65392d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
