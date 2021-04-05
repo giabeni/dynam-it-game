@@ -131,4 +131,4 @@ func on_powerup_collected(type, amount):
 		if bomb:
 			bomb.set_range(bomb_range)
 	elif type == "EXTRA_BOMB":
-		available_bombs += amount
+		available_bombs = 1
