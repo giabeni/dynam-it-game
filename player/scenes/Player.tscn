@@ -3327,7 +3327,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 36 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 1820, 180 )
-node_connections = [ "output", 0, "DeadOrAlive", "TimeScale 2", 0, "BlendRunCarry", "TimeScale", 0, "BlendRun", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
+node_connections = [ "output", 0, "DeadOrAlive", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3350,6 +3350,7 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.66
 shape = SubResource( 3 )
 
 [node name="CharacterArmature" type="Spatial" parent="."]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0 )
 
 [node name="Skeleton" type="Skeleton" parent="CharacterArmature"]
 bones/0/name = "bone"
@@ -3431,7 +3432,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [ NodePath("HandRight") ]
+bones/15/bound_children = [  ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3480,7 +3481,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.88046, 0.313515, 0.355666, 0.176135, -0.480184, 0.859302, 0.440189, 0.819228, 0.367563, -0.287244, 1.26671, 0.684644 )
+transform = Transform( -0.901691, 0.292656, 0.318285, 0.133507, -0.511706, 0.848724, 0.411253, 0.807782, 0.42233, -0.309345, 1.24024, 0.66129 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3495,9 +3496,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5378, 0 )
 [node name="Controller" parent="." instance=ExtResource( 1 )]
 PLAYER_PATH = NodePath("..")
 BODY_PATH = NodePath("../CharacterArmature")
+MAX_ROTATION = 0.0
 WALK_SPEED = 7.0
 RUN_SPEED = 14.0
 ACCELERATION = 4.0
+
+[node name="v" parent="Controller/h" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.440714, 0 )
+
+[node name="Camera" parent="Controller/h/v" index="0"]
+transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943142, 0, -0.0943142, 0.319712, 0, 0.547316, 1.57414 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
@@ -3546,3 +3554,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -174.018 )
 stream = ExtResource( 13 )
 unit_size = 10.0
 autoplay = true
+
+[editable path="Controller"]

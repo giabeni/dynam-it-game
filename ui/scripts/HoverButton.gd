@@ -11,10 +11,10 @@ export(NodePath) var hover_sound_path
 export(NodePath) var click_sound_path
 
 func _ready():
-#	self.connect("mouse_entered", self, "_on_hover")
-#	self.connect("mouse_exited", self, "_on_exited")
-#	self.connect("button_down", self, "on_click")
-#	self.connect("button_up", self, "on_mouse_up")
+	self.connect("mouse_entered", self, "_on_hover")
+	self.connect("mouse_exited", self, "_on_exited")
+	self.connect("button_down", self, "on_click")
+	self.connect("button_up", self, "on_mouse_up")
 	hover_sound = get_node(hover_sound_path)
 	click_sound = get_node(click_sound_path)
 	
@@ -44,13 +44,18 @@ func _process(delta):
 	pass
 		
 func _on_hover():
-	hover_sound.play()
+	if is_instance_valid(hover_sound):
+		hover_sound.play()
+	get_node("Label").get_font("font").outline_color.a = 1
 	
 		
 func _on_exited():
 	is_hovered = false
-
+	get_node("Label").get_font("font").outline_color.a = 0
+	
 func on_click():
+	if is_instance_valid(click_sound):
+		click_sound.play()
 	just_clicked = true
 
 func on_mouse_up():

@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Crystal1_Damaged.obj-662513f4b31f692f458e862a9122312c.mesh"
+
+[deps]
+
+files=[ "res://.import/Crystal1_Damaged.obj-662513f4b31f692f458e862a9122312c.mesh" ]
+
+source_file="res://powerups/models/Crystal1_Damaged.obj"
+dest_files=[ "res://.import/Crystal1_Damaged.obj-662513f4b31f692f458e862a9122312c.mesh", "res://.import/Crystal1_Damaged.obj-662513f4b31f692f458e862a9122312c.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

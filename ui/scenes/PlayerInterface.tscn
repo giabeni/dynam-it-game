@@ -1,0 +1,164 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://ui/scripts/PlayerUI.gd" type="Script" id=1]
+[ext_resource path="res://ui/textures/gold_icon.png" type="Texture" id=2]
+[ext_resource path="res://ui/fonts/vt23 font/Adumu.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://ui/textures/hourglass.png" type="Texture" id=4]
+[ext_resource path="res://ui/textures/dead.png" type="Texture" id=5]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 2.0
+content_margin_right = 2.0
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+bg_color = Color( 0.258824, 0.14902, 0.0235294, 0.333333 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.933333, 0.745098, 0.2, 1 )
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="DynamicFont" id=2]
+size = 27
+outline_size = 5
+outline_color = Color( 1, 1, 1, 0 )
+use_filter = true
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 27
+outline_size = 5
+outline_color = Color( 1, 1, 1, 0 )
+use_filter = true
+font_data = ExtResource( 3 )
+
+[node name="PlayerUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TopBar" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 1240.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
+
+[node name="GoldContainer2" type="Control" parent="VBoxContainer/TopBar"]
+margin_bottom = 50.0
+
+[node name="TimerButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer2"]
+margin_right = 167.0
+margin_bottom = 52.0
+focus_mode = 0
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.933333, 0.862745, 0.603922, 1 )
+enabled_focus_mode = 0
+text = "120 s"
+icon = ExtResource( 4 )
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Space" type="Control" parent="VBoxContainer/TopBar"]
+margin_left = 4.0
+margin_right = 504.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 500, 0 )
+
+[node name="GoldContainer3" type="Control" parent="VBoxContainer/TopBar"]
+margin_left = 508.0
+margin_right = 1008.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 500, 0 )
+
+[node name="NPCs" type="Button" parent="VBoxContainer/TopBar/GoldContainer3"]
+margin_left = -82.0
+margin_right = 79.0
+margin_bottom = 52.0
+focus_mode = 0
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.933333, 0.862745, 0.603922, 1 )
+enabled_focus_mode = 0
+text = "0/4"
+icon = ExtResource( 5 )
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GoldContainer" type="Control" parent="VBoxContainer/TopBar"]
+margin_left = 1012.0
+margin_right = 1012.0
+margin_bottom = 50.0
+
+[node name="GoldButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer"]
+margin_left = -82.0
+margin_right = 167.0
+margin_bottom = 52.0
+focus_mode = 0
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.933333, 0.862745, 0.603922, 1 )
+enabled_focus_mode = 0
+text = "0 / 20 kg"
+icon = ExtResource( 2 )
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpaceY" type="Control" parent="VBoxContainer"]
+margin_top = 54.0
+margin_right = 1240.0
+margin_bottom = 554.0
+rect_min_size = Vector2( 0, 500 )
+
+[node name="Footer" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+margin_top = 558.0
+margin_right = 1240.0
+margin_bottom = 678.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="GoldContainer2" type="Control" parent="VBoxContainer/Footer"]
+margin_right = 300.0
+margin_bottom = 120.0
+rect_min_size = Vector2( 300, 0 )
+
+[node name="ItemList" type="ItemList" parent="VBoxContainer/Footer/GoldContainer2"]
+margin_right = 300.0
+rect_min_size = Vector2( 300, 120 )
+mouse_filter = 2
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 3 )
+items = [ "NPC 1", null, false, "NPC 2", null, false ]
+auto_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Space" type="Control" parent="VBoxContainer/Footer"]
+margin_left = 304.0
+margin_right = 1204.0
+margin_bottom = 120.0
+rect_min_size = Vector2( 900, 0 )

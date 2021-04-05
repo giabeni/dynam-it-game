@@ -24,6 +24,9 @@ enum State {
 
 var state = State.CARRY
 
+var is_from_player = false
+var bomb_range = 5
+
 func _ready():
 	pass
 	
@@ -51,6 +54,7 @@ func _explode():
 	sparks.hide()
 	anim_player.play("Explode")
 	emit_signal("bomb_exploded")
+	
 
 
 func _on_Timer_timeout():
@@ -60,13 +64,13 @@ func _on_Timer_timeout():
 func _do_damage():
 	if state != State.EXPLODED:
 		return
-		
+	
 	for body in explosion_area.get_overlapping_bodies():
-		print("\nbody in tnt: ", body, "groups: ", body.get_groups())
+#		print("\nbody in tnt: ", body, "groups: ", body.get_groups())
 		if body.has_method("on_explosion_hit"):
 			var space = get_world().direct_space_state
 			var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
-			var ray_origin = global_transform.origin + Vector3.UP * 1
+			var ray_origin = global_transform.origin + Vector3.UP * 0
 			var ray_collision = space.intersect_ray(ray_origin, hitpoint, [], 1)
 #			print("Ray bomb to MINER:  ", ray_collision)
 			if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
@@ -79,12 +83,14 @@ func _do_damage():
 			var space = get_world().direct_space_state
 			for hit_pos in body.hitpoints.get_children():
 				var hitpoint = hit_pos.global_transform.origin
-				var ray_origin = global_transform.origin + Vector3.UP * 1
+				var ray_origin = global_transform.origin + Vector3.UP * 0
 				var ray_collision = space.intersect_ray(ray_origin, hitpoint, [], 1)
-				print("Ray bomb to TNT:  ", ray_collision)
-				print("TNT IN OBSTACLE!: ", ray_collision.collider.get_instance_id() == body.get_instance_id())
-				if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
-					body.destroy()
+				if "collider" in ray_collision:
+#					print("TNT IN OBSTACLE!: ", ray_collision.collider.get_instance_id() == body.get_instance_id())
+					if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
+#						print("Ray bomb to TNT:  ", ray_collision.collider.name)
+						body.destroy()
+					
 
 func _on_DamageArea_body_entered(body: Spatial):
 	if state != State.EXPLODED:
@@ -94,7 +100,7 @@ func _on_DamageArea_body_entered(body: Spatial):
 		var space = get_world().direct_space_state
 		var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
 		var ray_collision = space.intersect_ray(global_transform.origin, hitpoint, [], 1)
-		print("Ray bomb:  ", ray_collision)
+#		print("Ray bomb:  ", ray_collision)
 		if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
 			body.on_explosion_hit()
 		# case collide with bomb that player is holding
@@ -105,7 +111,7 @@ func _on_DamageArea_body_entered(body: Spatial):
 		var space = get_world().direct_space_state
 		var hitpoint = body.global_transform.origin if not "hitpoint" in body else body.hitpoint.global_transform.origin
 		var ray_collision = space.intersect_ray(global_transform.origin, hitpoint, [], 1)
-		print("Ray bomb:  ", ray_collision)
+#		print("Ray bomb:  ", ray_collision)
 		if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
 			body.destroy()
 	
@@ -117,4 +123,10 @@ func _on_animation_finished(anim_name):
 		
 func is_dropped():
 	return state == State.DROPPED
+	
+func set_range(amount):
+	bomb_range = amount
+	if is_instance_valid(explosion_area):
+		explosion_area.get_node("DamageCollisionShape").shape.radius  = amount
+	$Range.radius = amount
 		

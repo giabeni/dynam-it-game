@@ -20,8 +20,10 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Dynamit-game"
-run/main_scene="res://test/Test Scene.tscn"
+config/name="DinamIt!"
+run/main_scene="res://ui/scenes/MainMenu.tscn"
+boot_splash/image="res://ui/textures/splash.png"
+boot_splash/use_filter=false
 config/icon="res://icon.png"
 
 [autoload]

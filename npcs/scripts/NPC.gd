@@ -19,6 +19,7 @@ onready var sight_origin: Position3D = $CharacterArmature/SightOrigin
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
+export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
 
 var has_bomb = false
 var should_drop_bomb = false
@@ -27,6 +28,10 @@ var target_blend_carry: float = 0
 var available_bombs: int = 1
 var state = States.EXPLORING
 var is_escaping_from_bomb = false
+var gold = 0
+var wall_position = Vector3(0, 0, 0)
+
+signal on_died
 
 func _ready():
 	if available_bombs > 0:
@@ -36,6 +41,10 @@ func _ready():
 func _physics_process(delta):
 	_set_animations(delta)
 	
+	if is_on_wall():
+#		print("on wall")
+		$OnWallTimer.start()
+		wall_position = global_transform.origin
 
 func _spawn_bomb():
 	bomb = BOMB_SCENE.instance()
@@ -96,21 +105,41 @@ func _drop_bomb():
 	should_drop_bomb = true
 	available_bombs -= 1
 	
+	# Escape from own bomb
+	var escape_point = _get_run_away_point(bomb.global_transform.origin)
+	controller.move_to(escape_point)
+	$BombEscapeTimer.start()
+#			print("Escaping!!!!! ", escape_point)
+	is_escaping_from_bomb = true
+	
 
 func on_explosion_hit():
 	if is_alive():
 #		print(name, "  DIED!!!!")
 		smoke_particles.emitting = true
 		state = States.DEAD
+		_drop_gold()
+		emit_signal("on_died")
 		controller.set_physics_process(false)
 		$TargetDetectionTimer.stop()
 		$BombIntervalTimer.stop()
 		$BombDetectionTimer.stop()
 		$BombEscapeTimer.stop()
+		
+func _drop_gold():
+	if gold > 0:
+		var offset = Vector3(0, 0, 0)
+		while gold > 0:
+			var item = GOLD_SCENE.instance()
+			item.global_transform.origin = self.global_transform.origin + offset
+			get_parent().call_deferred("add_child", item)
+			print(name, " dropped gold! <<<<<<  ", item.name, " \n\n")
+			gold -= 1
+			offset += Vector3(0.1, 0, 0.1)
 	
 
 func _get_random_target_point():
-	var aim_vector = self.global_transform.basis.z
+	var aim_vector = (self.global_transform.basis.z + Vector3.UP * 2).rotated(Vector3.LEFT, deg2rad(15))
 	var random_angle = rand_range(0, 360)
 	var aim_range = 10
 	var world_point = global_transform.rotated(Vector3.UP, deg2rad(random_angle)).translated(aim_vector * aim_range).origin
@@ -119,11 +148,20 @@ func _get_random_target_point():
 
 
 func _get_run_away_point(from: Vector3):
-	var direction = global_transform.origin - from
-	var offset = 25
-	var world_point = global_transform.origin + direction.normalized() * offset
-	var nav_point = controller.navigation.get_closest_point(world_point)
-	return nav_point
+	var found_point = false
+	var tries = 5
+	var min_distance = 5
+	
+	while not found_point:
+		var direction = global_transform.origin - from
+		var offset = 10
+		var world_point = global_transform.origin + direction.normalized() * offset
+		var nav_point = controller.navigation.get_closest_point(world_point)
+		if abs((nav_point - from).length()) < min_distance or tries <= 0:
+			return nav_point
+		else:
+			tries -= 1
+			
 
 
 func _on_TargetDetectionTimer_timeout():
@@ -132,10 +170,20 @@ func _on_TargetDetectionTimer_timeout():
 	
 	var found_miner = false
 	var found_obstacle = false
+	var found_item = false
 	var space = get_world().direct_space_state
 	for body in target_detection_area.get_overlapping_bodies():
-		if body.get_instance_id() != self.get_instance_id() and (body.is_in_group("Miners") or body.is_in_group("Obstacles")):
-			if body.is_in_group("Miners"):
+		if body.get_instance_id() != self.get_instance_id():
+			if body.is_in_group("Items"):
+				var hitpoint = body.hitpoint.global_transform.origin
+				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
+				if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
+					if ray.collider.is_in_group("Items") and not found_miner:
+						found_item = true
+						controller.target = body
+						state = States.FOLLOWING
+						
+			elif body.is_in_group("Miners") and not found_item:
 				var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
 				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
 				if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
@@ -145,19 +193,20 @@ func _on_TargetDetectionTimer_timeout():
 						state = States.FOLLOWING
 #						print("Miner target found : ", body)
 						
-			elif body.is_in_group("Obstacles"):
+			elif body.is_in_group("Obstacles") and not found_miner and not found_item:
 				for hit_pos in body.hitpoints.get_children():
 					var hitpoint = hit_pos.global_transform.origin
 					var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
 					if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
-						if ray.collider.is_in_group("Obstacles") and not found_miner:
+						if ray.collider.is_in_group("Obstacles"):
 							found_obstacle = true
 							controller.target = body
 							state = States.FOLLOWING
 							continue
 #							print("Obstacle target found : ", body)
+			
 	
-	if not found_miner and not found_obstacle:
+	if not found_miner and not found_obstacle and not found_item:
 		var random_point = _get_random_target_point()
 		controller.move_to(random_point)
 #		print("random target", random_point)
@@ -169,7 +218,6 @@ func _on_BombIntervalTimer_timeout():
 		if body.get_instance_id() != self.get_instance_id():
 			if (body.is_in_group("Miners") and body.is_alive()) or body.is_in_group("Obstacles"):
 				# if gets close to target, drops a bomb
-				return
 				if _can_drop_bomb():
 					_drop_bomb()
 
@@ -202,7 +250,13 @@ func _on_ForgetTargetTimer_timeout():
 			controller.move_to(random_point)
 #			print("forgot target", random_point)
 			state = States.EXPLORING
-		elif is_instance_valid(controller.target) and controller.target.is_in_group("Obstacles"):
+		elif is_instance_valid(controller.target) and controller.target.is_in_group("Obstacles") and controller.target.destroyed:
+			controller.target = null
+			var random_point = _get_random_target_point()
+			controller.move_to(random_point)
+#			print("forgot target", random_point)
+			state = States.EXPLORING
+		elif is_instance_valid(controller.target) and controller.target.is_in_group("Items"):
 			return
 		else:
 			controller.target = null
@@ -210,4 +264,17 @@ func _on_ForgetTargetTimer_timeout():
 			controller.move_to(random_point)
 #			print("forgot target", random_point)
 			state = States.EXPLORING
+			
+func on_gold_collected():
+	gold += 1
+	print(name, " collected ", str(gold), " kg of gold!")
+		
+
+
+func _on_OnWallTimer_timeout():
+	if global_transform.origin.distance_to(wall_position) < 1:
+		var random_point = _get_random_target_point()
+		controller.move_to(random_point)
+#		print("random target", random_point)
+		state = States.EXPLORING
 		

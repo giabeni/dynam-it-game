@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Crystal5.obj-9c8a4ac2cd630927a3163f3c0048e51a.mesh"
+
+[deps]
+
+files=[ "res://.import/Crystal5.obj-9c8a4ac2cd630927a3163f3c0048e51a.mesh" ]
+
+source_file="res://powerups/models/Crystal5.obj"
+dest_files=[ "res://.import/Crystal5.obj-9c8a4ac2cd630927a3163f3c0048e51a.mesh", "res://.import/Crystal5.obj-9c8a4ac2cd630927a3163f3c0048e51a.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

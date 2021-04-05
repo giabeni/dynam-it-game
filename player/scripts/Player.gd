@@ -15,9 +15,10 @@ onready var footsteps = $Footsteps
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
 onready var breath_sound: AudioStreamPlayer3D = $BreathSound
+onready var player_ui
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
-export(bool) var is_static = false
+export(NodePath) var UI_PATH
 
 var has_bomb = false
 var should_drop_bomb = false
@@ -25,16 +26,16 @@ var blend_carry: float = 0
 var target_blend_carry: float = 0
 var available_bombs: int = 1
 var state = States.ALIVE
+var gold = 0
+var bomb_range = 5
+
+signal on_died
 
 func _ready():
 	if available_bombs > 0:
 		_spawn_bomb()
 		
-#	smoke_particles.hide()
-#	smoke_particles.emitting = true
-#	yield(get_tree().create_timer(0.5), "timeout")
-#	smoke_particles.emitting = false
-#	smoke_particles.show()
+	player_ui = get_node(UI_PATH)
 	
 
 func _physics_process(delta):
@@ -43,6 +44,7 @@ func _physics_process(delta):
 
 func _spawn_bomb():
 	bomb = BOMB_SCENE.instance()
+	bomb.set_range(bomb_range)
 	bomb_loc.call_deferred("add_child", bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
@@ -103,7 +105,7 @@ func is_alive():
 		
 
 func _drop_bomb():
-	print("PLAYER DROPPED")
+	bomb.is_from_player = true
 	bomb.drop()
 	should_drop_bomb = true
 	available_bombs -= 1
@@ -113,4 +115,20 @@ func on_explosion_hit():
 	breath_sound.stop()
 	smoke_particles.emitting = true
 	state = States.DEAD
+	emit_signal("on_died")
 	controller.set_physics_process(false)
+	
+func on_gold_collected():
+	gold += 1
+	player_ui.set_gold(gold)
+
+func on_powerup_collected(type, amount):
+	if type == "VELOCITY":
+		controller.RUN_SPEED += amount
+	elif type == "BOMB_RANGE":
+		print("bomb range increased: ", bomb_range)
+		bomb_range += amount
+		if bomb:
+			bomb.set_range(bomb_range)
+	elif type == "EXTRA_BOMB":
+		available_bombs += amount

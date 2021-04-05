@@ -3367,7 +3367,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 40 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 1820, 180 )
-node_connections = [ "output", 0, "DeadOrAlive", "TimeScale 2", 0, "BlendRunCarry", "TimeScale", 0, "BlendRun", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
+node_connections = [ "output", 0, "DeadOrAlive", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
 
 [sub_resource type="CylinderShape" id=43]
 radius = 30.1319
@@ -3523,7 +3523,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.880467, 0.313499, 0.355663, 0.176022, -0.4804, 0.859204, 0.44022, 0.819107, 0.367795, -0.28726, 1.26659, 0.684513 )
+transform = Transform( -0.950905, 0.224652, 0.212864, 0.0989677, -0.430957, 0.896929, 0.293232, 0.873962, 0.387566, -0.371135, 1.24403, 0.672698 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3582,7 +3582,7 @@ BODY_PATH = NodePath("../CharacterArmature")
 [node name="TargetDetectionArea" type="Area" parent="."]
 monitorable = false
 collision_layer = 0
-collision_mask = 6
+collision_mask = 22
 
 [node name="CollisionShape" type="CollisionShape" parent="TargetDetectionArea"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0733, 0 )
@@ -3601,20 +3601,22 @@ shape = SubResource( 43 )
 autostart = true
 
 [node name="BombIntervalTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.0
 autostart = true
 
 [node name="BombDetectionTimer" type="Timer" parent="."]
-wait_time = 2.0
 autostart = true
 
 [node name="BombEscapeTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 3.0
 one_shot = true
 
 [node name="ForgetTargetTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 2.0
 autostart = true
+
+[node name="OnWallTimer" type="Timer" parent="."]
+wait_time = 3.0
 
 [node name="HurtSound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 3 )
@@ -3634,3 +3636,4 @@ pitch_scale = 1.3
 [connection signal="timeout" from="BombDetectionTimer" to="." method="_on_BombDetectionTimer_timeout"]
 [connection signal="timeout" from="BombEscapeTimer" to="." method="_on_BombEscapeTimer_timeout"]
 [connection signal="timeout" from="ForgetTargetTimer" to="." method="_on_ForgetTargetTimer_timeout"]
+[connection signal="timeout" from="OnWallTimer" to="." method="_on_OnWallTimer_timeout"]
