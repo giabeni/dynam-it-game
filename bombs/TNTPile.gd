@@ -23,7 +23,6 @@ enum State {
 }
 
 var state = State.CARRY
-
 var is_from_player = false
 var bomb_range = 5
 
@@ -43,7 +42,6 @@ func drop():
 	timer.start()
 	anim_player.play("Drop")
 	light.light_energy = 1.5
-	yield(get_tree().create_timer(1), "timeout")
 	$Range.show()
 
 

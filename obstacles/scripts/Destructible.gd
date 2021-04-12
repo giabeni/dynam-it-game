@@ -1,8 +1,12 @@
 extends StaticBody
 
+class_name Destructible
+
 onready var hitpoints: Spatial = $Hitpoints
 
 export(Array, PackedScene) var ITEMS_SCENES = []
+export(float, 0, 1) var ITEM_PROB = 1
+export(float, 0, 10) var TIME_TO_EXPLODE = 1.14
 
 var destroyed = false
 
@@ -17,11 +21,11 @@ func destroy():
 			get_parent().call_deferred("add_child", item)
 #			print("Item spawned: ", item)
 
-		yield(get_tree().create_timer(1.14),"timeout")
+		yield(get_tree().create_timer(TIME_TO_EXPLODE),"timeout")
 		call_deferred("queue_free")
 	
 func _should_spawn_item():
-	return ITEMS_SCENES.size() > 0
+	return ITEMS_SCENES.size() > 0 and randf() < ITEM_PROB
 	
 func _get_random_item():
 	var random_index = int(round(rand_range(0, ITEMS_SCENES.size() - 1)))

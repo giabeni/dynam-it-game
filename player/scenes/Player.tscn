@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=2]
+[gd_scene load_steps=56 format=2]
 
 [ext_resource path="res://controller/3rdPersonController.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/models/Skin.material" type="Material" id=2]
@@ -13,6 +13,8 @@
 [ext_resource path="res://player/sounds/hurt.ogg" type="AudioStream" id=11]
 [ext_resource path="res://player/sounds/breathing.ogg" type="AudioStream" id=12]
 [ext_resource path="res://player/sounds/background-mining.mp3" type="AudioStream" id=13]
+[ext_resource path="res://weapons/sounds/woosh.ogg" type="AudioStream" id=14]
+[ext_resource path="res://player/sounds/hurt2.ogg" type="AudioStream" id=15]
 
 [sub_resource type="SpatialMaterial" id=1]
 flags_transparent = true
@@ -718,6 +720,30 @@ tracks/22/loop_wrap = true
 tracks/22/imported = true
 tracks/22/enabled = true
 tracks/22/keys = PoolRealArray( 0, 1, 0, 0, 0, -3.55271e-15, 0, 0, 1, 1, 1, 1, 4.16667, 1, 0, 0, 0, -3.55271e-15, 0, 0, 1, 1, 1, 1 )
+tracks/23/type = "value"
+tracks/23/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:rotation_degrees")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 5.39701, -91.583, -106.32 ) ]
+}
+tracks/24/type = "value"
+tracks/24/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:translation")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( -0.0834094, 0.290806, 0.298034 ) ]
+}
 
 [sub_resource type="Animation" id=9]
 length = 4.16667
@@ -883,6 +909,30 @@ tracks/22/loop_wrap = true
 tracks/22/imported = false
 tracks/22/enabled = true
 tracks/22/keys = PoolRealArray( 0, 1, 0, 5.96046e-08, 0, -3.72529e-09, 1.36424e-12, -7.98117e-12, 1, 1, 1, 1, 4.17, 1, 0, 5.96046e-08, 0, -3.72529e-09, 1.36424e-12, -7.98117e-12, 1, 1, 1, 1 )
+tracks/23/type = "value"
+tracks/23/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:rotation_degrees")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 8.94541, -78.7566, -104.711 ) ]
+}
+tracks/24/type = "value"
+tracks/24/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:translation")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0.0324739, 0.309403, 0.274997 ) ]
+}
 
 [sub_resource type="Animation" id=10]
 length = 1.04167
@@ -1885,6 +1935,30 @@ tracks/23/keys = {
 "method": "play_random_footstep"
 } ]
 }
+tracks/24/type = "value"
+tracks/24/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:rotation_degrees")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 6.43939, -87.9614, -105.946 ) ]
+}
+tracks/25/type = "value"
+tracks/25/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:translation")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( -0.0906675, 0.196977, 0.258386 ) ]
+}
 
 [sub_resource type="Animation" id=16]
 length = 0.875
@@ -2723,6 +2797,42 @@ tracks/22/loop_wrap = true
 tracks/22/imported = true
 tracks/22/enabled = true
 tracks/22/keys = PoolRealArray( 0, 1, 0, 0, 0, -3.55271e-15, 0, 0, 1, 1, 1, 1, 1.04167, 1, 0, 0, 0, -3.55271e-15, 0, 0, 1, 1, 1, 1 )
+tracks/23/type = "value"
+tracks/23/path = NodePath("WhooshSound:playing")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/keys = {
+"times": PoolRealArray( 0.26658, 0.677175 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/24/type = "value"
+tracks/24/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:translation")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/keys = {
+"times": PoolRealArray( 0, 0.186912, 0.399359, 0.543374, 1.04167 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( -0.230564, 0.260421, 0.289166 ), Vector3( -0.0660532, 0.177689, 0.224294 ), Vector3( -0.0821826, 0.379413, 0.118063 ), Vector3( -0.217571, 0.505783, 0.231168 ), Vector3( -0.230564, 0.260421, 0.289166 ) ]
+}
+tracks/25/type = "value"
+tracks/25/path = NodePath("CharacterArmature/Skeleton/HandRight/Weapon:rotation_degrees")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/keys = {
+"times": PoolRealArray( 0, 0.186912, 0.399359, 0.543374, 1.04167 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 5.39701, -91.583, -90.412 ), Vector3( 5.397, -91.583, -62.749 ), Vector3( 5.39699, -91.583, -40.194 ), Vector3( 29.8714, -115.83, -47.813 ), Vector3( 5.39701, -91.583, -90.412 ) ]
+}
 
 [sub_resource type="Animation" id=21]
 length = 1.875
@@ -3253,52 +3363,55 @@ tracks/23/keys = {
 }
 
 [sub_resource type="AnimationNodeAnimation" id=24]
+animation = "SwordSlash"
+
+[sub_resource type="AnimationNodeAnimation" id=25]
 animation = "Death"
 
-[sub_resource type="AnimationNodeBlend2" id=25]
-
-[sub_resource type="AnimationNodeAnimation" id=26]
-animation = "Idle"
+[sub_resource type="AnimationNodeBlend2" id=26]
 
 [sub_resource type="AnimationNodeAnimation" id=27]
-animation = "Walk"
+animation = "Idle"
 
 [sub_resource type="AnimationNodeAnimation" id=28]
+animation = "Walk"
+
+[sub_resource type="AnimationNodeAnimation" id=29]
 animation = "Run"
 
-[sub_resource type="AnimationNodeBlendSpace1D" id=29]
-blend_point_0/node = SubResource( 26 )
+[sub_resource type="AnimationNodeBlendSpace1D" id=30]
+blend_point_0/node = SubResource( 27 )
 blend_point_0/pos = 0.0
-blend_point_1/node = SubResource( 27 )
+blend_point_1/node = SubResource( 28 )
 blend_point_1/pos = 0.5
-blend_point_2/node = SubResource( 28 )
+blend_point_2/node = SubResource( 29 )
 blend_point_2/pos = 1.0
 min_space = 0.0
 
-[sub_resource type="AnimationNodeAnimation" id=30]
+[sub_resource type="AnimationNodeAnimation" id=31]
 animation = "Idle"
 
-[sub_resource type="AnimationNodeAnimation" id=31]
+[sub_resource type="AnimationNodeAnimation" id=32]
 animation = "Idle_Carry"
 
-[sub_resource type="AnimationNodeAnimation" id=32]
+[sub_resource type="AnimationNodeAnimation" id=33]
 animation = "Run_Carry"
 
-[sub_resource type="AnimationNodeAnimation" id=33]
+[sub_resource type="AnimationNodeAnimation" id=34]
 animation = "Walk_Carry"
 
-[sub_resource type="AnimationNodeBlendSpace1D" id=34]
-blend_point_0/node = SubResource( 30 )
+[sub_resource type="AnimationNodeBlendSpace1D" id=35]
+blend_point_0/node = SubResource( 31 )
 blend_point_0/pos = -1.0
-blend_point_1/node = SubResource( 31 )
+blend_point_1/node = SubResource( 32 )
 blend_point_1/pos = 0.0
-blend_point_2/node = SubResource( 32 )
+blend_point_2/node = SubResource( 33 )
 blend_point_2/pos = 1.0
-blend_point_3/node = SubResource( 33 )
+blend_point_3/node = SubResource( 34 )
 blend_point_3/pos = 0.5
 min_space = 0.0
 
-[sub_resource type="AnimationNodeTransition" id=35]
+[sub_resource type="AnimationNodeTransition" id=36]
 input_count = 2
 xfade_time = 0.3
 input_0/name = "ALIVE"
@@ -3306,28 +3419,36 @@ input_0/auto_advance = false
 input_1/name = "DEAD"
 input_1/auto_advance = false
 
-[sub_resource type="AnimationNodeTimeScale" id=36]
+[sub_resource type="AnimationNodeOneShot" id=37]
+filter_enabled = true
+filters = [ "CharacterArmature/Skeleton/HandRight/Weapon:rotation_degrees", "CharacterArmature/Skeleton/HandRight/Weapon:translation", "CharacterArmature/Skeleton:abdomen", "CharacterArmature/Skeleton:body", "CharacterArmature/Skeleton:bone", "CharacterArmature/Skeleton:fist._l", "CharacterArmature/Skeleton:fist._r", "CharacterArmature/Skeleton:head", "CharacterArmature/Skeleton:hips", "CharacterArmature/Skeleton:lower_arm._l", "CharacterArmature/Skeleton:lower_arm._r", "CharacterArmature/Skeleton:neck", "CharacterArmature/Skeleton:shoulder._l", "CharacterArmature/Skeleton:shoulder._r", "CharacterArmature/Skeleton:torso", "CharacterArmature/Skeleton:upper_arm._l", "CharacterArmature/Skeleton:upper_arm._r", "WhooshSound:playing" ]
 
-[sub_resource type="AnimationNodeTimeScale" id=37]
+[sub_resource type="AnimationNodeTimeScale" id=38]
 
-[sub_resource type="AnimationNodeBlendTree" id=38]
-graph_offset = Vector2( -205.981, 29.75 )
-nodes/Animation/node = SubResource( 24 )
+[sub_resource type="AnimationNodeTimeScale" id=39]
+
+[sub_resource type="AnimationNodeBlendTree" id=40]
+graph_offset = Vector2( 1626.38, 0 )
+nodes/Animation/node = SubResource( 25 )
 nodes/Animation/position = Vector2( 1180, 300 )
-nodes/BlendCarry/node = SubResource( 25 )
+"nodes/Animation 2/node" = SubResource( 24 )
+"nodes/Animation 2/position" = Vector2( 1660, 360 )
+nodes/BlendCarry/node = SubResource( 26 )
 nodes/BlendCarry/position = Vector2( 960, 200 )
-nodes/BlendRun/node = SubResource( 29 )
+nodes/BlendRun/node = SubResource( 30 )
 nodes/BlendRun/position = Vector2( 260, 80 )
-nodes/BlendRunCarry/node = SubResource( 34 )
+nodes/BlendRunCarry/node = SubResource( 35 )
 nodes/BlendRunCarry/position = Vector2( 260, 280 )
-nodes/DeadOrAlive/node = SubResource( 35 )
+nodes/DeadOrAlive/node = SubResource( 36 )
 nodes/DeadOrAlive/position = Vector2( 1480, 180 )
-nodes/TimeScale/node = SubResource( 37 )
+nodes/Slash/node = SubResource( 37 )
+nodes/Slash/position = Vector2( 1980, 160 )
+nodes/TimeScale/node = SubResource( 39 )
 nodes/TimeScale/position = Vector2( 540, 80 )
-"nodes/TimeScale 2/node" = SubResource( 36 )
+"nodes/TimeScale 2/node" = SubResource( 38 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
-nodes/output/position = Vector2( 1820, 180 )
-node_connections = [ "output", 0, "DeadOrAlive", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
+nodes/output/position = Vector2( 2380, 160 )
+node_connections = [ "output", 0, "Slash", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3481,11 +3602,17 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.901691, 0.292656, 0.318285, 0.133507, -0.511706, 0.848724, 0.411253, 0.807782, 0.42233, -0.309345, 1.24024, 0.66129 )
+transform = Transform( -0.969416, 0.201496, 0.140117, 0.0210912, -0.500405, 0.865535, 0.244517, 0.842019, 0.480852, -0.391395, 1.16586, 0.628917 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
 transform = Transform( -0.9407, 0.0299445, 0.337917, 0.337212, -0.0262852, 0.94106, 0.0370618, 0.999206, 0.0146288, -0.171565, 0.243432, 0.0843008 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Weapon" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
+transform = Transform( 0.0979965, 0.227314, -0.968874, -0.955455, -0.250855, -0.155493, -0.278394, 0.940956, 0.192605, 0.0324739, 0.309403, 0.274997 )
 __meta__ = {
 "_editor_description_": ""
 }
@@ -3529,13 +3656,14 @@ anims/Walk = SubResource( 22 )
 anims/Walk_Carry = SubResource( 23 )
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
-tree_root = SubResource( 38 )
+tree_root = SubResource( 40 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/BlendCarry/blend_amount = 1.0
 parameters/BlendRun/blend_position = 0.0
 parameters/BlendRunCarry/blend_position = 0.0
 parameters/DeadOrAlive/current = 0
+parameters/Slash/active = false
 parameters/TimeScale/scale = 1.2
 "parameters/TimeScale 2/scale" = 1.2
 
@@ -3546,13 +3674,29 @@ stream = ExtResource( 12 )
 autoplay = true
 
 [node name="HurtSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 15 )
+unit_size = 7.9
+
+[node name="HurtSound2" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 11 )
-unit_size = 5.0
+unit_size = 10.2
+
+[node name="WhooshSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.576912, 1.36462, 0 )
+stream = ExtResource( 14 )
+unit_db = 38.33
+unit_size = 99.5
+max_db = 6.0
 
 [node name="BackgroundSound" type="AudioStreamPlayer3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -174.018 )
 stream = ExtResource( 13 )
 unit_size = 10.0
 autoplay = true
+
+[node name="WeaponTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="WeaponTimer" to="." method="_on_WeaponTimer_timeout"]
 
 [editable path="Controller"]

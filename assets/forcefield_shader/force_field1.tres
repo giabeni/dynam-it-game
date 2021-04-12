@@ -6,6 +6,7 @@ render_mode cull_disabled, blend_add;
 
 uniform vec4 main_color : hint_color;
 uniform vec4 intersection_color : hint_color;
+uniform vec4 emission_color : hint_color;
 uniform float intersection_max_threshold = 0.5;
 uniform sampler2D displ_tex : hint_white;
 uniform float displ_amount = 0.1;
@@ -26,4 +27,6 @@ void fragment()
 	vec4 col = mix(intersection_color, main_color, step(intersection_max_threshold, diff));
 	ALBEDO = col.rgb;
 	ALPHA = col.r;
+	EMISSION = emission_color.rgb;
+	ROUGHNESS = 1.0;
 }"

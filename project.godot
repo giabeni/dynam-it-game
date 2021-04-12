@@ -13,18 +13,42 @@ _global_script_classes=[ {
 "class": "Bomb",
 "language": "GDScript",
 "path": "res://bombs/TNTPile.gd"
+}, {
+"base": "StaticBody",
+"class": "Destructible",
+"language": "GDScript",
+"path": "res://obstacles/scripts/Destructible.gd"
+}, {
+"base": "Control",
+"class": "PlayerUI",
+"language": "GDScript",
+"path": "res://ui/scripts/PlayerUI.gd"
+}, {
+"base": "Spatial",
+"class": "ProceduralMap",
+"language": "GDScript",
+"path": "res://map/scripts/ProceduralMap.gd"
+}, {
+"base": "RigidBody",
+"class": "Weapon",
+"language": "GDScript",
+"path": "res://weapons/scripts/Weapon.gd"
 } ]
 _global_script_class_icons={
-"Bomb": ""
+"Bomb": "",
+"Destructible": "",
+"PlayerUI": "",
+"ProceduralMap": "",
+"Weapon": ""
 }
 
 [application]
 
-config/name="DinamIt!"
+config/name="Dynam It!"
 run/main_scene="res://ui/scenes/MainMenu.tscn"
 boot_splash/image="res://ui/textures/splash.png"
 boot_splash/use_filter=false
-config/icon="res://icon.png"
+config/icon="res://ui/textures/icon.png"
 
 [autoload]
 
@@ -74,6 +98,11 @@ drop_bomb={
 reset={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777347,"unicode":0,"echo":false,"script":null)
+ ]
+}
+attack={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
 

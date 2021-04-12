@@ -56,8 +56,9 @@ points = PoolVector3Array( 0.197641, 1.1739, 0.134398, 0.00660554, -1.4698, 0.13
 
 [sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 13 )
-shader_param/main_color = Color( 0.419608, 0.0431373, 0.0431373, 0.137255 )
-shader_param/intersection_color = Color( 1, 0, 0, 0.839216 )
+shader_param/main_color = Color( 0.0745098, 0, 0, 0.592157 )
+shader_param/intersection_color = Color( 1, 0, 0, 0.505882 )
+shader_param/emission_color = Color( 0.4, 0, 0, 1 )
 shader_param/intersection_max_threshold = 2.0
 shader_param/displ_amount = 0.1
 shader_param/near = 0.15
@@ -96,7 +97,7 @@ radial_segments = 8
 rings = 8
 
 [sub_resource type="SphereShape" id=9]
-radius = 5.0
+radius = 5.69143
 
 [sub_resource type="Animation" id=10]
 length = 3.0
@@ -363,7 +364,6 @@ one_shot = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20757, 0, 0 )
 light_color = Color( 1, 0.831373, 0.0666667, 1 )
 light_energy = 0.0
-omni_range = 0.0
 omni_attenuation = 2.21914
 
 [node name="RangeLight" type="OmniLight" parent="."]
@@ -436,7 +436,6 @@ process_material = ExtResource( 9 )
 draw_pass_1 = SubResource( 8 )
 
 [node name="DamageArea" type="Area" parent="."]
-monitoring = false
 monitorable = false
 collision_layer = 0
 collision_mask = 4

@@ -41,7 +41,7 @@ func _ready():
 func _input(event):
 	
 	if event is InputEventMouseMotion :
-		mouse_rotation = event.relative
+		mouse_rotation = event.relative * 1000 / OS.window_size
 	
 #	if event is InputEventMouseButton:
 #		match event.button_index:
@@ -81,8 +81,8 @@ func _physics_process(delta):
 	body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
 	
 	# Camera rotation
-	gimbalH.rotate_y(deg2rad(-mouse_rotation.x)*delta*MOUSE_SENSITIVITY)
-	gimbalV.rotate_x(deg2rad(-mouse_rotation.y)*delta*MOUSE_SENSITIVITY)
+	gimbalH.rotate_y(deg2rad(-mouse_rotation.x) * delta * MOUSE_SENSITIVITY)
+	gimbalV.rotate_x(deg2rad(-mouse_rotation.y) * delta * MOUSE_SENSITIVITY)
 	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -MAX_ROTATION, MAX_ROTATION)
 	mouse_rotation = Vector2()
 	

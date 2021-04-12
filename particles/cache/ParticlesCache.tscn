@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://particles/cache/ParticlesCache.gd" type="Script" id=1]
 [ext_resource path="res://particles/particle_materials/WickSpark.material" type="Material" id=2]
@@ -8,8 +8,11 @@
 [ext_resource path="res://particles/smoke_07.png" type="Texture" id=6]
 [ext_resource path="res://particles/materials/explosion-smoke.material" type="Material" id=7]
 [ext_resource path="res://particles/explosion04.png" type="Texture" id=8]
+[ext_resource path="res://obstacles/meshes/MediumlRockFragment.mesh" type="ArrayMesh" id=9]
+[ext_resource path="res://obstacles/meshes/gold_bar.mesh" type="ArrayMesh" id=10]
+[ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=11]
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="SpatialMaterial" id=5]
 albedo_color = Color( 0.992157, 0.882353, 0, 1 )
 emission_enabled = true
 emission = Color( 0.996078, 1, 0.564706, 1 )
@@ -17,11 +20,11 @@ emission_energy = 1.44
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="CubeMesh" id=4]
-material = SubResource( 3 )
+[sub_resource type="CubeMesh" id=6]
+material = SubResource( 5 )
 size = Vector3( 0.01, 0.08, 0.01 )
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=7]
 flags_transparent = true
 flags_unshaded = true
 params_billboard_mode = 3
@@ -30,18 +33,18 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 albedo_texture = ExtResource( 8 )
 
-[sub_resource type="QuadMesh" id=6]
-material = SubResource( 5 )
+[sub_resource type="QuadMesh" id=8]
+material = SubResource( 7 )
 size = Vector2( 25, 25 )
 
-[sub_resource type="SphereMesh" id=8]
+[sub_resource type="SphereMesh" id=9]
 material = ExtResource( 7 )
 radius = 5.0
 height = 10.0
 radial_segments = 8
 rings = 8
 
-[sub_resource type="SpatialMaterial" id=9]
+[sub_resource type="SpatialMaterial" id=10]
 flags_transparent = true
 vertex_color_use_as_albedo = true
 params_blend_mode = 1
@@ -52,8 +55,66 @@ particles_anim_loop = false
 albedo_color = Color( 0.831373, 0.831373, 0.831373, 1 )
 albedo_texture = ExtResource( 6 )
 
-[sub_resource type="QuadMesh" id=10]
-material = SubResource( 9 )
+[sub_resource type="QuadMesh" id=11]
+material = SubResource( 10 )
+
+[sub_resource type="Curve" id=12]
+min_value = -5.0
+max_value = 72.37
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 1, Vector2( 1, 0 ), 0.0, 0.0, 1, 0 ]
+
+[sub_resource type="CurveTexture" id=13]
+curve = SubResource( 12 )
+
+[sub_resource type="ParticlesMaterial" id=14]
+emission_shape = 2
+emission_box_extents = Vector3( 3, 3, 1 )
+flag_align_y = true
+flag_rotate_y = true
+spread = 141.93
+gravity = Vector3( 0, -10, 0 )
+angular_velocity = 1.17
+linear_accel = 52.26
+radial_accel_curve = SubResource( 13 )
+damping = 10.0
+angle = 9.8
+angle_random = 0.25
+scale = 0.63
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 2
+emission_box_extents = Vector3( 3, 1, 1 )
+flag_align_y = true
+flag_rotate_y = true
+spread = 180.0
+gravity = Vector3( 0, -10, 0 )
+angular_velocity = 1.17
+linear_accel = 52.26
+radial_accel = 18.07
+damping = 10.0
+angle = 8.4
+angle_random = 0.69
+scale_random = 0.97
+
+[sub_resource type="ParticlesMaterial" id=15]
+emission_shape = 2
+emission_box_extents = Vector3( 3, 3, 1 )
+flag_align_y = true
+flag_rotate_y = true
+spread = 180.0
+gravity = Vector3( 0, -10, 0 )
+angular_velocity = 1.17
+linear_accel = 52.26
+radial_accel = 11.47
+radial_accel_random = 0.73
+damping = 10.0
+angle = -10.2
+angle_random = 0.5
+scale_random = 0.97
+
+[sub_resource type="CubeMesh" id=4]
+material = ExtResource( 11 )
+size = Vector3( 0.3, 0.8, 0.3 )
 
 [node name="ParticlesCache" type="Spatial"]
 script = ExtResource( 1 )
@@ -65,7 +126,7 @@ amount = 256
 lifetime = 0.71
 speed_scale = 1.17
 process_material = ExtResource( 2 )
-draw_pass_1 = SubResource( 4 )
+draw_pass_1 = SubResource( 6 )
 
 [node name="Explosion" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -76,7 +137,7 @@ speed_scale = 4.0
 explosiveness = 1.0
 visibility_aabb = AABB( -44.2456, -34.8084, -31.9045, 88.4911, 69.6168, 63.8091 )
 process_material = ExtResource( 5 )
-draw_pass_1 = SubResource( 6 )
+draw_pass_1 = SubResource( 8 )
 
 [node name="Explosion2" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -88,7 +149,7 @@ speed_scale = 4.0
 explosiveness = 1.0
 local_coords = false
 process_material = ExtResource( 4 )
-draw_pass_1 = SubResource( 8 )
+draw_pass_1 = SubResource( 9 )
 
 [node name="SmokeParticles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56037, -0.281316 )
@@ -96,4 +157,37 @@ emitting = false
 amount = 32
 lifetime = 0.42
 process_material = ExtResource( 3 )
-draw_pass_1 = SubResource( 10 )
+draw_pass_1 = SubResource( 11 )
+
+[node name="FragmentParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.54276, 0 )
+emitting = false
+amount = 64
+lifetime = 0.88
+one_shot = true
+explosiveness = 0.32
+visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
+process_material = SubResource( 14 )
+draw_pass_1 = ExtResource( 10 )
+
+[node name="FragmentParticles2" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.18316, 0 )
+emitting = false
+amount = 1024
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.5
+visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
+process_material = SubResource( 3 )
+draw_pass_1 = ExtResource( 9 )
+
+[node name="FragmentParticles3" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.54276, 0 )
+emitting = false
+amount = 128
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.64
+visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
+process_material = SubResource( 15 )
+draw_pass_1 = SubResource( 4 )

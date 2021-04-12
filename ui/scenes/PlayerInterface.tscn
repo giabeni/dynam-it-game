@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://ui/scripts/PlayerUI.gd" type="Script" id=1]
 [ext_resource path="res://ui/textures/gold_icon.png" type="Texture" id=2]
 [ext_resource path="res://ui/fonts/vt23 font/Adumu.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://ui/textures/hourglass.png" type="Texture" id=4]
 [ext_resource path="res://ui/textures/dead.png" type="Texture" id=5]
+[ext_resource path="res://weapons/icons/pickaxe.png" type="Texture" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 content_margin_left = 2.0
@@ -34,7 +35,51 @@ size = 27
 outline_size = 5
 outline_color = Color( 1, 1, 1, 0 )
 use_filter = true
+extra_spacing_char = 5
 font_data = ExtResource( 3 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.933333, 0.745098, 0.2, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.207843, 0.133333, 0.0156863, 0.564706 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="Animation" id=6]
+length = 2.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("VBoxContainer/Footer/CenterContainer/PowerUpLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 2.07, 2.38 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("VBoxContainer/Footer/CenterContainer/PowerUpLabel:rect_scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.25, 0.45, 0.72, 1.28, 1.48, 1.72, 2.38 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.05, 1.05 ), Vector2( 1, 1 ), Vector2( 1.05, 1.05 ), Vector2( 1, 1 ), Vector2( 1.05, 1.05 ), Vector2( 1, 1 ) ]
+}
 
 [node name="PlayerUI" type="Control"]
 anchor_right = 1.0
@@ -61,7 +106,9 @@ margin_bottom = 50.0
 rect_min_size = Vector2( 0, 50 )
 
 [node name="GoldContainer2" type="Control" parent="VBoxContainer/TopBar"]
+margin_right = 200.0
 margin_bottom = 50.0
+rect_min_size = Vector2( 200, 0 )
 
 [node name="TimerButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer2"]
 margin_right = 167.0
@@ -79,16 +126,16 @@ __meta__ = {
 }
 
 [node name="Space" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 4.0
-margin_right = 504.0
+margin_left = 204.0
+margin_right = 832.0
 margin_bottom = 50.0
-rect_min_size = Vector2( 500, 0 )
+size_flags_horizontal = 3
 
 [node name="GoldContainer3" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 508.0
-margin_right = 1008.0
+margin_left = 836.0
+margin_right = 1036.0
 margin_bottom = 50.0
-rect_min_size = Vector2( 500, 0 )
+rect_min_size = Vector2( 200, 0 )
 
 [node name="NPCs" type="Button" parent="VBoxContainer/TopBar/GoldContainer3"]
 margin_left = -82.0
@@ -107,9 +154,10 @@ __meta__ = {
 }
 
 [node name="GoldContainer" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 1012.0
-margin_right = 1012.0
+margin_left = 1040.0
+margin_right = 1240.0
 margin_bottom = 50.0
+rect_min_size = Vector2( 200, 0 )
 
 [node name="GoldButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer"]
 margin_left = -82.0
@@ -127,38 +175,85 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SpaceY" type="Control" parent="VBoxContainer"]
+[node name="CenterSpace" type="Control" parent="VBoxContainer"]
 margin_top = 54.0
 margin_right = 1240.0
-margin_bottom = 554.0
-rect_min_size = Vector2( 0, 500 )
+margin_bottom = 552.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Footer" type="HBoxContainer" parent="VBoxContainer"]
-visible = false
-margin_top = 558.0
+margin_top = 556.0
 margin_right = 1240.0
-margin_bottom = 678.0
-rect_min_size = Vector2( 0, 120 )
+margin_bottom = 616.0
+rect_min_size = Vector2( 0, 60 )
 
-[node name="GoldContainer2" type="Control" parent="VBoxContainer/Footer"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/Footer"]
+margin_right = 1240.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+
+[node name="PowerUpLabel" type="Label" parent="VBoxContainer/Footer/CenterContainer"]
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 441.0
+margin_top = 16.0
+margin_right = 799.0
+margin_bottom = 44.0
+custom_fonts/font = SubResource( 3 )
+text = "VELOCITY INCREASED!"
+align = 1
+
+[node name="Footer2" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 620.0
+margin_right = 1240.0
+margin_bottom = 680.0
+rect_min_size = Vector2( 0, 60 )
+
+[node name="PowerUpStatus" type="Control" parent="VBoxContainer/Footer2"]
 margin_right = 300.0
-margin_bottom = 120.0
+margin_bottom = 60.0
 rect_min_size = Vector2( 300, 0 )
 
-[node name="ItemList" type="ItemList" parent="VBoxContainer/Footer/GoldContainer2"]
-margin_right = 300.0
-rect_min_size = Vector2( 300, 120 )
-mouse_filter = 2
-size_flags_vertical = 3
-custom_fonts/font = SubResource( 3 )
-items = [ "NPC 1", null, false, "NPC 2", null, false ]
-auto_height = true
+[node name="Space" type="Control" parent="VBoxContainer/Footer2"]
+margin_left = 304.0
+margin_right = 1240.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 700, 0 )
+size_flags_horizontal = 3
+
+[node name="PowerUpTimer" type="Control" parent="VBoxContainer/Footer2"]
+visible = false
+margin_left = 1040.0
+margin_right = 1240.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 200, 0 )
+
+[node name="PowerUpProgress" type="ProgressBar" parent="VBoxContainer/Footer2/PowerUpTimer"]
+anchor_right = 1.0
+margin_right = -1.52588e-05
+margin_bottom = 26.0
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 5 )
+value = 50.0
+percent_visible = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Space" type="Control" parent="VBoxContainer/Footer"]
-margin_left = 304.0
-margin_right = 1204.0
-margin_bottom = 120.0
-rect_min_size = Vector2( 900, 0 )
+[node name="PowerUpTimerTexture" type="TextureRect" parent="VBoxContainer/Footer2/PowerUpTimer"]
+margin_left = -43.4323
+margin_top = -0.500793
+margin_right = -13.4323
+margin_bottom = 29.4992
+rect_min_size = Vector2( 30, 30 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 6 )
+expand = true
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/ShowPowerUpText = SubResource( 6 )
