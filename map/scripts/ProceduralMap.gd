@@ -28,7 +28,6 @@ const MAP_TILES = [
 	Tiles.HALL_X,
 	Tiles.CORREDOR_CURTO,
 	Tiles.CORREDOR_MEDIO,
-	Tiles.CORREDOR_MEDIO,
 ]
 
 const ROOMS = [Tiles.HALL_GRANDE]
@@ -49,8 +48,9 @@ const SIZES = {
 	Tiles.HALL_GRANDE: Vector3(20, 1, 20),
 	Tiles.HALL_T: Vector3(7, 1, 10),
 	Tiles.HALL_X: Vector3(10, 1, 10),
-	Tiles.CORREDOR_CURTO: Vector3(5, 1, 4),
-	Tiles.CORREDOR_MEDIO: Vector3(10, 1, 4),
+	Tiles.HALL_X: Vector3(10, 1, 10),
+	Tiles.CORREDOR_CURTO: Vector3(5, 1, 5),
+	Tiles.CORREDOR_MEDIO: Vector3(10, 1, 5),
 }
 
 const DOORS = {
@@ -96,60 +96,101 @@ func _generate_map():
 	
 	var cur_points = [Vector3(0, 0, 0)]
 	
-	for i in range(0, 20):
+	var total_area = 0
+	
+	# Fill first open door with all
+	var first_point = Vector3(-1, 0, 0)
+	var first_wall_orientation = _get_orientation(90, 90)
+	grid.set_cell_item(first_point.x, first_point.y, first_point.z, Tiles.PLATAFORMA, first_wall_orientation)
+	
+
+	while total_area <= 5000 and cur_points.size() > 0:
 		var next_angles: Array = []
 		var next_points: Array = []
+		
 		for p in range(0, cur_points.size()):
 			var cur_point = cur_points[p]
 			var angle = angles[p]
 			
-			yield(get_tree().create_timer(0.1), "timeout")
+			yield(get_tree().create_timer(0.025), "timeout")
 			
-			# Getting random tile
-			var tile = _get_random_tile()
+			# Getting random tiles
+			var tiles = _get_random_tiles()
 			
 			# Getting the correct orientation due to the angle
 			var orientation = _get_orientation(angle)
+			
+			# Controls wether was possible to add a tile
+			var could_add_tile = false
 
-			# Checks if point is already occupied
-			if _is_point_available(tile, cur_point, angle):
+			for tile in tiles:
+				# Checks if point is already occupied
+				if _is_point_available(tile, cur_point, angle):
 
-				# Adding tile to grid
-				cur_point = cur_point.round()
-				print(cur_point)
-				grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, tile, orientation)
-				
-				# Paint occupied cells
-				_paint_cells(tile, cur_point, angle)
-				
-				# Getting possible next directions
-				var doors = DOORS[tile]
-				
-				# Updates the next points to spawn the nexts tiles
-				for next_offset in doors:
-					var next_point = cur_point + next_offset.rotated(Vector3.UP, deg2rad(angle))
+					# Adding tile to grid
+					cur_point = cur_point.round()
+					print(cur_point)
+					grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, tile, orientation)
 					
-					next_points.append(next_point)
-				
-					# Updates the current direction (angle) of the walking cursor
-					if next_offset.z == 0:
-						next_angles.append(angle)
-					elif next_offset.z > 0:
-						next_angles.append(angle - 90)
-					elif next_offset.z < 0:
-						next_angles.append(angle + 90)
+					could_add_tile = true
+					total_area += SIZES[tile].x * SIZES[tile].z
+					
+					# Paint occupied cells
+					_paint_cells(tile, cur_point, angle)
+					
+					# Getting possible next directions
+					var doors = DOORS[tile]
+					
+					# Updates the next points to spawn the nexts tiles
+					for next_offset in doors:
+						var next_point = cur_point + next_offset.rotated(Vector3.UP, deg2rad(angle))
+						
+						next_points.append(next_point)
+					
+						# Updates the current direction (angle) of the walking cursor
+						if next_offset.z == 0:
+							next_angles.append(angle)
+						elif next_offset.z > 0:
+							next_angles.append(angle - 90)
+						elif next_offset.z < 0:
+							next_angles.append(angle + 90)
 
-				arrow.translation = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
-				arrow.rotation_degrees.y = angle
-#			else:
-#				print("OCCUPIED")
+					arrow.translation = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
+					arrow.rotation_degrees.y = angle
+					break
+			
+			if not could_add_tile:
+				# Add wall if there's no way out
+				var wall_orientation = _get_orientation(angle - 90, 90)
+				grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, Tiles.PLATAFORMA, wall_orientation)
+				
 				
 		angles = next_angles
 		cur_points = next_points
+	
+	# If area is too smal (less than a half), tries again
+	if total_area <= 5000/2:
+		grid.clear()
+		$Navigation/NavigationMeshInstance/GridMap3.clear()
+		painted_cells = {}
+		_generate_map()
+		return
+	
+	# Fill remaining doors with walls
+	for p in range(0, cur_points.size()):
+		var cur_point = cur_points[p]
+		var angle = angles[p]
+		var wall_orientation = _get_orientation(angle - 90, 90)
+		grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, Tiles.PLATAFORMA, wall_orientation)
+		
+	return true
+	
 			
-func _get_random_tile():
-	var t = randi() % MAP_TILES.size()
-	return MAP_TILES[t]
+func _get_random_tiles():
+	var tiles = []
+	tiles.append_array(MAP_TILES)
+	tiles.shuffle()
+	return tiles
 
 
 func _get_random_door(tile_index: int):
@@ -159,10 +200,10 @@ func _get_random_door(tile_index: int):
 	return random_door
 
 
-func _get_orientation(angle):
-	var quat = Quat(Vector3.UP, deg2rad(angle))
-	var cell_item_orientation = Basis(quat).get_orthogonal_index()
-	return cell_item_orientation
+func _get_orientation(angle_y, angle_x = 0):
+	var quat = Quat(Vector3.UP, deg2rad(angle_y))
+	var basis = Basis(Vector3.LEFT, deg2rad(angle_x)).rotated(Vector3.UP, deg2rad(angle_y))
+	return basis.get_orthogonal_index()
 
 
 func _get_random_orientation(tile_index: int):

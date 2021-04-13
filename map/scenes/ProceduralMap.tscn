@@ -78,6 +78,7 @@ __meta__ = {
 }
 
 [node name="GridMap3" type="GridMap" parent="Navigation/NavigationMeshInstance"]
+visible = false
 mesh_library = SubResource( 6 )
 cell_size = Vector3( 1.5, 1, 1.5 )
 cell_scale = 1.5
