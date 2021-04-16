@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://obstacles/meshes/gold_pile.mesh" type="ArrayMesh" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
@@ -80,7 +80,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.00201274 ),
+"times": PoolRealArray( 0, 0.00130961 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
@@ -157,6 +157,10 @@ surfaces/1 = {
 "vertex_count": 240
 }
 
+[sub_resource type="CapsuleShape" id=9]
+radius = 1.30321
+height = 1.91628
+
 [node name="GoldPile" type="StaticBody" groups=[
 "Obstacles",
 ]]
@@ -195,10 +199,16 @@ unit_size = 20.0
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.40476, 0 )
 
 [node name="Hitpoint2" type="Position3D" parent="Hitpoints"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.62032, 0.884827, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.90535, 0.884827, -1.24704 )
 
 [node name="Hitpoint3" type="Position3D" parent="Hitpoints"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.21818, 1.79583, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.11842, 1.79583, -1.06414 )
+
+[node name="Hitpoint4" type="Position3D" parent="Hitpoints"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.02412, 0.386013, 1.42993 )
+
+[node name="Hitpoint5" type="Position3D" parent="Hitpoints"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.21818, 1.79583, 0.981001 )
 
 [node name="Meshes" type="Spatial" parent="."]
 transform = Transform( 0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0 )
@@ -233,7 +243,7 @@ material/0 = null
 material/1 = null
 
 [node name="Plane016" type="MeshInstance" parent="Meshes"]
-transform = Transform( -0.860622, -0.184443, -0.474669, 0.372775, 0.406857, -0.83397, 0.346943, -0.894678, -0.281395, -1.53412, 4.39681, -1.50363 )
+transform = Transform( -0.684689, -0.553073, -0.474669, 0.148976, 0.531319, -0.83397, 0.713448, -0.641725, -0.281394, -1.46661, 4.31596, -1.3779 )
 mesh = SubResource( 8 )
 material/0 = null
 material/1 = null
@@ -279,3 +289,11 @@ transform = Transform( 0.331373, -0.686946, 0.73464, -0.202298, 0.5413, 0.988346
 mesh = SubResource( 8 )
 material/0 = null
 material/1 = null
+
+[node name="InnerArea" type="Area" parent="."]
+monitorable = false
+collision_mask = 7
+
+[node name="CollisionShape3" type="CollisionShape" parent="InnerArea"]
+transform = Transform( -1, 1.49667e-07, 1.9991e-08, 0, 0.132394, -0.991197, -1.50996e-07, -0.991197, -0.132394, -0.174545, 3.09204, 0.0727537 )
+shape = SubResource( 9 )

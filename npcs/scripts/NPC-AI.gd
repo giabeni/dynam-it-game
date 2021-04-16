@@ -67,11 +67,17 @@ func _physics_process(delta):
 
 
 func move_to(target_pos):
+#	if get_parent().name == "NPC5":
+#		print("target pos = ", target_pos)
 	path = navigation.get_simple_path(npc.global_transform.origin, target_pos)
+#	if get_parent().name == "NPC5":
+#		print("new path = ", path)
 	path_node = 0
 
 
 func _on_DetectTargetTimer_timeout():
+#	if get_parent().name == "NPC6":
+#		print("path update timeout")
 	if not npc.is_escaping_from_bomb and is_instance_valid(target):
 		move_to(target.global_transform.origin)
 		

@@ -3,7 +3,8 @@ extends KinematicBody
 enum States {
 	EXPLORING,
 	FOLLOWING,
-	DEAD
+	DEAD,
+	PAUSED,
 }
 
 onready var controller = $AIController
@@ -23,6 +24,7 @@ onready var weapon_timer: Timer = $WeaponTimer
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
+export var paused = true
 
 var bomb: Bomb
 var weapon: Weapon
@@ -44,6 +46,21 @@ signal on_died
 func _ready():
 	if max_bombs > 0:
 		_spawn_bomb()
+		
+	if paused:
+		set_paused(true)
+		
+
+func set_paused(paused):
+	if paused:
+		state = States.PAUSED
+	else:
+		state = States.EXPLORING
+		
+	set_physics_process(not paused)
+	set_physics_process_internal(not paused)
+	set_process(not paused)
+	set_process_internal(not paused)
 	
 
 func _physics_process(delta):
@@ -163,98 +180,108 @@ func _get_random_target_point():
 
 func _get_run_away_point(from: Vector3):
 	var found_point = false
-	var tries = 5
-	var min_distance = 5
+	var tries = 10
+	var min_distance = 8
+	var nav_point
 	
 	while not found_point:
 		var direction = global_transform.origin - from
 		var offset = 10
 		var world_point = global_transform.origin + direction.normalized() * offset
-		var nav_point = controller.navigation.get_closest_point(world_point)
+		nav_point = controller.navigation.get_closest_point(world_point)
 		if abs((nav_point - from).length()) < min_distance or tries <= 0:
 			return nav_point
 		else:
 			tries -= 1
 			
+	return nav_point
+			
 
 
 func _on_TargetDetectionTimer_timeout():
 	if is_escaping_from_bomb or not is_alive():
-		
-#		if name == "NPC6":
-#			print("NPC 6: \t - escaping from: BOMB - ")
 		return
+		
+	if name == "NPC5":
+		print("Target detection timeout: ", target_detection_area.get_overlapping_bodies())
 	
-	var found_miner = false
-	var found_obstacle = false
 	var found_item = false
+	var found_miner = false
+	var found_obstacle = null
+	var found_obstacle_distance = INF
 	var space = get_world().direct_space_state
+	
 	for body in target_detection_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id():
 			if body.is_in_group("Items"):
 				var hitpoint = body.hitpoint.global_transform.origin
 				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
-				if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
+				if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
 					if ray.collider.is_in_group("Items"):
 						found_item = true
 						controller.target = body
 						state = States.FOLLOWING
-#						if name == "NPC6":
-#							print("NPC 6: \t - new target: ITEM - ", body.name)
+
 						return
 						
-			elif body.is_in_group("Miners") and not found_item:
+			elif body.is_in_group("Player") and not found_item:
 				var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
 				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
-				if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
-					if ray.collider.is_in_group("Miners") and ray.collider.is_alive():
+				if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+					if ray.collider.is_in_group("Player") and ray.collider.is_alive():
 						found_miner = true
 						controller.target = body
 						state = States.FOLLOWING
-#						if name == "NPC6":
-#							print("NPC 6: \t - new target: MINER - ", body.name)
 						return
-						
-#						print("Miner target found : ", body)
 						
 			elif body.is_in_group("Obstacles") and not found_miner and not found_item:
 				for hit_pos in body.hitpoints.get_children():
 					var hitpoint = hit_pos.global_transform.origin
 					var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
-					if not ray.empty() and ray.collider.get_instance_id() != self.get_instance_id():
+#					print(body.name, " - ", body, " - ", hit_pos.name, " - ", ray.collider)
+					if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
 						if ray.collider.is_in_group("Obstacles"):
-							found_obstacle = true
-							controller.target = body
-							state = States.FOLLOWING
-#							if name == "NPC6":
-#								print("NPC 6: \t - new target: OBSTACLE - ", body.name)
-							return
-#							print("Obstacle target found : ", body)
+							var distance = sight_origin.global_transform.origin.distance_to(hitpoint)
+							if distance < found_obstacle_distance:
+								found_obstacle_distance = distance
+								found_obstacle = body
+								if name == "NPC5":
+									print("Obstacle target found : ", body.name)
 			
-	
-	if not found_miner and not found_obstacle and not found_item:
+	if is_instance_valid(found_obstacle):
+		if name == "NPC5":
+			print("Obstacle chosen : ", found_obstacle.name)
+		controller.target = found_obstacle
+		state = States.FOLLOWING
+	elif not found_miner and not found_item:
 		var random_point = _get_random_target_point()
 		controller.move_to(random_point)
 #		print("random target", random_point)
 		state = States.EXPLORING
-#		if name == "NPC6":
-#			print("NPC 6: \t - new target: RANDOM - ", random_point)
+		if name == "NPC5":
+			print("NPC 5: \t - new target: RANDOM - ", random_point)
 		
-				
 func _on_BombIntervalTimer_timeout():
 	if not is_alive():
 		return
+	if name == "NPC5":
+		print("BOMB?")
 	for body in bomb_trigger_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id():
-			if (body.is_in_group("Miners") and body.is_alive()) or body.is_in_group("Obstacles"):
+			if (body.is_in_group("Player") and body.is_alive()) or body.is_in_group("Obstacles"):
 				# if gets close to target, drops a bomb
 				if _can_drop_bomb():
 					_drop_bomb()
+					if name == "NPC5":
+						print("BOMB!")
 				elif has_weapon:
 					_attack()
 
 
 func _on_BombDetectionTimer_timeout():
+	if not is_alive():
+		return
+
 	for body in bomb_trigger_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Bombs") and body.is_dropped():
 			# if notice a bomb, try to escape 
@@ -276,7 +303,7 @@ func _on_ForgetTargetTimer_timeout():
 		return
 
 	if controller.target != null:
-		if is_instance_valid(controller.target) and controller.target.is_in_group("Miners") and not controller.target.is_alive():
+		if is_instance_valid(controller.target) and controller.target.is_in_group("Player") and not controller.target.is_alive():
 			controller.target = null
 			var random_point = _get_random_target_point()
 			controller.move_to(random_point)
@@ -300,6 +327,11 @@ func _on_ForgetTargetTimer_timeout():
 #			if name == "NPC6":
 #				print("NPC 6: \t - forgot else target ", random_point)
 #			state = States.EXPLORING
+
+	# Repairs potential bug that prevents the dropped_bombs to reset
+	if not has_bomb and not has_weapon and not is_instance_valid(bomb) and dropped_bombs > 0:
+		dropped_bombs = 0
+		_spawn_bomb()
 			
 func on_gold_collected():
 	gold += 1

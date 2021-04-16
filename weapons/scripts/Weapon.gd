@@ -3,7 +3,7 @@ extends RigidBody
 class_name Weapon
 
 export(String) var TYPE = "PICKAXE"
-export(float) var DURATION = 30
+export(float) var DURATION = 15
 export(String) var ICON_PATH = "res://weapons/icons/pickaxe.png"
 
 onready var anim_player: AnimationPlayer = $AnimationPlayer
@@ -24,7 +24,6 @@ var state = States.COLLECTABLE
 var player
 
 func _ready():
-	print("PICKAXEEE")
 	if state == States.COLLECTABLE:
 		global_translate(Vector3.UP)
 		collectable_area.set_deferred("monitoring", true)

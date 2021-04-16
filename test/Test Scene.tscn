@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://test/grey_material.tres" type="Material" id=1]
 [ext_resource path="res://test/Static cube.tscn" type="PackedScene" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://tiles/models/Wood_007.material" type="Material" id=17]
 [ext_resource path="res://ui/sounds/soundtrack.mp3" type="AudioStream" id=18]
 [ext_resource path="res://ui/sounds/wood-hover.wav" type="AudioStream" id=19]
+[ext_resource path="res://tiles/scenes/LightBulb.tscn" type="PackedScene" id=20]
 [ext_resource path="res://ui/sounds/wood-click.wav" type="AudioStream" id=21]
 [ext_resource path="res://ui/sounds/defeat.ogg" type="AudioStream" id=22]
 [ext_resource path="res://ui/sounds/victory.ogg" type="AudioStream" id=23]
@@ -220,44 +221,44 @@ transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, -16.567
 
 [node name="PlayerUI" parent="." instance=ExtResource( 6 )]
 
-[node name="Level1" type="Spatial" parent="."]
+[node name="Map" type="Spatial" parent="."]
 
-[node name="Walls" type="Spatial" parent="Level1"]
+[node name="Walls" type="Spatial" parent="Map"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.1539 )
 visible = false
 
-[node name="Floor2" type="MeshInstance" parent="Level1/Walls"]
+[node name="Floor2" type="MeshInstance" parent="Map/Walls"]
 transform = Transform( 69.0724, 0, 0, 0, 3, 0, 0, 0, 55.415, 0.200941, -0.154293, 0.684851 )
 mesh = SubResource( 1 )
 material/0 = ExtResource( 1 )
 
-[node name="StaticBody" type="StaticBody" parent="Level1/Walls/Floor2"]
+[node name="StaticBody" type="StaticBody" parent="Map/Walls/Floor2"]
 
-[node name="CollisionShape" type="CollisionShape" parent="Level1/Walls/Floor2/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Map/Walls/Floor2/StaticBody"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
 shape = SubResource( 2 )
 
-[node name="Static cube10" parent="Level1/Walls" instance=ExtResource( 2 )]
+[node name="Static cube10" parent="Map/Walls" instance=ExtResource( 2 )]
 transform = Transform( 200.41, 0, 0, 0, 64.591, 0, 0, 0, 2.20731, -0.935408, 8.6744, 137.177 )
 
-[node name="Static cube11" parent="Level1/Walls" instance=ExtResource( 2 )]
+[node name="Static cube11" parent="Map/Walls" instance=ExtResource( 2 )]
 transform = Transform( 196.878, 0, 0, 0, 66.1361, 0, 0, 0, 2.20731, -2.45535, 8.78958, -108.822 )
 
-[node name="Static cube12" parent="Level1/Walls" instance=ExtResource( 2 )]
+[node name="Static cube12" parent="Map/Walls" instance=ExtResource( 2 )]
 transform = Transform( -1.61124, 0, -3.43354, 0, 55.1132, 0, 149.187, 0, -0.0370826, 95.4506, 23.9638, 1.76866 )
 
-[node name="Static cube13" parent="Level1/Walls" instance=ExtResource( 2 )]
+[node name="Static cube13" parent="Map/Walls" instance=ExtResource( 2 )]
 transform = Transform( -1.61124, 0, -3.44011, 0, 71.2795, 0, 159.737, 0, -0.0346997, -136.847, 25.1921, 1.3335 )
 
-[node name="Teto" parent="Level1/Walls" instance=ExtResource( 2 )]
+[node name="Teto" parent="Map/Walls" instance=ExtResource( 2 )]
 transform = Transform( 212.655, 0, 0, 0, -8.43473e-06, -1.88054, 0, 192.964, -8.2201e-08, -2.45535, 77.0835, -1.03061 )
 
-[node name="Navigation" type="Navigation" parent="Level1"]
+[node name="Navigation" type="Navigation" parent="Map"]
 
-[node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Level1/Navigation"]
+[node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Map/Navigation"]
 navmesh = SubResource( 3 )
 
-[node name="GridMap" type="GridMap" parent="Level1/Navigation/NavigationMeshInstance"]
+[node name="GridMap" type="GridMap" parent="Map/Navigation/NavigationMeshInstance"]
 mesh_library = ExtResource( 5 )
 cell_size = Vector3( 1.5, 1, 1.5 )
 cell_scale = 1.5
@@ -269,12 +270,12 @@ __meta__ = {
 "_editor_floor_": Vector3( 0, 0, 0 )
 }
 
-[node name="Lights" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance"]
+[node name="Lights" type="Spatial" parent="Map/Navigation/NavigationMeshInstance"]
 
-[node name="LightBulb" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.39715, 4.71688, -18.2416 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -283,16 +284,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb3" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb3" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( -0.941588, -0.336767, -8.23163e-08, -0.336767, 0.941588, -2.94411e-08, 8.74228e-08, 0, -1, -4.16951, 5.13761, 6.69644 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb3"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -301,34 +302,18 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb3"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb3"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb4" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
-transform = Transform( 0.974788, -0.216765, 0.0529285, 0.21707, 0.976156, -9.23488e-08, -0.0516665, 0.0114893, 0.998598, -4.35818, 5.14784, 36.1821 )
+[node name="LightBulb4" parent="Map/Navigation/NavigationMeshInstance/Lights" instance=ExtResource( 20 )]
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb4"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
-light_color = Color( 0.976471, 0.54902, 0, 1 )
-light_energy = 3.3
-light_indirect_energy = 12.41
-shadow_enabled = true
-omni_range = 15.028
-omni_attenuation = 2.0
-
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb4"]
-transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
-mesh = SubResource( 4 )
-material/0 = null
-material/1 = null
-
-[node name="LightBulb5" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb5" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( -0.998001, -0.0380247, -0.0504858, -0.0495735, 0.966439, 0.252066, 0.0392068, 0.254065, -0.966392, 14.4085, 1.07716, 7.29018 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb5"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb5"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -337,16 +322,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb5"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb5"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb2" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb2" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -17.7713, 0.898203, -3.10863 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb2"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -355,16 +340,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb2"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb2"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb6" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb6" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -40.8149, 3.09575, 2.77402 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb6"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb6"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -373,16 +358,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb6"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb6"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb10" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb10" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 0.880461, -0.474119, -6.55995e-09, 0.46774, 0.868616, -0.163481, 0.0775094, 0.143939, 0.986547, -36.4853, 0.888203, -21.2915 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb10"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb10"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -391,16 +376,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb10"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb10"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb7" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb7" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -46.026, 6.12809, 37.2542 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb7"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb7"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -409,16 +394,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb7"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb7"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb11" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb11" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -68.6541, 6.12809, 17.5776 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb11"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb11"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -427,16 +412,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb11"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb11"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb12" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb12" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( -0.917046, -0.0771293, 0.391251, -0.196181, 0.94144, -0.274235, -0.347187, -0.328243, -0.878475, -92.5556, 5.47833, 5.2547 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb12"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb12"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -445,16 +430,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb12"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb12"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb13" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb13" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -67.258, 6.12809, -28.6846 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb13"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb13"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -463,16 +448,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb13"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb13"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb14" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb14" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -52.9769, 6.12809, 111.59 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb14"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb14"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -481,16 +466,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb14"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb14"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb15" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb15" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -16.2689, 6.12809, 80.8899 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb15"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb15"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -499,16 +484,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb15"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb15"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb16" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb16" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 0.860857, -0.502001, 0.0831867, 0.508846, 0.849276, -0.140734, 0, 0.163481, 0.986547, 24.553, 1.94651, 103.895 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb16"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb16"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -517,16 +502,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb16"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb16"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb8" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb8" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, -13.1182, 3.66172, 57.4484 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb8"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb8"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -535,16 +520,16 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb8"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb8"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="LightBulb9" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance/Lights"]
+[node name="LightBulb9" type="Spatial" parent="Map/Navigation/NavigationMeshInstance/Lights"]
 transform = Transform( 1, 0, 0, 0, 0.986547, -0.163481, 0, 0.163481, 0.986547, 19.6661, 4.63648, 34.4981 )
 
-[node name="Light" type="OmniLight" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb9"]
+[node name="Light" type="OmniLight" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb9"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28437, 0.494759 )
 light_color = Color( 0.976471, 0.54902, 0, 1 )
 light_energy = 3.3
@@ -553,380 +538,380 @@ shadow_enabled = true
 omni_range = 15.028
 omni_attenuation = 2.0
 
-[node name="Bulb" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Lights/LightBulb9"]
+[node name="Bulb" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Lights/LightBulb9"]
 transform = Transform( 0.8, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0, 16.2831 )
 mesh = SubResource( 4 )
 material/0 = null
 material/1 = null
 
-[node name="Supports" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance"]
+[node name="Supports" type="Spatial" parent="Map/Navigation/NavigationMeshInstance"]
 
-[node name="Cube027" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Supports"]
+[node name="Cube027" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Supports"]
 transform = Transform( -0.0626838, 0, -5.26926e-07, 0, 0.370296, 0, 1.51905e-08, 0, -1.2027, -19.1895, 1.12831, -0.834029 )
 mesh = SubResource( 5 )
 material/0 = null
 
-[node name="StaticBody" type="StaticBody" parent="Level1/Navigation/NavigationMeshInstance/Supports/Cube027"]
+[node name="StaticBody" type="StaticBody" parent="Map/Navigation/NavigationMeshInstance/Supports/Cube027"]
 
-[node name="CollisionShape" type="CollisionShape" parent="Level1/Navigation/NavigationMeshInstance/Supports/Cube027/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Map/Navigation/NavigationMeshInstance/Supports/Cube027/StaticBody"]
 shape = SubResource( 6 )
 
-[node name="SuporteMadeiraLateral" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Supports"]
+[node name="SuporteMadeiraLateral" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Supports"]
 transform = Transform( 1.10349, 0, 0, 0, 1.36442, 0, 0, 0, 1.34213, -10.7174, 0.876087, -15.6724 )
 mesh = SubResource( 7 )
 material/0 = null
 material/1 = null
 
-[node name="StaticBody" type="StaticBody" parent="Level1/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraLateral"]
+[node name="StaticBody" type="StaticBody" parent="Map/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraLateral"]
 
-[node name="CollisionShape" type="CollisionShape" parent="Level1/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraLateral/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Map/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraLateral/StaticBody"]
 shape = SubResource( 8 )
 
-[node name="SuporteMadeiraPequeno" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Supports"]
+[node name="SuporteMadeiraPequeno" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Supports"]
 transform = Transform( 0.0626838, 0, 0, 0, 0.465564, 0, 0, 0, 2.21457, 34.603, 0, -0.57066 )
 mesh = SubResource( 9 )
 material/0 = null
 
-[node name="StaticBody" type="StaticBody" parent="Level1/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraPequeno"]
+[node name="StaticBody" type="StaticBody" parent="Map/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraPequeno"]
 
-[node name="CollisionShape" type="CollisionShape" parent="Level1/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraPequeno/StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Map/Navigation/NavigationMeshInstance/Supports/SuporteMadeiraPequeno/StaticBody"]
 shape = SubResource( 10 )
 
-[node name="Trilho" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance"]
+[node name="Trilho" type="Spatial" parent="Map/Navigation/NavigationMeshInstance"]
 
-[node name="Trilho1" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho1" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, -29.9838, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho2" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho2" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, -23.4808, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho3" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho3" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, -17.0061, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho4" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho4" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, -10.5631, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho5" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho5" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, -4.06469, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho6" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho6" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 2.44956, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho7" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho7" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 8.89485, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho8" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho8" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 15.2967, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho9" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho9" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 21.7872, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho10" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho10" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 28.263, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Trilho11" type="MeshInstance" parent="Level1/Navigation/NavigationMeshInstance/Trilho"]
+[node name="Trilho11" type="MeshInstance" parent="Map/Navigation/NavigationMeshInstance/Trilho"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.728269, 34.7486, 0.54113, -0.596855 )
 mesh = SubResource( 11 )
 material/0 = null
 material/1 = null
 
-[node name="Items" type="Spatial" parent="Level1/Navigation/NavigationMeshInstance"]
+[node name="Items" type="Spatial" parent="Map/Navigation/NavigationMeshInstance"]
 
-[node name="Crate" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.2781, 0.982259, 5.67157 )
 
-[node name="Crate5" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate5" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -54.5797, 0.982259, -20.3054 )
 
-[node name="Crate2" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate2" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -55.5622, 0.731055, 21.6655 )
 
-[node name="Crate6" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate6" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.9262, 0.982259, 25.1456 )
 
-[node name="Crate3" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate3" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5573, 0.982259, 28.0032 )
 
-[node name="Crate4" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate4" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.47151, 0.982259, 72.7266 )
 
-[node name="Crate7" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
+[node name="Crate7" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40.058, 0.982259, 83.695 )
 
-[node name="Barrel" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
+[node name="Barrel" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8238, 0.76589, 4.27233 )
 
-[node name="Barrel3" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
+[node name="Barrel3" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17403, 0.76589, 15.2604 )
 
-[node name="Barrel4" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
+[node name="Barrel4" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
 transform = Transform( 0.778605, -0.627515, 0, 0.627515, 0.778605, 0, 0, 0, 1, -61.5269, 1.14801, 85.0303 )
 
-[node name="Barrel5" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
+[node name="Barrel5" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
 transform = Transform( 0.864371, 0.502854, 0, -0.502854, 0.864371, 0, 0, 0, 1, -59.9976, 1.14801, 85.0303 )
 
-[node name="Barrel2" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
+[node name="Barrel2" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 11 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.4563, 0.76589, -17.2369 )
 
-[node name="MineCar" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
+[node name="MineCar" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 27.1826, 1.01519, -0.824873 )
 
-[node name="MineCar2" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
+[node name="MineCar2" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13.4485, 1.01519, 48.8941 )
 
-[node name="MineCar3" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
+[node name="MineCar3" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -37.5316, 1.01518, 36.5722 )
 
-[node name="MineCar4" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
+[node name="MineCar4" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 13 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -48.0729, 1.01518, -0.850067 )
 
-[node name="TNTBarrel" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
+[node name="TNTBarrel" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -38.8823, 0.826878, 23.103 )
 
-[node name="TNTBarrel2" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
+[node name="TNTBarrel2" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -40.8735, 0.826878, -2.60903 )
 
-[node name="TNTBarrel3" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
+[node name="TNTBarrel3" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8.75235, 0.826874, 69.6515 )
 
-[node name="TNTBarrel4" parent="Level1/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
+[node name="TNTBarrel4" parent="Map/Navigation/NavigationMeshInstance/Items" instance=ExtResource( 16 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -38.493, 0.211142, 90.9035 )
 
-[node name="NPCs" type="Spatial" parent="Level1/Navigation"]
+[node name="NPCs" type="Spatial" parent="Map/Navigation"]
 
-[node name="NPC" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.53053, 1.27943, -15.7495 )
 
-[node name="NPC2" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC2" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -38.3908, 1.27943, -17.7242 )
 
-[node name="NPC3" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC3" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -38.3908, 1.27943, 58.4956 )
 
-[node name="NPC4" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC4" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5839, 3.61435, 16.9436 )
 
-[node name="NPC5" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC5" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8865, 3.61435, 90.1438 )
 
-[node name="NPC6" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC6" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.2456, 3.61435, 100.983 )
 
-[node name="NPC7" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC7" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -60.2371, 3.61435, 113.189 )
 
-[node name="NPC8" parent="Level1/Navigation/NPCs" instance=ExtResource( 59 )]
+[node name="NPC8" parent="Map/Navigation/NPCs" instance=ExtResource( 59 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -60.2371, 3.61435, -23.6107 )
 
-[node name="Obstacles" type="Spatial" parent="Level1/Navigation"]
+[node name="Obstacles" type="Spatial" parent="Map/Navigation"]
 
-[node name="FirstRockWall" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="FirstRockWall" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.29664, 1.70505, -5.66785e-08 )
 
-[node name="RockWall2" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall2" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -29.797, 1.70505, -1.30247e-06 )
 
-[node name="RockWall7" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall7" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -39.7271, 1.70505, 49.8427 )
 
-[node name="RockWall10" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall10" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -60.1912, 1.70505, -10.0879 )
 
-[node name="RockWall8" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall8" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -14.9657, 1.70505, 70.1301 )
 
-[node name="RockWall9" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall9" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1, 0, 2.06632e-07, 0, 1, 0, -2.06632e-07, 0, -1, -7.73422, 1.70505, 57.8366 )
 
-[node name="RockWall3" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall3" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -8.01005, 1.70505, -10.2354 )
 
-[node name="RockWall4" parent="Level1/Navigation/Obstacles" instance=ExtResource( 60 )]
+[node name="RockWall4" parent="Map/Navigation/Obstacles" instance=ExtResource( 60 )]
 transform = Transform( -1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 16.7647, 1.70505, 29.1309 )
 
-[node name="WoodWall" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -14.5102, 0, -0.926079 )
 
-[node name="WoodWall10" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall10" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -70.9858, 0, -0.926079 )
 
-[node name="WoodWall11" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall11" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( 1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -38.4441, 0, -9.42306 )
 
-[node name="WoodWall12" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall12" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( 1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -60.6809, 0, 9.01721 )
 
-[node name="WoodWall6" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall6" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.19358, 0, 35.9861 )
 
-[node name="WoodWall7" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall7" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3.90558, 0, 49.1416 )
 
-[node name="WoodWall8" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall8" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3.90558, 0, 73.8996 )
 
-[node name="WoodWall9" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall9" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -27.8536, 0, 89.3141 )
 
-[node name="WoodWall2" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall2" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -0.918327, 0, -1.50996e-07, 0, 0.923988, 0, 1.38664e-07, 0, -1, -6.64574, 0, 5.02865 )
 
-[node name="WoodWall3" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall3" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -0.918327, 0, -1.50996e-07, 0, 0.923988, 0, 1.38664e-07, 0, -1, 17.7115, 0, 60.4292 )
 
-[node name="WoodWall4" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall4" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -0.918327, 0, -1.50996e-07, 0, 0.923988, 0, 1.38664e-07, 0, -1, 17.7115, 0, 84.6051 )
 
-[node name="WoodWall5" parent="Level1/Navigation/Obstacles" instance=ExtResource( 61 )]
+[node name="WoodWall5" parent="Map/Navigation/Obstacles" instance=ExtResource( 61 )]
 transform = Transform( -0.918327, 0, -1.50996e-07, 0, 0.923988, 0, 1.38664e-07, 0, -1, -60.6882, 0, 57.6947 )
 
-[node name="GoldPiles" type="Spatial" parent="Level1/Navigation"]
+[node name="GoldPiles" type="Spatial" parent="Map/Navigation"]
 
-[node name="GoldPile" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 10.3001, -0.283984, -7.95149 )
 
-[node name="GoldPile2" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile2" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.623164, 0, -0.501664, 0, 0.8, 0, 0.501664, 0, 0.623164, 13.9148, -0.283984, -7.86578 )
 
-[node name="GoldPile3" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile3" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.799036, 0, -0.643246, 0, 0.8, 0, 0.501664, 0, 0.623164, -11.3238, -0.283984, 13.2701 )
 
-[node name="GoldPile4" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile4" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -12.7382, -0.283984, 15.5835 )
 
-[node name="GoldPile5" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile5" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -13.7534, -0.283984, 18.5661 )
 
-[node name="GoldPile27" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile27" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.799036, 0, -0.643246, 0, 0.8, 0, 0.501664, 0, 0.623164, 17.5999, -0.283984, 72.7298 )
 
-[node name="GoldPile30" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile30" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.262378, 0, -0.89484, 0, 0.8, 0, 0.906247, 0, 0.0368871, 16.0926, -0.283984, 75.6607 )
 
-[node name="GoldPile31" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile31" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.799036, 0, -0.643246, 0, 0.8, 0, 0.501664, 0, 0.623164, -37.7021, -0.283984, 8.88811 )
 
-[node name="GoldPile32" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile32" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.262378, 0, -0.89484, 0, 0.8, 0, 0.906247, 0, 0.0368871, -39.2094, -0.283984, 11.819 )
 
-[node name="GoldPile33" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile33" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.799036, 0, -0.643246, 0, 0.8, 0, 0.501664, 0, 0.623164, -60.5629, -0.283984, -2.24923 )
 
-[node name="GoldPile34" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile34" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.262378, 0, -0.89484, 0, 0.8, 0, 0.906247, 0, 0.0368871, -62.0703, -0.283984, 0.681643 )
 
-[node name="GoldPile28" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile28" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -32.7026, -0.283984, 73.7871 )
 
-[node name="GoldPile29" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile29" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -35.3926, -0.283984, 74.0901 )
 
-[node name="GoldPile36" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile36" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -59.8171, -0.283984, 40.6345 )
 
-[node name="GoldPile37" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile37" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -60.9161, -0.283984, 74.182 )
 
-[node name="GoldPile39" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile39" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -7.23095, -0.283984, -0.631721 )
 
-[node name="GoldPile38" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile38" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -60.2286, -0.283984, 50.2794 )
 
-[node name="GoldPile25" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile25" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.799036, 0, -0.643246, 0, 0.8, 0, 0.501664, 0, 0.623164, -60.3938, -0.283984, 98.0462 )
 
-[node name="GoldPile26" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile26" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -61.8082, -0.283984, 100.36 )
 
-[node name="GoldPile6" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile6" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.439129, 0, -0.869176, 0, 0.8, 0, 0.83504, 0, 0.215945, -0.583333, -0.283984, 24.0594 )
 
-[node name="GoldPile10" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile10" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.706426, 0, -0.312505, 0, 0.8, 0, 0.263027, 0, 0.839309, -0.676959, -0.283984, 27.3486 )
 
-[node name="GoldPile9" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile9" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.581997, 0, -0.552931, 0, 0.8, 0, 0.742566, 0, -0.704532, 0.621697, -0.283984, 20.6695 )
 
-[node name="GoldPile35" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile35" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.581997, 0, -0.552931, 0, 0.8, 0, 0.742566, 0, -0.704532, 17.1974, -0.283984, 22.8467 )
 
-[node name="GoldPile7" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile7" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -12.7382, -0.283984, 47.153 )
 
-[node name="GoldPile8" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile8" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -12.7132, -0.283984, 50.1356 )
 
-[node name="GoldPile11" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile11" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.209994, 0, 0.771947, -44.7973, 0.142307, 31.8326 )
 
-[node name="GoldPile12" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile12" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.771947, 0, -0.209994, 0, 0.8, 0, 0.340894, 0, 1.25314, -44.7723, 0.142307, 34.8152 )
 
-[node name="GoldPile13" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile13" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.493211, 0, -0.629875, 0, 0.8, 0, 0.629875, 0, -0.493211, -44.7973, 0.142307, 38.1434 )
 
-[node name="GoldPile14" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile14" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.613844, 0, -0.871888, 0, 0.8, 0, 0.579057, 0, -0.924267, -44.7723, 0.142307, 41.126 )
 
-[node name="GoldPile15" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile15" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.493211, 0, -0.629875, 0, 0.8, 0, 0.629875, 0, -0.493211, -66.8516, 0.142307, 24.067 )
 
-[node name="GoldPile16" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile16" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.613844, 0, -0.871888, 0, 0.8, 0, 0.579057, 0, -0.924267, -66.8266, 0.142307, 27.0496 )
 
-[node name="GoldPile17" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile17" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.336118, -0.116286, 0.716591, 0.0493819, 0.791503, 0.10528, -0.724283, 0, 0.339726, -61.4831, 0.142307, -32.4422 )
 
-[node name="GoldPile18" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile18" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( 0.468672, 0, 1.05663, 0, 0.8, 0, -0.701753, 0, 0.705682, -65.6453, 0.142307, -32.514 )
 
-[node name="GoldPile19" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile19" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.769089, 0.0755018, -0.206885, 0.0397094, 0.636471, 0.0846588, 0.214624, 0.0884419, -0.765581, -58.1921, 0.142307, -32.2894 )
 
-[node name="GoldPile20" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile20" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.838018, 0, -0.149337, 0, 0.643303, 0, 0.0991806, 0, -1.26181, -55.5442, 0.142307, -29.0772 )
 
-[node name="GoldPile21" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile21" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.769089, 0.0755018, -0.206885, 0.0397094, 0.636471, 0.0846588, 0.214624, 0.0884419, -0.765581, -98.0237, 0.142307, -2.21401 )
 
-[node name="GoldPile22" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile22" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.838018, 0, -0.149337, 0, 0.643303, 0, 0.0991806, 0, -1.26181, -95.3758, 0.142307, 0.998188 )
 
-[node name="GoldPile23" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile23" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.947435, 0.0930101, -0.25486, 0.0530734, 0.850672, 0.11315, 0.263373, 0.108531, -0.939476, -86.1561, 0.142307, 6.0643 )
 
-[node name="GoldPile24" parent="Level1/Navigation/GoldPiles" instance=ExtResource( 53 )]
+[node name="GoldPile24" parent="Map/Navigation/GoldPiles" instance=ExtResource( 53 )]
 transform = Transform( -0.838018, 0, -0.149337, 0, 0.859803, 0, 0.0777091, 0, -0.98864, -81.977, 0.142307, 6.27342 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

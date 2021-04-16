@@ -9,6 +9,12 @@ export(float, 0, 1) var ITEM_PROB = 1
 export(float, 0, 10) var TIME_TO_EXPLODE = 1.14
 
 var destroyed = false
+var inner_area: Area
+
+
+func _ready():
+	if has_node("InnerArea"):
+		inner_area = get_node("InnerArea")
 
 func destroy():
 	if not destroyed:
@@ -26,6 +32,7 @@ func destroy():
 	
 func _should_spawn_item():
 	return ITEMS_SCENES.size() > 0 and randf() < ITEM_PROB
+
 	
 func _get_random_item():
 	var random_index = int(round(rand_range(0, ITEMS_SCENES.size() - 1)))
@@ -33,3 +40,19 @@ func _get_random_item():
 	var item = scene.instance()
 	item.global_transform.origin = self.global_transform.origin
 	return item
+
+
+func is_overlapping_body():
+	if not is_instance_valid(inner_area):
+		return false
+	
+	for body in inner_area.get_overlapping_bodies():
+		if body.get_instance_id() != self.get_instance_id():
+			return true
+	return false
+	
+
+func remove_inner_area():
+	if not is_instance_valid(inner_area):
+		return false
+	inner_area.call_deferred("queue_free")

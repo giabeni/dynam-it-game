@@ -10,7 +10,6 @@ export var state = State.IDLE
 
 onready var explosion: Particles = $Explosion
 onready var explosion2: Particles = $Explosion2
-onready var mesh = $tnt_pile
 onready var explosion_area = $DamageArea
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 
@@ -23,8 +22,8 @@ func _do_damage():
 		if body.has_method("on_explosion_hit"):
 			var space = get_world().direct_space_state
 			var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
-			var ray_origin = global_transform.origin + Vector3.UP * 0
-			var ray_collision = space.intersect_ray(ray_origin, hitpoint, [], 1)
+			var ray_origin = global_transform.origin + Vector3.UP * 0.2
+			var ray_collision = space.intersect_ray(ray_origin, hitpoint, [self], 1)
 #			print("Ray bomb to MINER:  ", ray_collision)
 			if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
 				body.on_explosion_hit()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
@@ -91,11 +91,14 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.0017491 ),
+"times": PoolRealArray( 0, 0.000538163 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 0.765381, 0.753146, 0.736527 )
 
 [node name="Crate" type="StaticBody" groups=[
 "Obstacles",
@@ -143,3 +146,11 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0376947, 1.12587, 0 )
 
 [node name="Hitpoint3" type="Position3D" parent="Hitpoints"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.848591, 0.213081, 0 )
+
+[node name="InnerArea" type="Area" parent="."]
+monitorable = false
+collision_mask = 7
+
+[node name="CollisionShape3" type="CollisionShape" parent="InnerArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012893, 0.97084, 0.0727537 )
+shape = SubResource( 6 )

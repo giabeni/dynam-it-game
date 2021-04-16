@@ -6,6 +6,7 @@ enum States {
 }
 
 onready var controller = $Controller
+onready var camera = $Controller/h/v/Camera
 onready var anim_tree: AnimationTree = $AnimationTree
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
@@ -48,6 +49,11 @@ func _ready():
 
 func _physics_process(delta):
 	_set_animations(delta)
+	
+	# Repairs potential bug that prevents the dropped_bombs to reset
+	if not has_bomb and not has_weapon and not is_instance_valid(bomb) and dropped_bombs > 0:
+		dropped_bombs = 0
+		_spawn_bomb()
 	
 
 func _spawn_bomb():

@@ -1,7 +1,7 @@
 extends Spatial
 
 onready var player = $Player
-onready var npcs = $Level1/Navigation/NPCs
+onready var npcs = $Map/Navigation/NPCs
 onready var ui = $PlayerUI
 onready var timer = $MatchTimer
 
@@ -22,19 +22,10 @@ enum MatchState {
 func _ready():
 	get_tree().paused = false
 	randomize()
-	npcs_alive = npcs.get_child_count()
 	ui.gold_target = GOLD_TARGET
-	ui.set_npcs_count(npcs_alive)
-	ui.npcs_count = npcs_alive
 	player.connect("on_died", $EndScreens, "on_lost")
 	player.connect("on_gold_collected", self, "on_gold_collected")
 	
-	npc_miners.append(player)
-	for npc in npcs.get_children():
-		npc.connect("on_died", self, "on_npc_died")
-		npc_miners.append(npc)
-		
-	_randomize_miners_locations()
 		
 func _process(delta):
 	yield(get_tree().create_timer(0.5), "timeout")
@@ -48,11 +39,28 @@ func _randomize_miners_locations():
 	var npc_prev_origin = npc.global_transform.origin
 	npc.global_transform.origin = player.global_transform.origin
 	player.global_transform.origin = npc_prev_origin
+	
+
+func start_match():
+	$MatchTimer.start()
+	
+
+func configure_npcs_signals():
+	npcs_alive = npcs.get_child_count()
+	ui.set_npcs_count(npcs_alive)
+	ui.npcs_count = npcs_alive
+	npc_miners.append(player)
+	for npc in npcs.get_children():
+		npc.connect("on_died", self, "on_npc_died")
+		npc_miners.append(npc)
+		
+	_randomize_miners_locations()
+
 
 func on_npc_died():
 	npcs_alive -= 1
 	ui.set_npcs_alive(npcs_alive)
-	if npcs_alive <= 0:
+	if state == MatchState.STARTED and npcs_alive <= 0:
 		$EndScreens.on_win()
 		
 func on_gold_collected():
@@ -61,7 +69,7 @@ func on_gold_collected():
 		state = MatchState.WIN
 
 func _on_MatchTimer_timeout():
-	if player.gold >= GOLD_TARGET:
+	if state == MatchState.STARTED and player.gold >= GOLD_TARGET:
 		$EndScreens.on_win()
 	else:
 		$EndScreens.on_lost()

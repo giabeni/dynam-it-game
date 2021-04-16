@@ -50,8 +50,8 @@ func _explode():
 	$Range.hide()	
 	mesh.hide()
 	sparks.hide()
-	anim_player.play("Explode")
 	emit_signal("bomb_exploded")
+	anim_player.play("Explode")
 	
 
 

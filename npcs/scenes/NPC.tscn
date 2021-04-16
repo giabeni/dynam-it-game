@@ -3451,7 +3451,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 42 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2180, 200 )
-node_connections = [ "output", 0, "Slash", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2" ]
+node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
 
 [sub_resource type="CylinderShape" id=45]
 radius = 30.1319
@@ -3607,7 +3607,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.922193, 0.269477, 0.277384, 0.121394, -0.479294, 0.869219, 0.367182, 0.835262, 0.409289, -0.332355, 1.24587, 0.669917 )
+transform = Transform( -0.942874, 0.243072, 0.227824, 0.0856612, -0.48397, 0.870882, 0.321947, 0.840649, 0.435502, -0.356822, 1.21421, 0.662052 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3623,7 +3623,7 @@ __meta__ = {
 }
 
 [node name="SightOrigin" type="Position3D" parent="CharacterArmature"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.38749, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66216, 0.741505 )
 
 [node name="BodyHitpoint" type="Position3D" parent="CharacterArmature"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59151, 0 )
@@ -3696,6 +3696,7 @@ wait_time = 3.0
 autostart = true
 
 [node name="BombDetectionTimer" type="Timer" parent="."]
+wait_time = 0.5
 autostart = true
 
 [node name="BombEscapeTimer" type="Timer" parent="."]

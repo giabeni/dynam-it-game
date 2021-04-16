@@ -3448,7 +3448,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 38 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2380, 160 )
-node_connections = [ "output", 0, "Slash", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2" ]
+node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3553,7 +3553,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [  ]
+bones/15/bound_children = [ NodePath("HandRight") ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3602,7 +3602,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.969416, 0.201496, 0.140117, 0.0210912, -0.500405, 0.865535, 0.244517, 0.842019, 0.480852, -0.391395, 1.16586, 0.628917 )
+transform = Transform( -0.972939, 0.184555, 0.139031, 0.0469354, -0.431305, 0.900985, 0.226246, 0.88313, 0.410972, -0.401993, 1.21044, 0.656083 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
