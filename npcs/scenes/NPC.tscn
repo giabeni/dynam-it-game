@@ -3451,10 +3451,10 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 42 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2180, 200 )
-node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
+node_connections = [ "output", 0, "Slash", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry", "TimeScale", 0, "BlendRun" ]
 
 [sub_resource type="CylinderShape" id=45]
-radius = 30.1319
+radius = 39.1811
 height = 4.20464
 
 [node name="NPC" type="KinematicBody" groups=[
@@ -3607,7 +3607,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.942874, 0.243072, 0.227824, 0.0856612, -0.48397, 0.870882, 0.321947, 0.840649, 0.435502, -0.356822, 1.21421, 0.662052 )
+transform = Transform( -0.924561, 0.265785, 0.273028, 0.126278, -0.46232, 0.877675, 0.359499, 0.845944, 0.393881, -0.335245, 1.24647, 0.684416 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3676,7 +3676,7 @@ collision_layer = 0
 collision_mask = 22
 
 [node name="CollisionShape" type="CollisionShape" parent="TargetDetectionArea"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0733, 0 )
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 2.0733, 0 )
 shape = SubResource( 45 )
 
 [node name="BombTriggerArea" type="Area" parent="."]
@@ -3688,6 +3688,13 @@ collision_mask = 14
 transform = Transform( 0.2, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 2.0733, 0 )
 shape = SubResource( 45 )
 
+[node name="InnerArea" type="Area" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2" type="CollisionShape" parent="InnerArea"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.66298, 0 )
+shape = SubResource( 3 )
+
 [node name="TargetDetectionTimer" type="Timer" parent="."]
 autostart = true
 
@@ -3696,7 +3703,6 @@ wait_time = 3.0
 autostart = true
 
 [node name="BombDetectionTimer" type="Timer" parent="."]
-wait_time = 0.5
 autostart = true
 
 [node name="BombEscapeTimer" type="Timer" parent="."]

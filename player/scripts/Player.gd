@@ -41,11 +41,22 @@ signal on_gold_collected
 
 
 func _ready():
-	if max_bombs > 0:
-		_spawn_bomb()
-		
 	player_ui = get_node(UI_PATH)
+#	_spawn_bomb()
+	set_physics_process(false)
+	set_process(false)
+	set_process_internal(false)
+	set_physics_process_internal(false)
+	controller.set_physics_process(false)
 	
+
+func enable():
+	set_physics_process(true)
+	set_process(true)
+	set_process_internal(true)
+	set_physics_process_internal(true)
+	controller.set_physics_process(true)
+	_spawn_bomb()
 
 func _physics_process(delta):
 	_set_animations(delta)
@@ -57,15 +68,16 @@ func _physics_process(delta):
 	
 
 func _spawn_bomb():
-	if has_weapon:
+	
+	if has_weapon or has_bomb:
 		return
 	
+	has_bomb = true
 	bomb = BOMB_SCENE.instance()
 	bomb.set_range(bomb_range)
-	bomb_loc.call_deferred("add_child", bomb)
+	bomb_loc.add_child(bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
-	has_bomb = true
 
 
 func _set_animations(delta):

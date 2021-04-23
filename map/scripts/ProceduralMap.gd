@@ -47,11 +47,21 @@ const SIZES = {
 	Tiles.ARO_1: Vector3(1, 1, 4),
 	Tiles.ARO_2: Vector3(2, 1, 4),
 	Tiles.HALL_GRANDE: Vector3(20, 1, 20),
-	Tiles.HALL_T: Vector3(7, 1, 10),
-	Tiles.HALL_X: Vector3(10, 1, 10),
+	Tiles.HALL_T: Vector3(8, 1, 10),
 	Tiles.HALL_X: Vector3(10, 1, 10),
 	Tiles.CORREDOR_CURTO: Vector3(5, 1, 5),
 	Tiles.CORREDOR_MEDIO: Vector3(10, 1, 5),
+	Tiles.PLATAFORMA: Vector3(-2, 1, 9)
+}
+
+const NAVIGATION_SIZES = {
+	Tiles.ARO_1: [Vector3(1, 1, 4)],
+	Tiles.ARO_2: [Vector3(2, 1, 4)],
+	Tiles.HALL_GRANDE: [Vector3(4, 1, 3), Vector3(3, 1, 7), Vector3(6, 1, 10), Vector3(3, 1, 7), Vector3(1, 1, 5), Vector3(4, 1, 3)],
+	Tiles.HALL_T: [Vector3(4, 1, 3), Vector3(4, 1, 10)],
+	Tiles.HALL_X: [Vector3(4, 1, 3), Vector3(3, 1, 10), Vector3(3, 1, 3)],
+	Tiles.CORREDOR_CURTO: [Vector3(5, 1, 3)],
+	Tiles.CORREDOR_MEDIO: [Vector3(10, 1, 3)],
 }
 
 const DOORS = {
@@ -84,11 +94,17 @@ onready var items: Spatial = $Navigation/Items
 onready var npcs: Spatial = $Navigation/NPCs
 onready var screens: Control = $"../EndScreens"
 onready var player = $"../Player"
+onready var nav_grid: NavGrid = $PaintedGrid
 
 
 export(Vector3) var MAP_SIZE = Vector3(60, 0, 60)
-export(float) var MIN_AREA = 2500
-export(float) var MAX_AREA = 5000
+export(float) var MIN_AREA = 5000
+export(float) var MAX_AREA = 6500
+export(int, 0, 100) var NPCS_COUNT = 1
+export(int, 0, 100) var GOLD_PILES_COUNT = 50
+export(int, 0, 100) var ITEMS_COUNT = 30
+export(int, 0, 100) var WALLS_COUNT = 30
+
 export(PackedScene) var GOLD_PILE_SCENE = preload("res://obstacles/scenes/GoldRocks.tscn")
 
 export(Array, PackedScene) var WALL_OBSTACLES_SCENES = [
@@ -112,36 +128,46 @@ var painted_cells = {}
 var wall_cells = {}
 var baked_nav_mesh = PoolVector3Array([])
 var should_bake_nav_meshes = false
+var loading_progress = 0
 
+signal finished_grid
 signal finished_walls
 signal finished_objects
 signal npcs_spawned
 
 func _ready():
-	$PaintedGrid.hide()
+#	$PaintedGrid.hide()
 	_set_npcs_paused(true)
 	randomize()
+	
 	# Adjust the size of grid to match the map size
 	GRID_SIZE = MAP_SIZE / grid.cell_size
 	player.controller.set_physics_process(false)
 	
-	screens.set_loading_screen(5, "Creating mine's corridors...")
+	screens.set_loading_screen(1, "Creating mine's corridors...")
 	if grid.get_used_cells().size() <= 0:
 		should_bake_nav_meshes = true
 		print("Generating map...")
 		_generate_map()
+		yield(self, "finished_grid")
+		
+	
+	# Adds points and connections to NavGrid 
+#	nav_grid.navigation = nav
+	nav_grid.bake_points()
 		
 	print(">> Generated tiles")
-	screens.set_loading_screen(30, "Adding destructible walls...")
+	screens.set_loading_screen(2, "Adding destructible walls...")
 	
 	_add_walls()
 	print(">> Added destructible walls")
 	
-	screens.set_loading_screen(40, "Adding lights...")	
+	screens.set_loading_screen(3, "Adding lights...")	
 	_add_lights()
 	print(">> Added lights")
 	
-	screens.set_loading_screen(60, "Spawning enemies...")
+	loading_progress = 5
+	screens.set_loading_screen(loading_progress, "Spawning enemies...")
 	_spawn_npcs()
 	yield(self, "npcs_spawned")
 	get_parent().configure_npcs_signals()
@@ -150,34 +176,36 @@ func _ready():
 	if not should_bake_nav_meshes:
 		_calculate_map_limits()
 	
-	screens.set_loading_screen(80, "Adding gold piles...")	
-	_add_objects([GOLD_PILE_SCENE], 50, 0.6, 0.75, 15, gold_piles)
+	screens.set_loading_screen(loading_progress, "Adding gold piles...")	
+	_add_objects([GOLD_PILE_SCENE], GOLD_PILES_COUNT, 0.6, 0.75, 15, gold_piles)
 	yield(self, "finished_objects")
 	print(">> Added gold piles")
 	
-	screens.set_loading_screen(90, "Spawning destrutible items...")		
-	_add_objects(OBJECTS_SCENES, 40)
+	screens.set_loading_screen(loading_progress, "Spawning destrutible items...")		
+	_add_objects(OBJECTS_SCENES, ITEMS_COUNT)
 	yield(self, "finished_objects")
 	print(">> Added items")
 	
 	if should_bake_nav_meshes and Engine.editor_hint:
 		NavigationMeshGenerator.bake(nav_mesh.navmesh, nav)
 		
+	screens.set_loading_screen(96, "Finishing...")
+	yield(get_tree(), "idle_frame")
+	screens.set_loading_screen(97, "Finishing...")
+	yield(get_tree(), "idle_frame")
+	screens.set_loading_screen(98, "Finishing...")
+	yield(get_tree(), "idle_frame")
 	screens.set_loading_screen(99, "Finishing...")
-	
 	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
-	yield(get_tree().create_timer(3), "timeout")
 
 	screens.set_loading_screen(100, "LET'S GO!")
 	print("Starting match!")
-	$PaintedGrid.show()	
-	$PaintedGrid.hide()	
+#	$PaintedGrid.show()	
+#	$PaintedGrid.hide()	
 	get_parent().start_match()
+#	yield(get_tree().create_timer(15), "timeout")
 	_set_npcs_paused(false)
-	player.controller.set_physics_process(true)
+	player.enable()
 
 
 func _generate_map():
@@ -185,6 +213,7 @@ func _generate_map():
 	$PaintedGrid.clear()
 	NavigationMeshGenerator.clear(nav_mesh.navmesh)
 	painted_cells = {}
+	yield(get_tree(), "idle_frame")
 	_generate_grid_map()
 	yield(get_tree(), "idle_frame")
 
@@ -206,12 +235,15 @@ func _add_walls():
 		if grid.get_cell_item(cell.x, cell.y, cell.z) in [Tiles.ARO_1, Tiles.ARO_2, Tiles.PLATAFORMA]:
 			continue
 		var cur_point = grid.map_to_world(cell.x, cell.y, cell.z)
-		if walls_count < 30:
+		if walls_count < WALLS_COUNT:
 			var wall_scene: PackedScene = WALL_OBSTACLES_SCENES[randi() % WALL_OBSTACLES_SCENES.size()]
 			var wall: Spatial = wall_scene.instance()
 			obstacles.add_child(wall)
 			wall_cells[String(cell)] = true
-			var angle = _get_rotation_from_orientation(grid.get_cell_item_orientation(cell.x, cell.y, cell.z))
+			var orientation = grid.get_cell_item_orientation(cell.x, cell.y, cell.z)
+			var angle = _get_rotation_from_orientation(orientation)
+			var cross_dir = Vector3(1, 0, 0).rotated(Vector3.UP, angle.y + deg2rad(90))
+			$PaintedGrid.disable_cells([cell - 2 * cross_dir, cell - cross_dir, cell, cell + cross_dir, cell + 2 * cross_dir])
 			wall.global_transform.origin = cur_point
 			wall.rotation_degrees.y = rad2deg(angle.y) + 90
 			walls_count += 1
@@ -241,7 +273,7 @@ func _add_objects(scenes: Array, quantity: int, min_scale = 1, max_scale = 1, ma
 		var x = rand_range(x_limits[0], x_limits[1])
 		var z = rand_range(z_limits[0], z_limits[1])
 		var y = 0
-		var nav_point = nav.get_closest_point(Vector3(x, y, z))
+		var nav_point = nav_grid.get_closest_point(Vector3(x, y, z))
 		if nav_point.y <= 3:
 			var scene = scenes[randi() % scenes.size()]
 			var object: Destructible = scene.instance()
@@ -257,13 +289,26 @@ func _add_objects(scenes: Array, quantity: int, min_scale = 1, max_scale = 1, ma
 			
 			yield(get_tree(), "physics_frame")
 			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
 			
 			# Checks if gold pile is not overlapping area
 			if object.is_overlapping_body():
 				object.call_deferred("queue_free")
+				continue
+				
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			
+			if object.is_blocking_npc():
+				object.call_deferred("queue_free")
+				continue				
 			else:
 				object.remove_inner_area()
 				count += 1
+				loading_progress += 0.5
+				screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] Adding destructible objects...")
+
 	emit_signal("finished_objects")
 	
 	
@@ -289,7 +334,7 @@ func _generate_grid_map():
 			var cur_point = cur_points[p]
 			var angle = angles[p]
 			
-#			yield(get_tree().create_timer(0.025), "timeout")
+#			yield(get_tree().create_timer(0.25), "timeout")
 			
 			# Getting random tiles
 			var tiles = _get_random_tiles()
@@ -313,10 +358,7 @@ func _generate_grid_map():
 					
 					# Paint occupied cells
 					_paint_cells(tile, cur_point, angle)
-					
-#					# Gets mesh and adds floor to nav mesh
-#					var mesh = grid.mesh_library.get_item_mesh(tile)
-#					_add_to_nav_mesh(mesh)
+					_paint_navigation_cells(tile, cur_point, angle)
 
 					# Updates the limits of map
 					x_limits[0] = min(x_limits[0], grid.map_to_world(cur_point.x, cur_point.y, cur_point.z).x)
@@ -349,6 +391,7 @@ func _generate_grid_map():
 				# Add wall if there's no way out
 				var wall_orientation = _get_orientation(angle - 90, 90)
 				grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, Tiles.PLATAFORMA, wall_orientation)
+				_paint_cells(Tiles.PLATAFORMA, cur_point, angle)
 				
 				
 		angles = next_angles
@@ -361,17 +404,27 @@ func _generate_grid_map():
 	
 	# Fill remaining doors with walls
 	for p in range(0, cur_points.size()):
+		print("Door: ", p)
 		var cur_point = cur_points[p]
+		var world_pos = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
+		$Camera.global_transform.origin.x = world_pos.x
+		$Camera.global_transform.origin.z = world_pos.z
+		
 		var angle = angles[p]
 		var wall_orientation = _get_orientation(angle - 90, 90)
 		grid.set_cell_item(cur_point.x, cur_point.y, cur_point.z, Tiles.PLATAFORMA, wall_orientation)
-		
+		_paint_cells(Tiles.PLATAFORMA, cur_point, angle)
 	
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	emit_signal("finished_grid")
 	return true
 	
 
 func _spawn_npcs():
-	var npcs_count = 20
+	var npcs_count = NPCS_COUNT
 	var interval = 2
 	
 	var i = -1
@@ -379,16 +432,33 @@ func _spawn_npcs():
 	used_cells.shuffle()
 	for cell in used_cells:
 		var tile = grid.get_cell_item(cell.x, cell.y, cell.z) 
-		if tile in [Tiles.PLATAFORMA]:
+		if tile in [Tiles.PLATAFORMA, Tiles.ARO_1, Tiles.ARO_2, Tiles.CORREDOR_CURTO, Tiles.CORREDOR_MEDIO]:
 			continue
 		i += 1
-		if i % interval == 0 and not String(cell) in wall_cells:
-			npcs_count -= 1
+		if not String(cell) in wall_cells:
 			var middle_point = _get_cell_middle(tile, cell)
 			var npc = NPC_SCENE.instance()
+			npc.NAV_GRID_PATH = $PaintedGrid.get_path()
 			npc.paused = true
-			npc.global_transform.origin = middle_point + Vector3.UP * 1
-			npcs.call_deferred("add_child", npc)
+			npcs.add_child(npc)
+			npc.global_transform.origin = middle_point + Vector3.UP * 0.5
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			yield(get_tree(), "physics_frame")
+			
+			# Checks if wall is not overlapping npc
+			if npc.is_overlapping_body():
+				print("NPC INSIDE WALL! RETRYING...")
+				npc.call_deferred("queue_free")
+			else:
+				npc.remove_inner_area()
+				npcs_count -= 1
+				loading_progress += 1
+				screens.set_loading_screen(loading_progress, "["+ str(NPCS_COUNT - npcs_count) +"/" + str(NPCS_COUNT) + "] Spawning enemies...")
+
 			if npcs_count <= 0:
 				break
 	yield(get_tree(), "idle_frame")	
@@ -399,12 +469,6 @@ func _spawn_npcs():
 func _set_npcs_paused(paused: bool):
 	for npc in npcs.get_children():
 		npc.set_paused(paused)
-
-	
-func _add_to_nav_mesh(mesh: Mesh, surface = 1):
-	var floor_surface = mesh.get_faces()
-#	baked_nav_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, floor_surface)
-	baked_nav_mesh.append_array(floor_surface)
 	
 			
 func _get_random_tiles():
@@ -433,8 +497,8 @@ func _get_random_orientation(tile_index: int):
 	return _get_orientation(angle)
 	
 
-func _paint_cells(tile, cur_point, angle):
-	var size: Vector3 = SIZES[tile]
+func _paint_cells(tile, cur_point, angle, sizes = SIZES, painted_tile = 1):
+	var size: Vector3 = sizes[tile]
 	var offset = Vector3(size.x, 0, 0).rotated(Vector3.UP, deg2rad(angle))
 	var limit = cur_point + offset
 	
@@ -447,9 +511,29 @@ func _paint_cells(tile, cur_point, angle):
 			var point: Vector3 = cell + width_dir * w
 			point = point.round()
 			painted_cells[String(point)] = true
-			$PaintedGrid.set_cell_item(point.x, point.y, point.z, 1)
+			$PaintedGrid.set_cell_item(point.x, point.y, point.z, painted_tile)
 			
 		cell += dir
+		
+
+func _paint_navigation_cells(tile, cur_point, angle):
+	for size in NAVIGATION_SIZES[tile]:
+		var offset = Vector3(size.x, 0, 0).rotated(Vector3.UP, deg2rad(angle))
+		var limit = cur_point + offset
+		
+		var dir: Vector3 = offset.normalized()
+		var cell: Vector3 = cur_point
+		
+		while (limit.round() - cell.round()).length() >= 0.01:
+			var width_dir = dir.rotated(Vector3.UP, deg2rad(90))
+			for w in range(floor(-size.z/2), ceil(size.z/2)):
+				var point: Vector3 = cell + width_dir * w
+				point = point.round()
+				$PaintedGrid.set_cell_item(point.x, point.y, point.z, 0)
+				
+			cell += dir
+
+		cur_point = limit
 
 
 func _get_cell_middle(tile: int, cell: Vector3):

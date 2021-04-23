@@ -25,7 +25,9 @@ export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
 export var paused = true
+export(NodePath) var NAV_GRID_PATH = null
 
+var inner_area: Area 
 var bomb: Bomb
 var weapon: Weapon
 var has_bomb = false
@@ -35,6 +37,7 @@ var blend_carry: float = 0
 var target_blend_carry: float = 0
 var state = States.EXPLORING
 var is_escaping_from_bomb = false
+var escape_point = Vector3.INF
 var gold = 0
 var wall_position = Vector3(0, 0, 0)
 var bomb_range = 5
@@ -44,11 +47,17 @@ var dropped_bombs: int = 0
 signal on_died
 
 func _ready():
+	if NAV_GRID_PATH:
+		controller.NAV_PATH = NAV_GRID_PATH
+	
 	if max_bombs > 0:
 		_spawn_bomb()
 		
 	if paused:
 		set_paused(true)
+		
+	if has_node("InnerArea"):
+		inner_area = get_node("InnerArea")
 		
 
 func set_paused(paused):
@@ -76,7 +85,7 @@ func _spawn_bomb():
 		return
 	bomb = BOMB_SCENE.instance()
 	bomb.set_range(bomb_range)
-	bomb_loc.call_deferred("add_child", bomb)
+	bomb_loc.add_child(bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
 	has_bomb = true
@@ -135,7 +144,7 @@ func _drop_bomb():
 	dropped_bombs += 1
 
 	# Escape from own bomb
-	var escape_point = _get_run_away_point(bomb.global_transform.origin)
+	escape_point = _get_run_away_point(bomb.global_transform.origin)
 	controller.move_to(escape_point)
 	$BombEscapeTimer.start()
 #			print("Escaping!!!!! ", escape_point)
@@ -180,18 +189,23 @@ func _get_random_target_point():
 
 func _get_run_away_point(from: Vector3):
 	var found_point = false
-	var tries = 10
-	var min_distance = 8
+	var tries = 20
+	var angle = 0
+	var min_distance = 7
 	var nav_point
 	
 	while not found_point:
-		var direction = global_transform.origin - from
+		var direction = (global_transform.origin - from).rotated(Vector3.UP, deg2rad(angle))
 		var offset = 10
 		var world_point = global_transform.origin + direction.normalized() * offset
 		nav_point = controller.navigation.get_closest_point(world_point)
-		if abs((nav_point - from).length()) < min_distance or tries <= 0:
+		print("Escaping from bomb...[", angle  ,"]  ... ", nav_point, " ... ", tries)
+		if abs((nav_point - from).length()) >= min_distance or tries <= 0:
+			print("Found run away point")
+			get_node("../../../EscapePoint").global_transform.origin = nav_point
 			return nav_point
 		else:
+			angle += 180 / tries
 			tries -= 1
 			
 	return nav_point
@@ -202,8 +216,8 @@ func _on_TargetDetectionTimer_timeout():
 	if is_escaping_from_bomb or not is_alive():
 		return
 		
-	if name == "NPC5":
-		print("Target detection timeout: ", target_detection_area.get_overlapping_bodies())
+#	if name == "NPC5":
+#		print("Target detection timeout: ", target_detection_area.get_overlapping_bodies())
 	
 	var found_item = false
 	var found_miner = false
@@ -221,7 +235,7 @@ func _on_TargetDetectionTimer_timeout():
 						found_item = true
 						controller.target = body
 						state = States.FOLLOWING
-
+						print("Item target found : ", body.name)
 						return
 						
 			elif body.is_in_group("Player") and not found_item:
@@ -232,6 +246,7 @@ func _on_TargetDetectionTimer_timeout():
 						found_miner = true
 						controller.target = body
 						state = States.FOLLOWING
+						print("Player target found : ", body.name)
 						return
 						
 			elif body.is_in_group("Obstacles") and not found_miner and not found_item:
@@ -245,12 +260,11 @@ func _on_TargetDetectionTimer_timeout():
 							if distance < found_obstacle_distance:
 								found_obstacle_distance = distance
 								found_obstacle = body
-								if name == "NPC5":
-									print("Obstacle target found : ", body.name)
+#								if name == "NPC5":
+								print("Obstacle target found : ", body.name)
 			
 	if is_instance_valid(found_obstacle):
-		if name == "NPC5":
-			print("Obstacle chosen : ", found_obstacle.name)
+		print("Obstacle chosen : ", found_obstacle.name)
 		controller.target = found_obstacle
 		state = States.FOLLOWING
 	elif not found_miner and not found_item:
@@ -258,22 +272,18 @@ func _on_TargetDetectionTimer_timeout():
 		controller.move_to(random_point)
 #		print("random target", random_point)
 		state = States.EXPLORING
-		if name == "NPC5":
-			print("NPC 5: \t - new target: RANDOM - ", random_point)
-		
+		print("New target: RANDOM - ", random_point)
+
+
 func _on_BombIntervalTimer_timeout():
 	if not is_alive():
 		return
-	if name == "NPC5":
-		print("BOMB?")
 	for body in bomb_trigger_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id():
 			if (body.is_in_group("Player") and body.is_alive()) or body.is_in_group("Obstacles"):
 				# if gets close to target, drops a bomb
 				if _can_drop_bomb():
 					_drop_bomb()
-					if name == "NPC5":
-						print("BOMB!")
 				elif has_weapon:
 					_attack()
 
@@ -284,17 +294,20 @@ func _on_BombDetectionTimer_timeout():
 
 	for body in bomb_trigger_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Bombs") and body.is_dropped():
-			# if notice a bomb, try to escape 
-			var escape_point = _get_run_away_point(body.global_transform.origin)
-			controller.move_to(escape_point)
-			$BombEscapeTimer.start()
-#			print("Escaping!!!!! ", escape_point)
-			is_escaping_from_bomb = true
+			if not is_escaping_from_bomb or body.global_transform.origin.distance_to(escape_point) > 3:
+				# if notice a bomb, try to escape 
+				escape_point = _get_run_away_point(body.global_transform.origin)
+				controller.move_to(escape_point)
+				(body as Bomb).connect("bomb_exploded", self, "_on_BombEscapeTimer_timeout")
+				$BombEscapeTimer.start()
+	#			print("Escaping!!!!! ", escape_point)
+				is_escaping_from_bomb = true
 
 
 func _on_BombEscapeTimer_timeout():
-#	print("No escape.")
+	print("No longer escaping")
 	is_escaping_from_bomb = false
+	$BombEscapeTimer.stop()
 	
 
 
@@ -308,25 +321,24 @@ func _on_ForgetTargetTimer_timeout():
 			var random_point = _get_random_target_point()
 			controller.move_to(random_point)
 #			if name == "NPC6":
-#				print("NPC 6: \t - forgot miner target ", random_point)
+			print("Forgot miner target ", random_point)
 			state = States.EXPLORING
 		elif is_instance_valid(controller.target) and controller.target.is_in_group("Obstacles") and controller.target.destroyed:
 			controller.target = null
 			var random_point = _get_random_target_point()
 			controller.move_to(random_point)
-#			if name == "NPC6":
-#				print("NPC 6: \t - forgot obstacle target ", random_point)
 			state = States.EXPLORING
+			print("Forgot obstacle target ", random_point)
+			
 		elif is_instance_valid(controller.target) and controller.target.is_in_group("Items"):
 			return
 		else:
 			return
-#			controller.target = null
-#			var random_point = _get_random_target_point()
-#			controller.move_to(random_point)
-#			if name == "NPC6":
-#				print("NPC 6: \t - forgot else target ", random_point)
-#			state = States.EXPLORING
+			controller.target = null
+			var random_point = _get_random_target_point()
+			controller.move_to(random_point)
+			print("Forgot last target ", random_point)
+			state = States.EXPLORING
 
 	# Repairs potential bug that prevents the dropped_bombs to reset
 	if not has_bomb and not has_weapon and not is_instance_valid(bomb) and dropped_bombs > 0:
@@ -344,8 +356,7 @@ func _on_OnWallTimer_timeout():
 		var random_point = _get_random_target_point()
 		controller.move_to(random_point)
 		
-#		if name == "NPC6":
-#			print("NPC 6: \t - on WALL - ", random_point)
+		print("Timeout on WALL - ", random_point)
 		state = States.EXPLORING
 
 
@@ -408,3 +419,19 @@ func _on_WeaponTimer_timeout():
 		has_weapon = false
 		if dropped_bombs < max_bombs and not has_bomb:
 			_spawn_bomb()
+
+
+func is_overlapping_body():
+	if not is_instance_valid(inner_area):
+		return false
+	
+	for body in inner_area.get_overlapping_bodies():
+		if body.get_instance_id() != self.get_instance_id():
+			return true
+	return false
+	
+
+func remove_inner_area():
+	if not is_instance_valid(inner_area):
+		return false
+	inner_area.call_deferred("queue_free")

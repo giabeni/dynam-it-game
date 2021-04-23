@@ -43,7 +43,8 @@ func _physics_process(delta):
 	# Follow path
 	if path_node < path.size():
 		var distance_to_path: Vector3 = path[path_node] - npc.global_transform.origin
-		if distance_to_path.length() < 1:
+		var dist = Vector2(distance_to_path.x, distance_to_path.z).length()
+		if abs(dist) < 0.75:
 			path_node += 1
 			movement_speed = 0
 		else:
@@ -66,13 +67,13 @@ func _physics_process(delta):
 	velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP)
 
 
-func move_to(target_pos):
-#	if get_parent().name == "NPC5":
-#		print("target pos = ", target_pos)
-	path = navigation.get_simple_path(npc.global_transform.origin, target_pos)
-#	if get_parent().name == "NPC5":
-#		print("new path = ", path)
-	path_node = 0
+func move_to(target_pos, custom_path = null):
+	if not custom_path:
+		path = navigation.get_simple_path(npc.global_transform.origin, target_pos)
+		path_node = 0
+	else:
+		path = custom_path
+		path_node = 0
 
 
 func _on_DetectTargetTimer_timeout():
