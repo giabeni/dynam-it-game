@@ -24,7 +24,7 @@ enum State {
 
 var state = State.CARRY
 var is_from_player = false
-var bomb_range = 5
+var bomb_range = 2.5
 
 func _ready():
 	pass
@@ -126,5 +126,5 @@ func set_range(amount):
 	bomb_range = amount
 	if is_instance_valid(explosion_area):
 		explosion_area.get_node("DamageCollisionShape").shape.radius  = amount
-	$Range.radius = amount
+	$Range.radius = amount * 1.1
 		

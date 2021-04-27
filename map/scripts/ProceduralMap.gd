@@ -98,11 +98,11 @@ onready var nav_grid: NavGrid = $PaintedGrid
 
 
 export(Vector3) var MAP_SIZE = Vector3(60, 0, 60)
-export(float) var MIN_AREA = 5000
-export(float) var MAX_AREA = 6500
-export(int, 0, 100) var NPCS_COUNT = 1
+export(float) var MIN_AREA = 6500
+export(float) var MAX_AREA = 7500
+export(int, 0, 100) var NPCS_COUNT = 15
 export(int, 0, 100) var GOLD_PILES_COUNT = 50
-export(int, 0, 100) var ITEMS_COUNT = 30
+export(int, 0, 100) var ITEMS_COUNT = 15
 export(int, 0, 100) var WALLS_COUNT = 30
 
 export(PackedScene) var GOLD_PILE_SCENE = preload("res://obstacles/scenes/GoldRocks.tscn")
@@ -144,7 +144,7 @@ func _ready():
 	GRID_SIZE = MAP_SIZE / grid.cell_size
 	player.controller.set_physics_process(false)
 	
-	screens.set_loading_screen(1, "Creating mine's corridors...")
+	screens.set_loading_screen(5, "Creating mine's corridors...")
 	if grid.get_used_cells().size() <= 0:
 		should_bake_nav_meshes = true
 		print("Generating map...")
@@ -157,16 +157,16 @@ func _ready():
 	nav_grid.bake_points()
 		
 	print(">> Generated tiles")
-	screens.set_loading_screen(2, "Adding destructible walls...")
-	
+
+	screens.set_loading_screen(8, "Adding destructible walls...")
 	_add_walls()
 	print(">> Added destructible walls")
 	
-	screens.set_loading_screen(3, "Adding lights...")	
+	screens.set_loading_screen(10, "Adding lights...")	
 	_add_lights()
 	print(">> Added lights")
 	
-	loading_progress = 5
+	loading_progress = 10
 	screens.set_loading_screen(loading_progress, "Spawning enemies...")
 	_spawn_npcs()
 	yield(self, "npcs_spawned")
@@ -177,23 +177,20 @@ func _ready():
 		_calculate_map_limits()
 	
 	screens.set_loading_screen(loading_progress, "Adding gold piles...")	
-	_add_objects([GOLD_PILE_SCENE], GOLD_PILES_COUNT, 0.6, 0.75, 15, gold_piles)
+	_add_objects([GOLD_PILE_SCENE], GOLD_PILES_COUNT, "Adding gold piles...", 0.6, 0.75, 15, gold_piles)
 	yield(self, "finished_objects")
 	print(">> Added gold piles")
 	
 	screens.set_loading_screen(loading_progress, "Spawning destrutible items...")		
-	_add_objects(OBJECTS_SCENES, ITEMS_COUNT)
+	_add_objects(OBJECTS_SCENES, ITEMS_COUNT, "Adding destructible objects...")
 	yield(self, "finished_objects")
 	print(">> Added items")
 	
 	if should_bake_nav_meshes and Engine.editor_hint:
 		NavigationMeshGenerator.bake(nav_mesh.navmesh, nav)
 		
-	screens.set_loading_screen(96, "Finishing...")
 	yield(get_tree(), "idle_frame")
-	screens.set_loading_screen(97, "Finishing...")
 	yield(get_tree(), "idle_frame")
-	screens.set_loading_screen(98, "Finishing...")
 	yield(get_tree(), "idle_frame")
 	screens.set_loading_screen(99, "Finishing...")
 	yield(get_tree(), "idle_frame")
@@ -237,13 +234,16 @@ func _add_walls():
 		var cur_point = grid.map_to_world(cell.x, cell.y, cell.z)
 		if walls_count < WALLS_COUNT:
 			var wall_scene: PackedScene = WALL_OBSTACLES_SCENES[randi() % WALL_OBSTACLES_SCENES.size()]
-			var wall: Spatial = wall_scene.instance()
+			var wall: Destructible = wall_scene.instance()
 			obstacles.add_child(wall)
 			wall_cells[String(cell)] = true
 			var orientation = grid.get_cell_item_orientation(cell.x, cell.y, cell.z)
 			var angle = _get_rotation_from_orientation(orientation)
 			var cross_dir = Vector3(1, 0, 0).rotated(Vector3.UP, angle.y + deg2rad(90))
-			$PaintedGrid.disable_cells([cell - 2 * cross_dir, cell - cross_dir, cell, cell + cross_dir, cell + 2 * cross_dir])
+			var cells = [cell - 2 * cross_dir, cell - cross_dir, cell, cell + cross_dir, cell + 2 * cross_dir]
+			$PaintedGrid.disable_cells(cells)
+			wall.nav_grid_cells = cells
+			wall.connect("on_destroyed", self, "_on_object_destroyed")
 			wall.global_transform.origin = cur_point
 			wall.rotation_degrees.y = rad2deg(angle.y) + 90
 			walls_count += 1
@@ -251,6 +251,10 @@ func _add_walls():
 			break
 	
 	emit_signal("finished_walls")
+	
+	
+func _on_object_destroyed(nav_grid_cells):
+	$PaintedGrid.enable_cells(nav_grid_cells)
 
 
 func _add_lights():
@@ -267,7 +271,7 @@ func _add_lights():
 		light.global_transform.origin = cur_point
 
 
-func _add_objects(scenes: Array, quantity: int, min_scale = 1, max_scale = 1, max_rotation = 0, parent = items):
+func _add_objects(scenes: Array, quantity: int, text: String, min_scale = 1, max_scale = 1, max_rotation = 0, parent = items):
 	var count = 0
 	while count < quantity:
 		var x = rand_range(x_limits[0], x_limits[1])
@@ -306,8 +310,8 @@ func _add_objects(scenes: Array, quantity: int, min_scale = 1, max_scale = 1, ma
 			else:
 				object.remove_inner_area()
 				count += 1
-				loading_progress += 0.5
-				screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] Adding destructible objects...")
+				loading_progress += 74 / (ITEMS_COUNT + GOLD_PILES_COUNT)
+				screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] " + text)
 
 	emit_signal("finished_objects")
 	
@@ -440,6 +444,8 @@ func _spawn_npcs():
 			var npc = NPC_SCENE.instance()
 			npc.NAV_GRID_PATH = $PaintedGrid.get_path()
 			npc.paused = true
+			npc.obstacles = obstacles
+			npc.gold_piles = gold_piles
 			npcs.add_child(npc)
 			npc.global_transform.origin = middle_point + Vector3.UP * 0.5
 			yield(get_tree(), "physics_frame")
@@ -456,7 +462,7 @@ func _spawn_npcs():
 			else:
 				npc.remove_inner_area()
 				npcs_count -= 1
-				loading_progress += 1
+				loading_progress += 15 / NPCS_COUNT
 				screens.set_loading_screen(loading_progress, "["+ str(NPCS_COUNT - npcs_count) +"/" + str(NPCS_COUNT) + "] Spawning enemies...")
 
 			if npcs_count <= 0:

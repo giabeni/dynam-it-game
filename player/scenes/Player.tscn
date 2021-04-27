@@ -3448,7 +3448,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 38 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2380, 160 )
-node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
+node_connections = [ "output", 0, "Slash", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3602,7 +3602,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.972939, 0.184555, 0.139031, 0.0469354, -0.431305, 0.900985, 0.226246, 0.88313, 0.410972, -0.401993, 1.21044, 0.656083 )
+transform = Transform( -0.90994, 0.283141, 0.30305, 0.151278, -0.453769, 0.878185, 0.386165, 0.844942, 0.37007, -0.318167, 1.26317, 0.695237 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]

@@ -103,7 +103,7 @@ collision_mask = 0
 mode = 1
 gravity_scale = 0.0
 script = ExtResource( 3 )
-amount = 1.0
+amount = 0.5
 type = "BOMB_RANGE"
 
 [node name="MeshInstance" type="MeshInstance" parent="."]

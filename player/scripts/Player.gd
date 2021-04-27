@@ -31,7 +31,7 @@ var blend_carry: float = 0
 var target_blend_carry: float = 0
 var state = States.ALIVE
 var gold = 0
-var bomb_range = 5
+var bomb_range = 2.5
 var max_bombs: int = 1
 var dropped_bombs: int = 0
 var player_ui: PlayerUI

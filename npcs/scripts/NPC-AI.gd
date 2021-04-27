@@ -3,7 +3,7 @@ extends Spatial
 export(NodePath) var NPC_PATH  = ""
 export(NodePath) var BODY_PATH  = ""
 export(NodePath) var TARGET_PATH  = "../../../../"
-export(NodePath) var NAV_PATH  = "../../../"
+export(NodePath) var NAV_PATH  = null
 
 export(float) var MOUSE_SENSITIVITY = 8
 export(float) var MAX_ROTATION = 20
@@ -16,7 +16,7 @@ export(float) var ANGULAR_ACCELERATION = 7
 export(float) var ACCELERATION = 4
 export(float) var GRAVITY = 5
 
-var navigation: Navigation
+var navigation: NavGrid
 var npc: Spatial
 var body: Spatial
 var target: Spatial
@@ -36,7 +36,8 @@ func _ready():
 	npc = get_node(NPC_PATH)
 	body = get_node(BODY_PATH)
 #	target = get_tree().current_scene.get_node("Player")
-	navigation = get_node(NAV_PATH)
+	if NAV_PATH:
+		navigation = get_node(NAV_PATH)
 	
 
 func _physics_process(delta):
@@ -69,7 +70,7 @@ func _physics_process(delta):
 
 func move_to(target_pos, custom_path = null):
 	if not custom_path:
-		path = navigation.get_simple_path(npc.global_transform.origin, target_pos)
+		path = navigation.get_simple_path(npc.global_transform.origin, target_pos, true)
 		path_node = 0
 	else:
 		path = custom_path

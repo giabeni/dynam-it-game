@@ -48,6 +48,11 @@ vertex_color_use_as_albedo = true
 params_cull_mode = 2
 albedo_color = Color( 0.741176, 0, 0, 1 )
 roughness = 0.5
+emission_enabled = true
+emission = Color( 0.741176, 0, 0, 1 )
+emission_energy = 0.08
+emission_operator = 0
+emission_on_uv2 = false
 
 [sub_resource type="SpatialMaterial" id=7]
 resource_name = "Vest"
@@ -380,7 +385,7 @@ tracks/23/keys = {
 "times": PoolRealArray( 0, 0.3, 1.1, 1.4, 1.8 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector3( 0, 1.66298, 0 ), Vector3( 0, 1.64533, 0.0109923 ), Vector3( 0, 1.49636, 0.703527 ), Vector3( 0, 0.824833, 1.5384 ), Vector3( 0, 0.236111, 1.63456 ) ]
+"values": [ Vector3( 0, 1.66298, 0 ), Vector3( 0, 1.64533, 0.0109923 ), Vector3( 0, 1.49636, 0.703527 ), Vector3( 0, 0.824833, 1.5384 ), Vector3( 0, 0.115, 1.635 ) ]
 }
 tracks/24/type = "value"
 tracks/24/path = NodePath("CollisionShape:rotation_degrees")
@@ -440,7 +445,7 @@ tracks/28/keys = {
 "times": PoolRealArray( 0, 2.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 0.3, 1 ) ]
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1, 0.05, 1 ) ]
 }
 
 [sub_resource type="Animation" id=11]
@@ -3451,7 +3456,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 42 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2180, 200 )
-node_connections = [ "output", 0, "Slash", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry", "TimeScale", 0, "BlendRun" ]
+node_connections = [ "output", 0, "Slash", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
 
 [sub_resource type="CylinderShape" id=45]
 radius = 39.1811
@@ -3465,7 +3470,7 @@ collision_mask = 2
 script = ExtResource( 1 )
 
 [node name="SmokeParticles" type="Particles" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56037, -0.281316 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56037, 1.32033 )
 emitting = false
 amount = 32
 lifetime = 0.42
@@ -3473,7 +3478,7 @@ process_material = ExtResource( 9 )
 draw_pass_1 = SubResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.66298, 0 )
+transform = Transform( 1, 0, 0, 0, -0.0499949, -0.014259, 0, 0.00071295, -0.999898, 0, 0.115, 1.635 )
 shape = SubResource( 3 )
 
 [node name="CharacterArmature" type="Spatial" parent="."]
@@ -3558,7 +3563,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [  ]
+bones/15/bound_children = [ NodePath("HandRight") ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3607,7 +3612,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.924561, 0.265785, 0.273028, 0.126278, -0.46232, 0.877675, 0.359499, 0.845944, 0.393881, -0.335245, 1.24647, 0.684416 )
+transform = Transform( -0.950166, 0.232996, 0.207118, 0.0693283, -0.489818, 0.869064, 0.303939, 0.840115, 0.449256, -0.365722, 1.20123, 0.652992 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3685,7 +3690,7 @@ collision_layer = 0
 collision_mask = 14
 
 [node name="CollisionShape" type="CollisionShape" parent="BombTriggerArea"]
-transform = Transform( 0.2, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 2.0733, 0 )
+transform = Transform( 0.0712044, 0, 0, 0, 1, 0, 0, 0, 0.120132, 0, 2.0733, 0 )
 shape = SubResource( 45 )
 
 [node name="InnerArea" type="Area" parent="."]
@@ -3699,7 +3704,6 @@ shape = SubResource( 3 )
 autostart = true
 
 [node name="BombIntervalTimer" type="Timer" parent="."]
-wait_time = 3.0
 autostart = true
 
 [node name="BombDetectionTimer" type="Timer" parent="."]
@@ -3712,6 +3716,10 @@ one_shot = true
 [node name="ForgetTargetTimer" type="Timer" parent="."]
 wait_time = 2.0
 autostart = true
+
+[node name="RandomFollowingTimer" type="Timer" parent="."]
+wait_time = 4.0
+one_shot = true
 
 [node name="OnWallTimer" type="Timer" parent="."]
 wait_time = 2.0

@@ -65,7 +65,6 @@ func _on_ResumeButton_pressed():
 func set_loading_screen(progress: float, text: String):
 	target_loading_progress = progress
 	loading_label.text = text.to_upper() + "(" + str(progress) + ")%"
-	target_alpha = 0.1
 	
 	if progress >= 100:
 		$"../PlayerUI".show()

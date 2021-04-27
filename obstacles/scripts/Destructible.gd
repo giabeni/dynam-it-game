@@ -11,6 +11,9 @@ export(float, 0, 10) var TIME_TO_EXPLODE = 1.14
 var destroyed = false
 var inner_area: Area
 
+var nav_grid_cells = []
+
+signal on_destroyed
 
 func _ready():
 	if has_node("InnerArea"):
@@ -21,10 +24,11 @@ func destroy():
 #		print("Destroying...", name)
 		$AnimationPlayer.play("Explode")
 		destroyed = true
+		emit_signal("on_destroyed", nav_grid_cells)
 		
 		if _should_spawn_item():
 			var item = _get_random_item()
-			get_parent().call_deferred("add_child", item)
+			get_parent().add_child(item)
 			item.global_transform.origin = self.global_transform.origin
 			
 #			print("Item spawned: ", item)

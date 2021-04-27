@@ -103,7 +103,6 @@ collision_mask = 0
 mode = 1
 gravity_scale = 0.0
 script = ExtResource( 3 )
-amount = 1.0
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 0.81643, 0.577444, 0, -0.577444, 0.81643, 0, 0, 0, 1, 0, 1.88725, 0 )
