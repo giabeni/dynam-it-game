@@ -13,8 +13,9 @@ export(float) var RUN_SPEED = 20
 export(float) var ANGULAR_ACCELERATION = 7
 export(float) var ACCELERATION = 6
 export(float) var GRAVITY = 5
+export(float) var INERTIA = 5
 
-var player: Spatial
+var player: KinematicBody
 var body: Spatial
 var gimbalH: Spatial
 var gimbalV: Spatial
@@ -29,6 +30,10 @@ var movement_speed = 0
 var velocity = Vector3.ZERO
 var vertical_velocity = 0
 
+onready var camera_position: Position3D = $h/v/DefaultCameraPosition
+onready var default_camera_position: Position3D = $h/v/DefaultCameraPosition
+onready var aim_camera_postion: Position3D = $h/v/AimCameraPosition
+onready var camera: Camera = $h/v/Camera
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -65,10 +70,10 @@ func _physics_process(delta):
 #		strafe_dir = direction
 		direction = direction.rotated(Vector3.UP, h_rot).normalized()
 		
-		if not Input.is_action_pressed("run"):
-			movement_speed = RUN_SPEED
-		else:
-			movement_speed = WALK_SPEED
+#		if not Input.is_action_pressed("run"):
+		movement_speed = RUN_SPEED
+#		else:
+#			movement_speed = WALK_SPEED
 		
 	else:
 		movement_speed = 0
@@ -93,63 +98,79 @@ func _physics_process(delta):
 		vertical_velocity = 0
 	
 	# Main movement
-	velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP)
+	velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, is_instance_valid(player.grabbed_object))
+	
+	# Interact with rigid bodies
+	for col in player.get_slide_count():
+		var collision = player.get_slide_collision(col)
+		if collision.collider.is_in_group("Pushables") and (not is_instance_valid(player.grabbed_object) or collision.collider_id != player.grabbed_object.get_instance_id()):
+			(collision.collider as RigidBody).apply_central_impulse(-collision.normal * INERTIA * 0.1)
 	
 	#Zoom
 	current_zoom = lerp(current_zoom, zoom_factor, delta * ZOOM_SPEED)
 	gimbalH.set_scale(Vector3(current_zoom,current_zoom,current_zoom))
+	
+	# Camera change
+	if camera.translation.distance_to(camera_position.translation) > 0.01:
+		camera.translation = camera.translation.linear_interpolate(camera_position.translation, delta * 5)
 
 
-func _physics_process_wird(delta):
-	# Horizontal Translation ----------------------
-	if Input.is_action_just_pressed("move_left"):
-		h_rot = lerp(player.rotation.y, player.rotation.y + deg2rad(90), 1)
-		print("new hrot left:", h_rot)
-	elif Input.is_action_just_pressed("move_right"):
-		h_rot = lerp(player.rotation.y, player.rotation.y - deg2rad(90), 1)
-		print("new hrot right:", h_rot)
-#	elif Input.is_action_pressed("move_backward"):
-#		h_rot += 180
-		
-	if Input.is_action_pressed("move_forward") or Input.is_action_pressed("move_backward"):
-		
-#		strafe_dir = direction
-		var front_back = 1 if Input.is_action_pressed("move_forward") else -1
-		direction = -player.global_transform.basis.z.normalized() * front_back
-		
-		if not Input.is_action_pressed("run"):
-			movement_speed = RUN_SPEED
-		else:
-			movement_speed = WALK_SPEED
-		
-	else:
-		movement_speed = 0
-#		strafe_dir = Vector3.ZERO
+func set_camera_position(pos: String):
+	if pos == "DEFAULT":
+		camera_position = default_camera_position
+	elif pos == "AIM":
+		camera_position = aim_camera_postion
 
-	velocity = lerp(velocity, direction * movement_speed, delta * ACCELERATION)
-	
-	# Body rotation
-#	var angle_dir_rot = atan2(-direction.x, -direction.z) - player.rotation.y
-	
-	if (abs(player.rotation.y - h_rot)) > 0.0001:
-		var lerp_rot = lerp_angle(player.rotation.y, h_rot,delta * ANGULAR_ACCELERATION * 1)
-		player.rotation.y = lerp_rot
-	
-	# Camera rotation
-#	gimbalH.rotate_y(deg2rad(-mouse_rotation.x)*delta*MOUSE_SENSITIVITY)
-#	gimbalV.rotate_x(deg2rad(-mouse_rotation.y)*delta*MOUSE_SENSITIVITY)
-#	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -MAX_ROTATION, MAX_ROTATION)
-#	mouse_rotation = Vector2()
-	
-	# Vertical velocity
-	if not player.is_on_floor():
-		vertical_velocity += GRAVITY * delta
-	else:
-		vertical_velocity = 0
-	
-	# Main movement
-	velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP)
-	
-	#Zoom
-#	current_zoom = lerp(current_zoom, zoom_factor, delta * ZOOM_SPEED)
-#	gimbalH.set_scale(Vector3(current_zoom,current_zoom,current_zoom))
+#func _physics_process_wird(delta):
+#	# Horizontal Translation ----------------------
+#	if Input.is_action_just_pressed("move_left"):
+#		h_rot = lerp(player.rotation.y, player.rotation.y + deg2rad(90), 1)
+#		print("new hrot left:", h_rot)
+#	elif Input.is_action_just_pressed("move_right"):
+#		h_rot = lerp(player.rotation.y, player.rotation.y - deg2rad(90), 1)
+#		print("new hrot right:", h_rot)
+##	elif Input.is_action_pressed("move_backward"):
+##		h_rot += 180
+#
+#	if Input.is_action_pressed("move_forward") or Input.is_action_pressed("move_backward"):
+#
+##		strafe_dir = direction
+#		var front_back = 1 if Input.is_action_pressed("move_forward") else -1
+#		direction = -player.global_transform.basis.z.normalized() * front_back
+#
+##		if not Input.is_action_pressed("run"):
+#		movement_speed = RUN_SPEED
+##		else:
+##			movement_speed = WALK_SPEED
+#
+#	else:
+#		movement_speed = 0
+##		strafe_dir = Vector3.ZERO
+#
+#	velocity = lerp(velocity, direction * movement_speed, delta * ACCELERATION)
+#
+#	# Body rotation
+##	var angle_dir_rot = atan2(-direction.x, -direction.z) - player.rotation.y
+#
+#	if (abs(player.rotation.y - h_rot)) > 0.0001:
+#		var lerp_rot = lerp_angle(player.rotation.y, h_rot,delta * ANGULAR_ACCELERATION * 1)
+#		player.rotation.y = lerp_rot
+#
+#	# Camera rotation
+##	gimbalH.rotate_y(deg2rad(-mouse_rotation.x)*delta*MOUSE_SENSITIVITY)
+##	gimbalV.rotate_x(deg2rad(-mouse_rotation.y)*delta*MOUSE_SENSITIVITY)
+##	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -MAX_ROTATION, MAX_ROTATION)
+##	mouse_rotation = Vector2()
+#
+#	# Vertical velocity
+#	if not player.is_on_floor():
+#		vertical_velocity += GRAVITY * delta
+#	else:
+#		vertical_velocity = 0
+#
+#	# Main movement
+#	velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP)
+#
+#	#Zoom
+##	current_zoom = lerp(current_zoom, zoom_factor, delta * ZOOM_SPEED)
+##	gimbalH.set_scale(Vector3(current_zoom,current_zoom,current_zoom))

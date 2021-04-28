@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
@@ -126,11 +126,24 @@ tracks/3/keys = {
 radius = 0.956773
 height = 0.579931
 
-[node name="Barrel" type="StaticBody" groups=[
+[sub_resource type="CylinderShape" id=7]
+radius = 1.39297
+height = 3.35153
+
+[node name="Barrel" type="RigidBody" groups=[
+"Grabbables",
 "Obstacles",
+"Pushables",
 ]]
 collision_layer = 5
 collision_mask = 3
+mass = 10.0
+gravity_scale = 2.0
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+linear_damp = 1.0
+angular_damp = 1.0
 script = ExtResource( 2 )
 ITEMS_SCENES = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 10 ) ]
 ITEM_PROB = 0.5
@@ -182,3 +195,13 @@ collision_mask = 7
 [node name="CollisionShape3" type="CollisionShape" parent="InnerArea"]
 transform = Transform( -1, 1.49667e-07, 1.9991e-08, 0, 0.132394, -0.991197, -1.50996e-07, -0.991197, -0.132394, 0.012893, 1.41849, 0.0727537 )
 shape = SubResource( 6 )
+
+[node name="BulletArea" type="Area" parent="."]
+monitoring = false
+monitorable = false
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape3" type="CollisionShape" parent="BulletArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012893, 1.44695, 0.0727537 )
+shape = SubResource( 7 )

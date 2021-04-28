@@ -15,6 +15,7 @@ export(float) var RUN_SPEED = 14
 export(float) var ANGULAR_ACCELERATION = 7
 export(float) var ACCELERATION = 4
 export(float) var GRAVITY = 5
+export(float) var INERTIA = 3
 
 var navigation: NavGrid
 var npc: Spatial
@@ -65,7 +66,7 @@ func _physics_process(delta):
 		vertical_velocity = 0
 	
 	# Main movement
-	velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP)
+	velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
 
 
 func move_to(target_pos, custom_path = null):

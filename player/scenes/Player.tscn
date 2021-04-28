@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=2]
+[gd_scene load_steps=57 format=2]
 
 [ext_resource path="res://controller/3rdPersonController.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/models/Skin.material" type="Material" id=2]
@@ -179,6 +179,9 @@ bind/21/pose = Transform( -1, -1.50505e-05, -5.33379e-07, -3.56992e-07, -0.01171
 bind/22/name = "pole_target._r"
 bind/22/bone = -1
 bind/22/pose = Transform( 1, 0, 7.15256e-07, -5.68434e-14, 1, -1.19209e-07, -7.15256e-07, 0, 1, 0.260682, -0.722117, -0.963032 )
+
+[sub_resource type="BoxShape" id=41]
+extents = Vector3( 1.2096, 1, 1.20184 )
 
 [sub_resource type="Animation" id=6]
 length = 2.29167
@@ -3448,7 +3451,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 38 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2380, 160 )
-node_connections = [ "output", 0, "Slash", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
+node_connections = [ "output", 0, "Slash", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3553,7 +3556,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [ NodePath("HandRight") ]
+bones/15/bound_children = [  ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3601,8 +3604,18 @@ material/3 = null
 material/4 = null
 material/5 = null
 
+[node name="CarryArea" type="Area" parent="CharacterArmature/Skeleton/Body"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48782, 1.46934 )
+monitorable = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape" type="CollisionShape" parent="CharacterArmature/Skeleton/Body/CarryArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.414332 )
+shape = SubResource( 41 )
+
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.90994, 0.283141, 0.30305, 0.151278, -0.453769, 0.878185, 0.386165, 0.844942, 0.37007, -0.318167, 1.26317, 0.695237 )
+transform = Transform( -0.982582, 0.173958, 0.0653495, -0.0309601, -0.499998, 0.865473, 0.183231, 0.848376, 0.496676, -0.411947, 1.14044, 0.623417 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3617,6 +3630,12 @@ __meta__ = {
 "_editor_description_": ""
 }
 
+[node name="Carry" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
+transform = Transform( -0.180464, 0.153262, -0.971564, -0.960368, -0.240798, 0.140398, -0.212434, 0.958398, 0.190642, -0.0887283, 1.07887, 0.397056 )
+__meta__ = {
+"_editor_description_": ""
+}
+
 [node name="BodyHitpoint" type="Position3D" parent="CharacterArmature"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5378, 0 )
 
@@ -3627,12 +3646,6 @@ MAX_ROTATION = 0.0
 WALK_SPEED = 7.0
 RUN_SPEED = 14.0
 ACCELERATION = 4.0
-
-[node name="v" parent="Controller/h" index="0"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.440714, 0 )
-
-[node name="Camera" parent="Controller/h/v" index="0"]
-transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943142, 0, -0.0943142, 0.319712, 0, 0.547316, 1.57414 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
@@ -3698,5 +3711,3 @@ autoplay = true
 one_shot = true
 
 [connection signal="timeout" from="WeaponTimer" to="." method="_on_WeaponTimer_timeout"]
-
-[editable path="Controller"]

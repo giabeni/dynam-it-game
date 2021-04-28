@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://controller/Controller.gd" type="Script" id=1]
+
+[sub_resource type="SpatialMaterial" id=1]
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+albedo_color = Color( 0, 0.447059, 1, 1 )
 
 [node name="Controller" type="Spatial"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0 )
@@ -14,3 +20,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45646, 0 )
 [node name="Camera" type="ClippedCamera" parent="h/v"]
 transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943142, 0, -0.0943142, 0.319712, 0, 0.547, 1.574 )
 current = true
+
+[node name="AimCircle" type="CSGTorus" parent="h/v/Camera"]
+transform = Transform( 1, 0, 0, 0, -0.282944, -0.959136, 0, 0.959136, -0.282944, 0, 2.22968, -13.6621 )
+inner_radius = 0.23
+outer_radius = 0.296
+sides = 16
+material = SubResource( 1 )
+
+[node name="AimCameraPosition" type="Position3D" parent="h/v"]
+transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943143, 0, -0.0943143, 0.319712, 0, 0.27178, 0.366815 )
+
+[node name="DefaultCameraPosition" type="Position3D" parent="h/v"]
+transform = Transform( 0.333333, 0, 0, 0, 0.319712, 0.0943143, 0, -0.0943143, 0.319712, 0, 0.253815, 1.66049 )

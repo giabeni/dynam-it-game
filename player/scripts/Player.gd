@@ -6,21 +6,25 @@ enum States {
 }
 
 onready var controller = $Controller
-onready var camera = $Controller/h/v/Camera
+onready var camera: Camera = $Controller/h/v/Camera
 onready var anim_tree: AnimationTree = $AnimationTree
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
 onready var weapon_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Weapon
+onready var carry_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Carry
 onready var smoke_particles: Particles = $SmokeParticles
 onready var footsteps = $Footsteps
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
 onready var breath_sound: AudioStreamPlayer3D = $BreathSound
 onready var weapon_timer: Timer = $WeaponTimer
+onready var grab_area: Area = $CharacterArmature/Skeleton/Body/CarryArea
+onready var aim_circle: CSGTorus = $Controller/h/v/Camera/AimCircle
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
 export(NodePath) var UI_PATH
+export(float) var THROW_FORCE = 700
 
 var bomb: Bomb
 var weapon: Weapon
@@ -35,6 +39,9 @@ var bomb_range = 2.5
 var max_bombs: int = 1
 var dropped_bombs: int = 0
 var player_ui: PlayerUI
+var grabbed_object: RigidBody = null
+var throw_force_amount = 0
+
 
 signal on_died
 signal on_gold_collected
@@ -42,7 +49,7 @@ signal on_gold_collected
 
 func _ready():
 	player_ui = get_node(UI_PATH)
-#	_spawn_bomb()
+	controller.set_camera_position("DEFAULT")	
 	set_physics_process(false)
 	set_process(false)
 	set_process_internal(false)
@@ -65,6 +72,16 @@ func _physics_process(delta):
 	if not has_bomb and not has_weapon and not is_instance_valid(bomb) and dropped_bombs > 0:
 		dropped_bombs = 0
 		_spawn_bomb()
+		
+	if is_alive():
+		_grab_objects()
+		if grabbed_object:
+			_throw_object()
+			(aim_circle.material as SpatialMaterial).albedo_color = Color("#0072ff").linear_interpolate(Color("#dd1a12"), throw_force_amount)
+			var aim_size = 1 + throw_force_amount
+			aim_circle.inner_radius = 0.23 - 0.22 * throw_force_amount
+		else:
+			aim_circle.hide()
 	
 
 func _spawn_bomb():
@@ -78,6 +95,36 @@ func _spawn_bomb():
 	bomb_loc.add_child(bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
+
+
+func _grab_objects():
+	if not is_instance_valid(grabbed_object):
+		if Input.is_action_just_pressed("grab"):
+			for body in grab_area.get_overlapping_bodies():
+				if body.is_in_group("Grabbables"):
+					body.set_grabbed_by(carry_loc, self)
+					grabbed_object = body
+					return
+	else:
+		if Input.is_action_just_pressed("grab"):
+			grabbed_object.set_grabbed_by(null, null)
+			grabbed_object = null
+			
+
+func _throw_object():
+	if Input.is_action_pressed("attack"):
+		aim_circle.show()
+		controller.set_camera_position("AIM")
+		throw_force_amount += 0.01
+		throw_force_amount = clamp(throw_force_amount, 0.1, 1)
+	elif Input.is_action_just_released("attack"):
+		grabbed_object.set_grabbed_by(null, self)
+		controller.set_camera_position("DEFAULT")	
+		var direction = aim_circle.global_transform.origin - camera.global_transform.origin
+		grabbed_object.throw(direction.normalized() * THROW_FORCE * throw_force_amount)
+		grabbed_object = null
+		throw_force_amount = 0
+		aim_circle.hide()
 
 
 func _set_animations(delta):

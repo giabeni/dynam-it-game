@@ -100,9 +100,9 @@ onready var nav_grid: NavGrid = $PaintedGrid
 export(Vector3) var MAP_SIZE = Vector3(60, 0, 60)
 export(float) var MIN_AREA = 6500
 export(float) var MAX_AREA = 7500
-export(int, 0, 100) var NPCS_COUNT = 15
-export(int, 0, 100) var GOLD_PILES_COUNT = 50
-export(int, 0, 100) var ITEMS_COUNT = 15
+export(int, 0, 100) var NPCS_COUNT = 5
+export(int, 0, 100) var GOLD_PILES_COUNT = 40
+export(int, 0, 100) var ITEMS_COUNT = 25
 export(int, 0, 100) var WALLS_COUNT = 30
 
 export(PackedScene) var GOLD_PILE_SCENE = preload("res://obstacles/scenes/GoldRocks.tscn")
