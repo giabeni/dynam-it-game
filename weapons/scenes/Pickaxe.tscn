@@ -160,7 +160,6 @@ radius = 1.3991
 ]]
 collision_layer = 16
 collision_mask = 0
-mode = 1
 gravity_scale = 0.0
 script = ExtResource( 4 )
 
@@ -215,6 +214,7 @@ transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 shape = SubResource( 4 )
 
 [node name="DamageFreeTimer" type="Timer" parent="."]
+wait_time = 0.6
 one_shot = true
 
 [node name="HitSound" type="AudioStreamPlayer3D" parent="."]

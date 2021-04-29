@@ -4,14 +4,14 @@ export(NodePath) var PLAYER_PATH  = ""
 export(NodePath) var BODY_PATH  = ""
 
 export(float) var MOUSE_SENSITIVITY = 8
-export(float) var MAX_ROTATION = 20
+export(float) var MAX_ROTATION = 10
 export(float) var MAX_ZOOM = 0.5
 export(float) var MIN_ZOOM = 1.5
 export(float) var ZOOM_SPEED = 2
-export(float) var WALK_SPEED = 10
-export(float) var RUN_SPEED = 20
+export(float) var WALK_SPEED = 7
+export(float) var RUN_SPEED = 14
 export(float) var ANGULAR_ACCELERATION = 7
-export(float) var ACCELERATION = 6
+export(float) var ACCELERATION = 4
 export(float) var GRAVITY = 5
 export(float) var INERTIA = 5
 
@@ -82,13 +82,19 @@ func _physics_process(delta):
 	velocity = lerp(velocity, -direction * movement_speed, delta * ACCELERATION)
 	
 	# Body rotation
-	var angle_dir_rot = atan2(-direction.x, -direction.z) - player.rotation.y
-	body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
+	if not player.aiming:
+		var angle_dir_rot = atan2(-direction.x, -direction.z) - player.rotation.y
+		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
+	else:
+		var aim_direction = -camera.global_transform.basis.z
+		var angle_dir_rot = atan2(aim_direction.x, aim_direction.z) - player.rotation.y
+		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION * 2)
 	
 	# Camera rotation
 	gimbalH.rotate_y(deg2rad(-mouse_rotation.x) * delta * MOUSE_SENSITIVITY)
 	gimbalV.rotate_x(deg2rad(-mouse_rotation.y) * delta * MOUSE_SENSITIVITY)
-	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -MAX_ROTATION, MAX_ROTATION)
+	var max_vertical_rotation = MAX_ROTATION if player.aiming else 0
+	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -max_vertical_rotation, max_vertical_rotation)
 	mouse_rotation = Vector2()
 	
 	# Vertical velocity
@@ -113,6 +119,7 @@ func _physics_process(delta):
 	# Camera change
 	if camera.translation.distance_to(camera_position.translation) > 0.01:
 		camera.translation = camera.translation.linear_interpolate(camera_position.translation, delta * 5)
+		camera.rotation = camera.rotation.linear_interpolate(camera_position.rotation, delta * 5)
 
 
 func set_camera_position(pos: String):

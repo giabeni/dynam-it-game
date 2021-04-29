@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://particles/smoke_03.png" type="Texture" id=1]
+
+[sub_resource type="Gradient" id=16]
+offsets = PoolRealArray( 0.0035461, 0.0992908, 1 )
+colors = PoolColorArray( 0.938965, 0.388074, 0.205399, 1, 0.939177, 0.388466, 0.20601, 0.903915, 0.941176, 0.392157, 0.211765, 0 )
+
+[sub_resource type="GradientTexture" id=11]
+gradient = SubResource( 16 )
+
+[sub_resource type="Curve" id=17]
+max_value = 1.94
+_data = [ Vector2( 0.0200669, 1.94 ), 0.0, 0.0, 0, 0, Vector2( 0.585284, 1.51329 ), -2.44866, -2.44866, 0, 0, Vector2( 0.983278, 0.163221 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=13]
+curve = SubResource( 17 )
+
+[sub_resource type="ParticlesMaterial" id=18]
+emission_shape = 2
+emission_box_extents = Vector3( 1, 1, 1 )
+direction = Vector3( 0, 1, 0 )
+spread = 111.67
+gravity = Vector3( 0, 1, 0 )
+initial_velocity = 0.63
+radial_accel = 0.29
+tangential_accel = -0.12
+damping = 0.5
+scale = 1.76
+scale_random = 1.0
+scale_curve = SubResource( 13 )
+color_ramp = SubResource( 11 )
+
+[sub_resource type="SpatialMaterial" id=15]
+flags_transparent = true
+vertex_color_use_as_albedo = true
+params_blend_mode = 1
+params_cull_mode = 2
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 1 )
+
+[sub_resource type="QuadMesh" id=19]
+material = SubResource( 15 )
+size = Vector2( 2, 4 )
+
+[node name="DustParticles" type="Particles"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.860842, 0 )
+emitting = false
+amount = 50
+lifetime = 3.0
+one_shot = true
+explosiveness = 0.46
+visibility_aabb = AABB( -6.47991, -4.9883, -6.33408, 12.7775, 15.0695, 12.7016 )
+local_coords = false
+process_material = SubResource( 18 )
+draw_pass_1 = SubResource( 19 )

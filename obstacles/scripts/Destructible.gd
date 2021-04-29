@@ -3,6 +3,7 @@ extends RigidBody
 class_name Destructible
 
 onready var hitpoints: Spatial = $Hitpoints
+onready var contact_sound_timer: SceneTreeTimer = get_tree().create_timer(0)
 
 export(Array, PackedScene) var ITEMS_SCENES = []
 export(float, 0, 1) var ITEM_PROB = 1
@@ -16,7 +17,11 @@ var grab_parent: Spatial = null
 var miner_parent = null
 var default_parent: Spatial
 var bullet_area: Area
+var hit_sounds = []
+var hit_sound_index = 0
+var outline: MeshInstance
 var thrown_timer: SceneTreeTimer
+var dust_particles: Particles
 
 var nav_grid_cells = []
 
@@ -32,12 +37,23 @@ func _ready():
 	if has_node("BulletArea"):
 		bullet_area = get_node("BulletArea")
 		bullet_area.connect("body_entered", self, "_on_BulletArea_body_entered")
+		
+	if has_node("HitSounds"):
+		hit_sounds = get_node("HitSounds").get_children()
+		hit_sounds.shuffle()
+		
+	if has_node("Outline"):
+		outline = get_node("Outline")
+		
+	if has_node("DustParticles"):
+		dust_particles = get_node("DustParticles")
+
 
 func _physics_process(delta):
-#	if is_instance_valid(grab_parent):
-#		self.global_transform = grab_parent.global_transform
-	pass
-		
+	if thrown and hit_sounds.size() > 0:
+		for body in get_colliding_bodies():
+			print("body contact ", body)
+			_on_contact(body)
 
 
 func destroy():
@@ -114,6 +130,8 @@ func set_grabbed_by(grab_node: Spatial, miner: KinematicBody):
 		bullet_area.monitoring = false
 		get_parent().remove_child(self)
 		grab_node.add_child(self)
+		if is_instance_valid(outline):
+			outline.hide()
 		self.global_transform = grab_parent.global_transform
 	
 		
@@ -140,15 +158,49 @@ func _on_BulletArea_body_entered(body):
 	if not thrown:
 		return
 		
+	if body.get_instance_id() == self.get_instance_id() or body.get_instance_id() == miner_parent.get_instance_id():
+		return
+	
+	print("bullet area = ", body.name)
+	
 	var impact = self.linear_velocity.length_squared() * self.mass
-	if body.is_in_group("Obstacles") and body.get_instance_id() != self.get_instance_id():
+	if body.is_in_group("Obstacles"):
 		print("Impact = ", impact)
 		if impact > body.MIN_IMPACT_TO_DESTROY:
 			body.destroy()
 		if impact > MIN_IMPACT_TO_DESTROY:
-			print("body = ", body.name)
 			destroy()
-	elif body.is_in_group("Miners") and body.is_alive() and body.get_instance_id() != miner_parent.get_instance_id():
+	elif body.is_in_group("Miners") and body.is_alive():
 		if impact > MIN_IMPACT_TO_DESTROY:
-			print("body = ", body.name)
 			destroy()
+		if impact > body.MIN_IMPACT_TO_BE_DIZZY:
+			body.set_dizzy(true)
+			
+
+func _on_contact(body):
+	if not thrown:
+		return
+		
+	if body.get_instance_id() == self.get_instance_id() or body.get_instance_id() == miner_parent.get_instance_id():
+		return
+		
+	if contact_sound_timer.time_left > 0:
+		return
+	
+	print("contact with = ", body.name)
+	_play_hit_sound()
+	contact_sound_timer = get_tree().create_timer(0.2)
+	
+
+func _play_hit_sound():
+	if hit_sounds.size() <= 0:
+		return
+	if is_instance_valid(dust_particles):
+		dust_particles.emitting = true
+	(hit_sounds[hit_sound_index] as AudioStreamPlayer3D).pitch_scale = rand_range(0.9, 1.4)
+	(hit_sounds[hit_sound_index] as AudioStreamPlayer3D).play()
+	var volume = 400 * (linear_velocity.length() / 10)
+	(hit_sounds[hit_sound_index] as AudioStreamPlayer3D).unit_size = volume
+	hit_sound_index += 1
+	if hit_sound_index >= hit_sounds.size():
+		hit_sound_index = 0

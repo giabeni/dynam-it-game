@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/metal-hit-3.wav-05fd4edd2075c0d8df4256a36c40cb08.sample"
+
+[deps]
+
+source_file="res://obstacles/sounds/metal-hits/metal-hit-3.wav"
+dest_files=[ "res://.import/metal-hit-3.wav-05fd4edd2075c0d8df4256a36c40cb08.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

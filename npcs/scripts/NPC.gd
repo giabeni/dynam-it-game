@@ -21,12 +21,15 @@ onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 onready var breath_sound: AudioStreamPlayer3D = $BreathSound
 onready var weapon_timer: Timer = $WeaponTimer
 onready var random_following_timer: Timer = $RandomFollowingTimer
+onready var skeleton: Skeleton = $CharacterArmature/Skeleton
+onready var body_bone: PhysicalBone = $"CharacterArmature/Skeleton/Physical Bone abdomen"
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
 export var paused = true
 export(NodePath) var NAV_GRID_PATH = null
+export(float) var MIN_IMPACT_TO_BE_DIZZY = 2000
 
 var inner_area: Area 
 var bomb: Bomb
@@ -38,6 +41,7 @@ var blend_carry: float = 0
 var target_blend_carry: float = 0
 var state = States.EXPLORING
 var is_escaping_from_bomb = false
+var is_dizzy = false
 var escape_point = Vector3.INF
 var gold = 0
 var wall_position = Vector3(0, 0, 0)
@@ -101,7 +105,7 @@ func is_alive():
 func _set_animations(delta):
 	
 	if is_alive():
-		anim_tree.set("parameters/DeadOrAlive/current", 0)
+		anim_tree.set("parameters/DeadOrAlive/current", 0 if not is_dizzy else 2)
 		
 		var h_velocity: Vector2 = Vector2(controller.velocity.x, controller.velocity.z)
 		var vel_factor = h_velocity.length() / controller.RUN_SPEED
@@ -127,7 +131,7 @@ func _set_animations(delta):
 		
 
 func _can_drop_bomb():
-	return has_bomb and dropped_bombs < max_bombs and not has_weapon
+	return has_bomb and dropped_bombs < max_bombs and not has_weapon and not is_dizzy
 
 	
 func _on_bomb_dropped():
@@ -170,6 +174,9 @@ func on_explosion_hit():
 		$BombDetectionTimer.stop()
 		$BombEscapeTimer.stop()
 		$OnWallTimer.stop()
+		
+		yield(get_tree().create_timer(5), "timeout")
+		smoke_particles.emitting = false
 		
 func _drop_gold():
 	if gold > 0:
@@ -443,11 +450,14 @@ func on_weapon_collected(type: String):
 	weapon_loc.call_deferred("add_child", weapon)
 	weapon_timer.start(weapon.DURATION)
 		
-func on_weapon_hit():
+func on_weapon_hit(impulse = Vector3.ZERO):
 	breath_sound.stop()
 	$HurtSound2.play()
 	state = States.DEAD
 	emit_signal("on_died")
+#	skeleton.physical_bones_add_collision_exception(get_rid())
+#	skeleton.physical_bones_start_simulation()
+#	body_bone.apply_central_impulse(impulse)
 	controller.set_physics_process(false)
 	
 
@@ -470,7 +480,8 @@ func is_overlapping_body():
 		return false
 	
 	for body in inner_area.get_overlapping_bodies():
-		if body.get_instance_id() != self.get_instance_id():
+		if body.get_instance_id() != self.get_instance_id() and not body is PhysicalBone:
+			print(body, " ", body.name)
 			return true
 	return false
 	
@@ -479,3 +490,9 @@ func remove_inner_area():
 	if not is_instance_valid(inner_area):
 		return false
 	inner_area.call_deferred("queue_free")
+	
+	
+func set_dizzy(dizzy: bool):
+	is_dizzy = dizzy
+	anim_tree.set("parameters/DeadOrAlive/current", 0 if not dizzy else 2)
+	

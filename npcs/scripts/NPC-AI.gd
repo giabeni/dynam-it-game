@@ -66,7 +66,8 @@ func _physics_process(delta):
 		vertical_velocity = 0
 	
 	# Main movement
-	velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
+	if npc.is_alive() and not npc.is_dizzy:
+		velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
 
 
 func move_to(target_pos, custom_path = null):

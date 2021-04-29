@@ -120,6 +120,7 @@ grab={
 3d_physics/layer_3="Destructable"
 3d_physics/layer_4="Bombs"
 3d_physics/layer_5="Items"
+3d_physics/layer_6="Terrain"
 
 [physics]
 

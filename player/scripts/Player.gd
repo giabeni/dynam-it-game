@@ -41,6 +41,7 @@ var dropped_bombs: int = 0
 var player_ui: PlayerUI
 var grabbed_object: RigidBody = null
 var throw_force_amount = 0
+var aiming = false
 
 
 signal on_died
@@ -49,12 +50,18 @@ signal on_gold_collected
 
 func _ready():
 	player_ui = get_node(UI_PATH)
+	
 	controller.set_camera_position("DEFAULT")	
 	set_physics_process(false)
 	set_process(false)
 	set_process_internal(false)
 	set_physics_process_internal(false)
 	controller.set_physics_process(false)
+	
+	yield(get_tree(), "physics_frame")
+	player_ui.set_dynamites(max_bombs)
+	player_ui.set_speed(controller.RUN_SPEED)
+	player_ui.set_range(bomb_range)
 	
 
 func enable():
@@ -79,7 +86,13 @@ func _physics_process(delta):
 			_throw_object()
 			(aim_circle.material as SpatialMaterial).albedo_color = Color("#0072ff").linear_interpolate(Color("#dd1a12"), throw_force_amount)
 			var aim_size = 1 + throw_force_amount
-			aim_circle.inner_radius = 0.23 - 0.22 * throw_force_amount
+			aim_circle.inner_radius = aim_circle.outer_radius - aim_circle.outer_radius * throw_force_amount
+		elif has_weapon:
+			if Input.is_action_pressed("attack"):
+				aim_circle.show()
+				aiming = true
+				aim_circle.inner_radius = aim_circle.outer_radius * 0.8
+				
 		else:
 			aim_circle.hide()
 	
@@ -104,28 +117,38 @@ func _grab_objects():
 				if body.is_in_group("Grabbables"):
 					body.set_grabbed_by(carry_loc, self)
 					grabbed_object = body
+					if is_instance_valid(bomb):
+						bomb.hide()
 					return
 	else:
 		if Input.is_action_just_pressed("grab"):
 			grabbed_object.set_grabbed_by(null, null)
 			grabbed_object = null
+			throw_force_amount = 0
+			if is_instance_valid(bomb):
+				bomb.show()
 			
 
 func _throw_object():
 	if Input.is_action_pressed("attack"):
 		aim_circle.show()
+		aiming = true
 		controller.set_camera_position("AIM")
 		throw_force_amount += 0.01
 		throw_force_amount = clamp(throw_force_amount, 0.1, 1)
 	elif Input.is_action_just_released("attack"):
 		grabbed_object.set_grabbed_by(null, self)
-		controller.set_camera_position("DEFAULT")	
-		var direction = aim_circle.global_transform.origin - camera.global_transform.origin
+		controller.set_camera_position("DEFAULT")
+		var direction = -camera.global_transform.basis.z
+		hurt_sound.play()
+		anim_tree.set("parameters/Punch/active", true)		
 		grabbed_object.throw(direction.normalized() * THROW_FORCE * throw_force_amount)
 		grabbed_object = null
 		throw_force_amount = 0
+		aiming = false
 		aim_circle.hide()
-
+		if is_instance_valid(bomb):
+			bomb.show()
 
 func _set_animations(delta):
 	
@@ -158,7 +181,7 @@ func _set_animations(delta):
 
 
 func _can_drop_bomb():
-	return has_bomb
+	return has_bomb and not is_instance_valid(grabbed_object)
 
 	
 func _on_bomb_dropped():
@@ -177,11 +200,15 @@ func _input(event: InputEvent):
 	if event.is_action_released("drop_bomb"):
 		if has_weapon:
 			_attack()
+			aiming = false
+			
 		elif _can_drop_bomb():
 			_drop_bomb()
 		
-	elif event.is_action_pressed("attack"):
+	elif event.is_action_released("attack"):
 		_attack()
+		aiming = false
+		
 		
 	elif event.is_action("reset"):
 		get_tree().reload_current_scene()
@@ -218,14 +245,17 @@ func on_powerup_collected(type, amount):
 	if type == "VELOCITY":
 		controller.RUN_SPEED += amount
 		player_ui.show_power_up_text("Velocity increased to " + str(controller.RUN_SPEED))
+		player_ui.set_speed(controller.RUN_SPEED)
 	elif type == "BOMB_RANGE":
 		bomb_range += amount
+		player_ui.show_power_up_text("Dynamites range increased to " + str(bomb_range))
+		player_ui.set_range(bomb_range)
 		if is_instance_valid(bomb):
 			bomb.set_range(bomb_range)
-			player_ui.show_power_up_text("Dynamites range increased to " + str(bomb_range))
 	elif type == "EXTRA_BOMB":
 		max_bombs += 1
 		player_ui.show_power_up_text("Max active dynamites incresead to " + str(max_bombs))
+		player_ui.set_dynamites(max_bombs)
 
 
 func _get_weapon_scene(type: String):
@@ -267,7 +297,7 @@ func on_weapon_hit():
 	
 
 func _attack():
-	if has_weapon and is_instance_valid(weapon):
+	if has_weapon and is_instance_valid(weapon) and weapon.damage_free_timer.is_stopped():
 		weapon.start_attack(1.042, 0.27)
 		anim_tree.set("parameters/Slash/active", true)
 
@@ -279,3 +309,13 @@ func _on_WeaponTimer_timeout():
 		player_ui.set_current_powerup_timer(0)
 		if dropped_bombs < max_bombs and not has_bomb:
 			_spawn_bomb()
+
+
+func _on_CarryArea_body_entered(body):
+	if body.is_in_group("Grabbables") and "outline" in body:
+		body.outline.show()
+
+
+func _on_CarryArea_body_exited(body):
+	if body.is_in_group("Grabbables") and "outline" in body:
+		body.outline.hide()

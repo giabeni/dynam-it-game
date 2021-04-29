@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://tiles/models/TNT_002.material" type="Material" id=1]
 [ext_resource path="res://tiles/models/Paper.material" type="Material" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://particles/particle_materials/ExplosionSmoke.material" type="Material" id=9]
 [ext_resource path="res://particles/particle_materials/ExplosionFlames.material" type="Material" id=10]
 [ext_resource path="res://particles/materials/explosion-smoke.material" type="Material" id=11]
+[ext_resource path="res://particles/scenes/DustParticles.tscn" type="PackedScene" id=12]
 [ext_resource path="res://assets/forcefield_shader/force_field1.tres" type="Shader" id=13]
 
 [sub_resource type="ArrayMesh" id=1]
@@ -334,14 +335,26 @@ tracks/11/keys = {
 "method": "_do_damage"
 } ]
 }
+tracks/12/type = "method"
+tracks/12/path = NodePath(".")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 4.99604 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
 
 [node name="TNTPile" type="RigidBody" groups=[
 "Bombs",
 ]]
 collision_layer = 9
 collision_mask = 0
-mass = 0.01
-continuous_cd = true
 script = ExtResource( 4 )
 
 [node name="tnt_pile" type="MeshInstance" parent="."]
@@ -364,6 +377,7 @@ one_shot = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20757, 0, 0 )
 light_color = Color( 1, 0.831373, 0.0666667, 1 )
 light_energy = 0.0
+omni_range = 0.0
 omni_attenuation = 2.21914
 
 [node name="RangeLight" type="OmniLight" parent="."]
@@ -436,6 +450,7 @@ process_material = ExtResource( 9 )
 draw_pass_1 = SubResource( 8 )
 
 [node name="DamageArea" type="Area" parent="."]
+monitoring = false
 monitorable = false
 collision_layer = 0
 collision_mask = 4
@@ -459,6 +474,9 @@ stream = ExtResource( 7 )
 unit_size = 40.0
 max_db = 4.0
 pitch_scale = 0.8
+
+[node name="DustParticles" parent="." instance=ExtResource( 12 )]
+lifetime = 4.0
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]

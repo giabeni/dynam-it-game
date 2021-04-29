@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/woodhit-2.wav-2b9ec7ae01c7a7cc76c684de9f88fa1f.sample"
+
+[deps]
+
+source_file="res://obstacles/sounds/wood-hits/woodhit-2.wav"
+dest_files=[ "res://.import/woodhit-2.wav-2b9ec7ae01c7a7cc76c684de9f88fa1f.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

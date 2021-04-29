@@ -5,6 +5,9 @@ class_name PlayerUI
 onready var gold_btn: Button = $VBoxContainer/TopBar/GoldContainer/GoldButton
 onready var timer_btn: Button = $VBoxContainer/TopBar/GoldContainer2/TimerButton
 onready var npcs_btn: Button = $VBoxContainer/TopBar/GoldContainer3/NPCs
+onready var dynamites_btn: Button = $VBoxContainer/Footer2/Center/HBoxContainer/DynamitesContainer/DynamitesButton
+onready var range_btn: Button = $VBoxContainer/Footer2/Center/HBoxContainer/RangeContainer/RangeButton
+onready var speed_btn: Button = $VBoxContainer/Footer2/Center/HBoxContainer/SpeedContainer/SpeedButton
 onready var powerup_text = $VBoxContainer/Footer/CenterContainer/PowerUpLabel
 onready var powerup_timer: Control = $VBoxContainer/Footer2/PowerUpTimer
 onready var powerup_timer_progress: ProgressBar = $VBoxContainer/Footer2/PowerUpTimer/PowerUpProgress
@@ -33,6 +36,17 @@ func set_npcs_alive(alive: int):
 func set_timer(secs: int):
 	timer_btn.text = str(secs) + " s"
 	
+	
+func set_dynamites(dynamites):
+	dynamites_btn.text = str(dynamites)
+	
+func set_range(_range):
+	range_btn.text = str(_range)
+	
+func set_speed(speed):
+	speed_btn.text = str(speed)
+
+
 func show_power_up_text(text: String):
 	powerup_text.text = text
 	$AnimationPlayer.play("ShowPowerUpText")
@@ -40,7 +54,8 @@ func show_power_up_text(text: String):
 func set_powerup_timer(icon: String, max_time: float):
 	powerup_timer_icon.texture = load(icon)
 	powerup_timer_progress.max_value = max_time
-	powerup_timer.show()
+	powerup_timer_icon.show()
+	powerup_timer_progress.show()
 	
 func set_current_powerup_timer(time: float):
 	powerup_timer_progress.value = time

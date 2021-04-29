@@ -671,6 +671,7 @@ navmesh = SubResource( 17 )
 mesh_library = ExtResource( 2 )
 cell_size = Vector3( 1.5, 1, 1.5 )
 cell_scale = 1.5
+collision_layer = 33
 data = {
 "cells": PoolIntArray(  )
 }

@@ -55,6 +55,7 @@ func start_attack(duration = 2, delay = 0):
 	if delay > 0:
 		yield(get_tree().create_timer(delay), "timeout")
 		
+	damage_free_timer.stop()
 	state = States.ATTACKING
 	yield(get_tree().create_timer(duration), "timeout")
 	state = States.EQUIPED
@@ -72,11 +73,14 @@ func _on_DamageArea_body_entered(body: Spatial):
 		return
 		
 	if body.has_method("on_weapon_hit") and body.is_alive():
-		body.on_weapon_hit()
+		var dir = global_transform.origin.direction_to(body.global_transform.origin)
+		body.on_weapon_hit(dir * 200)
 		damage_free_timer.start()
+		state = States.EQUIPED
 	elif body.has_method("destroy"):
 		body.destroy()
 		damage_free_timer.start()
-	
+		state = States.EQUIPED
+		
 	hit_sound.play()
 		
