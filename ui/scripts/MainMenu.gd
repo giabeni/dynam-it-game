@@ -14,7 +14,7 @@ var MATCH_SCENE: PackedScene
 
 
 func _ready():
-	MATCH_SCENE = preload("res://test/Test Scene.tscn")
+	MATCH_SCENE = preload("res://map/scenes/ProceduralMap.tscn")
 
 	
 func _process(delta):

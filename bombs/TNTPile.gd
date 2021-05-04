@@ -72,7 +72,10 @@ func _do_damage():
 			var ray_collision = space.intersect_ray(ray_origin, hitpoint, [], 1)
 #			print("Ray bomb to MINER:  ", ray_collision)
 			if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
-				body.on_explosion_hit()
+				var point_direction = global_transform.origin.direction_to(body.body_hitpoint.global_transform.origin)
+				var impulse = (point_direction).normalized() * 2000
+				impulse.y = 1000
+				body.on_explosion_hit(impulse)
 			# case collide with bomb that player is holding
 			elif not ray_collision.empty() and "bomb" in body and is_instance_valid(body.bomb) and ray_collision.collider.get_instance_id() == body.bomb.get_instance_id():
 				body.on_explosion_hit()

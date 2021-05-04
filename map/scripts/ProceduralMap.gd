@@ -138,7 +138,7 @@ signal npcs_spawned
 func _ready():
 #	$PaintedGrid.hide()
 	_set_npcs_paused(true)
-	randomize()
+#	randomize()
 	
 	# Adjust the size of grid to match the map size
 	GRID_SIZE = MAP_SIZE / grid.cell_size
@@ -408,7 +408,6 @@ func _generate_grid_map():
 	
 	# Fill remaining doors with walls
 	for p in range(0, cur_points.size()):
-		print("Door: ", p)
 		var cur_point = cur_points[p]
 		var world_pos = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
 		$Camera.global_transform.origin.x = world_pos.x
@@ -446,6 +445,7 @@ func _spawn_npcs():
 			npc.paused = true
 			npc.obstacles = obstacles
 			npc.gold_piles = gold_piles
+			npc.player = player
 			npcs.add_child(npc)
 			npc.global_transform.origin = middle_point + Vector3.UP * 0.5
 			yield(get_tree(), "physics_frame")

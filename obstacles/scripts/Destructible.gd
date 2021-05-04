@@ -52,7 +52,6 @@ func _ready():
 func _physics_process(delta):
 	if thrown and hit_sounds.size() > 0:
 		for body in get_colliding_bodies():
-			print("body contact ", body)
 			_on_contact(body)
 
 
@@ -67,6 +66,7 @@ func destroy():
 			var item = _get_random_item()
 			get_parent().add_child(item)
 			item.global_transform.origin = self.global_transform.origin
+			item.global_transform.origin.y = 1.2
 			
 #			print("Item spawned: ", item)
 
@@ -99,7 +99,6 @@ func is_blocking_npc():
 	inner_area.scale = Vector3(5, 5, 5)
 	for body in inner_area.get_overlapping_bodies():
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Miners"):
-			print("Obstacle near NPC")
 			return true
 	return false
 
@@ -161,11 +160,9 @@ func _on_BulletArea_body_entered(body):
 	if body.get_instance_id() == self.get_instance_id() or body.get_instance_id() == miner_parent.get_instance_id():
 		return
 	
-	print("bullet area = ", body.name)
-	
+
 	var impact = self.linear_velocity.length_squared() * self.mass
 	if body.is_in_group("Obstacles"):
-		print("Impact = ", impact)
 		if impact > body.MIN_IMPACT_TO_DESTROY:
 			body.destroy()
 		if impact > MIN_IMPACT_TO_DESTROY:
@@ -187,7 +184,6 @@ func _on_contact(body):
 	if contact_sound_timer.time_left > 0:
 		return
 	
-	print("contact with = ", body.name)
 	_play_hit_sound()
 	contact_sound_timer = get_tree().create_timer(0.2)
 	

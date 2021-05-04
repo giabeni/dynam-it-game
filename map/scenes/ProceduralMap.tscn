@@ -667,7 +667,9 @@ material = ExtResource( 3 )
 [node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Map/Navigation"]
 navmesh = SubResource( 17 )
 
-[node name="GridMap" type="GridMap" parent="Map/Navigation/NavigationMeshInstance"]
+[node name="GridMap" type="GridMap" parent="Map/Navigation/NavigationMeshInstance" groups=[
+"Terrain",
+]]
 mesh_library = ExtResource( 2 )
 cell_size = Vector3( 1.5, 1, 1.5 )
 cell_scale = 1.5
@@ -689,6 +691,8 @@ __meta__ = {
 [node name="Items" type="Spatial" parent="Map/Navigation"]
 
 [node name="NPCs" type="Spatial" parent="Map/Navigation"]
+
+[node name="Footprints" type="Spatial" parent="Map/Navigation"]
 
 [node name="Camera" type="Camera" parent="Map"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 109.063, 0 )

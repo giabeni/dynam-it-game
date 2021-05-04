@@ -106,7 +106,7 @@ collision_mask = 3
 mode = 1
 script = ExtResource( 2 )
 ITEMS_SCENES = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
-ITEM_PROB = 0.6
+ITEM_PROB = 0.3
 MIN_IMPACT_TO_DESTROY = 4000.0
 
 [node name="support001" type="MeshInstance" parent="."]

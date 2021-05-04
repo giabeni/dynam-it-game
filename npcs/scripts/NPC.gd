@@ -42,6 +42,8 @@ var target_blend_carry: float = 0
 var state = States.EXPLORING
 var is_escaping_from_bomb = false
 var is_dizzy = false
+var time_to_die = 0
+var impulse = Vector3.ZERO
 var escape_point = Vector3.INF
 var gold = 0
 var wall_position = Vector3(0, 0, 0)
@@ -50,6 +52,7 @@ var max_bombs: int = 1
 var dropped_bombs: int = 0
 var gold_piles: Spatial
 var obstacles: Spatial
+var player: KinematicBody
 
 signal on_died
 signal found_escape_point
@@ -87,6 +90,13 @@ func _physics_process(delta):
 #		print("on wall")
 		$OnWallTimer.start()
 		wall_position = global_transform.origin
+		
+	if not is_alive():
+		var vel = Vector3.DOWN * controller.GRAVITY + impulse * delta
+		if impulse != Vector3.ZERO:
+			impulse = lerp(impulse, Vector3.ZERO, delta * controller.ACCELERATION)
+#		print("Vel = ", vel)
+		move_and_slide(vel, Vector3.UP)
 
 func _spawn_bomb():
 	if has_weapon:
@@ -126,13 +136,19 @@ func _set_animations(delta):
 		
 	elif state == States.DEAD:
 #		print("dead: ", anim_tree.get("parameters/DeadOrAlive/current"))
+		if time_to_die > 0:
+			yield(get_tree().create_timer(time_to_die), "timeout")
 		anim_tree.set("parameters/DeadOrAlive/current", 1)
 		
 		
 
 func _can_drop_bomb():
 	return has_bomb and dropped_bombs < max_bombs and not has_weapon and not is_dizzy
+		
 
+func _can_attack():
+	return has_weapon and not has_bomb and not is_dizzy
+	
 	
 func _on_bomb_dropped():
 	has_bomb = false
@@ -160,12 +176,16 @@ func _drop_bomb():
 	is_escaping_from_bomb = true
 	
 
-func on_explosion_hit():
+func on_explosion_hit(_impulse = Vector3.ZERO):
 	if is_alive():
 #		print(name, "  DIED!!!!")
 		breath_sound.stop()
 		smoke_particles.emitting = true
+		impulse = _impulse
 		state = States.DEAD
+		anim_tree.set("parameters/BlendRun/blend_position", 0)
+		anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
+		controller.velocity = Vector3.ZERO
 		_drop_gold()
 		emit_signal("on_died")
 		controller.set_physics_process(false)
@@ -216,7 +236,12 @@ func _get_random_destructible_target():
 	else:
 		return null
 		
-	
+
+func _get_player_position():
+	if is_instance_valid(player):
+		return player.global_transform.origin
+	else:
+		return null
 
 
 func _get_run_away_point(from: Vector3):
@@ -315,6 +340,10 @@ func _on_TargetDetectionTimer_timeout():
 				controller.target = random_target
 				state = States.EXPLORING
 				random_following_timer.stop()
+			elif is_instance_valid(player) and player.is_alive():
+				controller.target = player
+				state = States.EXPLORING
+				random_following_timer.stop()
 			else:
 				var random_point = _get_random_target_point()
 				if random_following_timer.is_stopped():
@@ -334,7 +363,7 @@ func _on_BombIntervalTimer_timeout():
 				# if gets close to target, drops a bomb
 				if _can_drop_bomb():
 					_drop_bomb()
-				elif has_weapon:
+				elif _can_attack():
 					_attack()
 
 
@@ -349,7 +378,8 @@ func _on_BombDetectionTimer_timeout():
 				_get_run_away_point(body.global_transform.origin)
 				yield(self, "found_escape_point")
 				controller.move_to(escape_point)
-				(body as Bomb).connect("bomb_exploded", self, "_on_BombEscapeTimer_timeout")
+				if is_instance_valid(body):
+					(body as Bomb).connect("bomb_exploded", self, "_on_BombEscapeTimer_timeout")
 				$BombEscapeTimer.start()
 	#			print("Escaping!!!!! ", escape_point)
 				is_escaping_from_bomb = true
@@ -450,14 +480,23 @@ func on_weapon_collected(type: String):
 	weapon_loc.call_deferred("add_child", weapon)
 	weapon_timer.start(weapon.DURATION)
 		
-func on_weapon_hit(impulse = Vector3.ZERO):
+func on_weapon_hit(_impulse = Vector3.ZERO):
 	breath_sound.stop()
 	$HurtSound2.play()
+	time_to_die = 0
+	impulse = _impulse	
 	state = States.DEAD
 	emit_signal("on_died")
+	if is_instance_valid(bomb) and not bomb.is_dropped():
+		bomb.hide()
 #	skeleton.physical_bones_add_collision_exception(get_rid())
 #	skeleton.physical_bones_start_simulation()
 #	body_bone.apply_central_impulse(impulse)
+
+	anim_tree.set("parameters/BlendRun/blend_position", 0)
+	anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
+	controller.velocity = Vector3.ZERO
+#	move_and_slide(_impulse, Vector3.UP)
 	controller.set_physics_process(false)
 	
 

@@ -122,7 +122,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource( 2 )
 ITEMS_SCENES = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 8 ) ]
-ITEM_PROB = 0.5
+ITEM_PROB = 0.8
 MIN_IMPACT_TO_DESTROY = 5000.0
 
 [node name="support001" type="MeshInstance" parent="."]

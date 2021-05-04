@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/hit_wall.mp3-72ef65b96d1f993d083094c60576f8b3.mp3str"
+
+[deps]
+
+source_file="res://weapons/sounds/hit_wall.mp3"
+dest_files=[ "res://.import/hit_wall.mp3-72ef65b96d1f993d083094c60576f8b3.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

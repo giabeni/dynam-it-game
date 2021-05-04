@@ -56,6 +56,7 @@ func set_powerup_timer(icon: String, max_time: float):
 	powerup_timer_progress.max_value = max_time
 	powerup_timer_icon.show()
 	powerup_timer_progress.show()
+	powerup_timer.show()
 	
 func set_current_powerup_timer(time: float):
 	powerup_timer_progress.value = time

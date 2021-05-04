@@ -33,6 +33,7 @@ var vertical_velocity = 0
 onready var camera_position: Position3D = $h/v/DefaultCameraPosition
 onready var default_camera_position: Position3D = $h/v/DefaultCameraPosition
 onready var aim_camera_postion: Position3D = $h/v/AimCameraPosition
+onready var aim_weapon_camera_postion: Position3D = $h/v/WeaponCameraPosition
 onready var camera: Camera = $h/v/Camera
 
 func _ready():
@@ -59,6 +60,7 @@ func _input(event):
 	
 
 func _physics_process(delta):
+
 	# Horizontal Translation ----------------------
 	if Input.is_action_pressed("move_forward") ||  Input.is_action_pressed("move_backward") ||  Input.is_action_pressed("move_left") ||  Input.is_action_pressed("move_right"):
 		h_rot = gimbalH.global_transform.basis.get_euler().y
@@ -87,6 +89,7 @@ func _physics_process(delta):
 		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
 	else:
 		var aim_direction = -camera.global_transform.basis.z
+		direction = -aim_direction
 		var angle_dir_rot = atan2(aim_direction.x, aim_direction.z) - player.rotation.y
 		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION * 2)
 	
@@ -127,6 +130,8 @@ func set_camera_position(pos: String):
 		camera_position = default_camera_position
 	elif pos == "AIM":
 		camera_position = aim_camera_postion
+	elif pos == "AIM_WEAPON":
+		camera_position = aim_weapon_camera_postion
 
 #func _physics_process_wird(delta):
 #	# Horizontal Translation ----------------------

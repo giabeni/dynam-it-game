@@ -5,7 +5,7 @@ var footsteps = []
 var enabled = true
 
 func _ready():
-	randomize()
+#	randomize()
 	footsteps = get_children()
 
 func play_random_footstep():

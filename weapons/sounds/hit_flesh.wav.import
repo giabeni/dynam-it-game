@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/hit_flesh.wav-80f82d780d9d1d25825db9ac21b93342.sample"
+
+[deps]
+
+source_file="res://weapons/sounds/hit_flesh.wav"
+dest_files=[ "res://.import/hit_flesh.wav-80f82d780d9d1d25825db9ac21b93342.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

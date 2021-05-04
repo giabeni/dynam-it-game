@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://player/models/footstep.tres" type="QuadMesh" id=1]
+[ext_resource path="res://player/scripts/Footprint.gd" type="Script" id=2]
+
+[node name="Footprint" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = null
+script = ExtResource( 2 )

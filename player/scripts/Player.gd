@@ -17,13 +17,18 @@ onready var footsteps = $Footsteps
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
 onready var breath_sound: AudioStreamPlayer3D = $BreathSound
+onready var ear_ring_sound: AudioStreamPlayer = $EarRingSound
 onready var weapon_timer: Timer = $WeaponTimer
 onready var grab_area: Area = $CharacterArmature/Skeleton/Body/CarryArea
 onready var aim_circle: CSGTorus = $Controller/h/v/Camera/AimCircle
+onready var foot_left: BoneAttachment = $CharacterArmature/Skeleton/FootLeft
+onready var foot_right: BoneAttachment = $CharacterArmature/Skeleton/FootRight
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
+export(PackedScene) var FOOTPRINT_SCENE = preload("res://player/scenes/Footprint.tscn")
 export(NodePath) var UI_PATH
+export(NodePath) var FOOTPRINTS_PATH = '../Map/Navigation/Footprints'
 export(float) var THROW_FORCE = 700
 
 var bomb: Bomb
@@ -41,7 +46,9 @@ var dropped_bombs: int = 0
 var player_ui: PlayerUI
 var grabbed_object: RigidBody = null
 var throw_force_amount = 0
+var impulse = Vector3.ZERO
 var aiming = false
+var footprints: Spatial
 
 
 signal on_died
@@ -50,6 +57,7 @@ signal on_gold_collected
 
 func _ready():
 	player_ui = get_node(UI_PATH)
+	footprints = get_node(FOOTPRINTS_PATH)
 	
 	controller.set_camera_position("DEFAULT")	
 	set_physics_process(false)
@@ -72,6 +80,7 @@ func enable():
 	controller.set_physics_process(true)
 	_spawn_bomb()
 
+
 func _physics_process(delta):
 	_set_animations(delta)
 	
@@ -84,17 +93,27 @@ func _physics_process(delta):
 		_grab_objects()
 		if grabbed_object:
 			_throw_object()
-			(aim_circle.material as SpatialMaterial).albedo_color = Color("#0072ff").linear_interpolate(Color("#dd1a12"), throw_force_amount)
+			(aim_circle.material as SpatialMaterial).albedo_color = Color("#ffffff").linear_interpolate(Color("#dd1a12"), throw_force_amount)
 			var aim_size = 1 + throw_force_amount
 			aim_circle.inner_radius = aim_circle.outer_radius - aim_circle.outer_radius * throw_force_amount
 		elif has_weapon:
 			if Input.is_action_pressed("attack"):
 				aim_circle.show()
 				aiming = true
+				controller.set_camera_position("AIM_WEAPON")
 				aim_circle.inner_radius = aim_circle.outer_radius * 0.8
-				
+			else:
+				aim_circle.hide()
+				controller.set_camera_position("DEFAULT")
 		else:
 			aim_circle.hide()
+			controller.set_camera_position("DEFAULT")
+	else:
+		var vel = Vector3.DOWN * controller.GRAVITY + impulse * delta
+		if impulse != Vector3.ZERO:
+			impulse = lerp(impulse, Vector3.ZERO, delta * controller.ACCELERATION)
+#		print("Vel = ", vel)
+		move_and_slide(vel, Vector3.UP)
 	
 
 func _spawn_bomb():
@@ -136,7 +155,7 @@ func _throw_object():
 		controller.set_camera_position("AIM")
 		throw_force_amount += 0.01
 		throw_force_amount = clamp(throw_force_amount, 0.1, 1)
-	elif Input.is_action_just_released("attack"):
+	elif Input.is_action_just_released("attack") and is_instance_valid(grabbed_object):
 		grabbed_object.set_grabbed_by(null, self)
 		controller.set_camera_position("DEFAULT")
 		var direction = -camera.global_transform.basis.z
@@ -227,13 +246,20 @@ func _drop_bomb():
 	
 
 
-func on_explosion_hit():
+func on_explosion_hit(_impulse = Vector3.ZERO):
 	breath_sound.stop()
 	smoke_particles.emitting = true
+	ear_ring_sound.play()
+	impulse = _impulse
 	state = States.DEAD
+	anim_tree.set("parameters/BlendRun/blend_position", 0)
+	anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
+	controller.velocity = Vector3.ZERO
 	emit_signal("on_died")
 	controller.set_physics_process(false)
 
+	yield(get_tree().create_timer(5), "timeout")
+	smoke_particles.emitting = false
 
 func on_gold_collected():
 	gold += 1
@@ -280,25 +306,32 @@ func on_weapon_collected(type: String):
 		bomb.call_deferred("queue_free")
 		
 	if weapon_loc.get_child_count() > 0:
-		weapon_loc.get_children()[0].hide()
-		weapon_loc.get_children()[0].call_deferred("queue_free")
+		weapon_loc.get_child(0).hide()
+		weapon_loc.get_child(0).queue_free()
 		
 	weapon_loc.call_deferred("add_child", weapon)
 	weapon_timer.start(weapon.DURATION)
+	player_ui.set_current_powerup_timer(weapon.DURATION)
 	player_ui.set_powerup_timer(weapon.ICON_PATH, weapon.DURATION)
 		
 		
-func on_weapon_hit():
+func on_weapon_hit(_impulse = Vector3.ZERO):
 	breath_sound.stop()
 	$HurtSound2.play()
+	impulse = _impulse
 	state = States.DEAD
 	emit_signal("on_died")
+	if is_instance_valid(bomb) and not bomb.is_dropped():
+		bomb.hide()
+	anim_tree.set("parameters/BlendRun/blend_position", 0)
+	anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
+	controller.velocity = Vector3.ZERO
 	controller.set_physics_process(false)
 	
 
 func _attack():
-	if has_weapon and is_instance_valid(weapon) and weapon.damage_free_timer.is_stopped():
-		weapon.start_attack(1.042, 0.27)
+	if has_weapon and not anim_tree.get("parameters/Slash/active") and is_instance_valid(weapon) and weapon.damage_free_timer.is_stopped():
+		weapon.start_attack(0.2, 0.4)
 		anim_tree.set("parameters/Slash/active", true)
 
 
@@ -319,3 +352,13 @@ func _on_CarryArea_body_entered(body):
 func _on_CarryArea_body_exited(body):
 	if body.is_in_group("Grabbables") and "outline" in body:
 		body.outline.hide()
+		
+
+func _add_footprint(is_right_foot: bool):
+	if controller.velocity.length() > 0.1:
+		var foot = foot_right if is_right_foot else foot_left
+		var footprint = FOOTPRINT_SCENE.instance()
+		footprints.add_child(footprint)
+		footprint.global_transform.origin = foot.global_transform.origin
+		footprint.global_transform.origin.y = 0.7
+		footprint.scale = Vector3.ONE * rand_range(0.8, 1.2)

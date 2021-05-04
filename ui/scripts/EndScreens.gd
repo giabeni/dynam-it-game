@@ -26,9 +26,9 @@ func on_lost():
 	get_parent().state = get_parent().MatchState.LOST
 	lost_sound.play()
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	yield(get_tree().create_timer(2), "timeout")
+	yield(get_tree().create_timer(1.5), "timeout")
 	lost_screen.show()
-	yield(get_tree().create_timer(2), "timeout")
+	yield(get_tree().create_timer(10), "timeout")
 	get_tree().paused = true
 
 func on_win():

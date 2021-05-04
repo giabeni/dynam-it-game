@@ -21,6 +21,7 @@ enum MatchState {
 
 func _ready():
 	get_tree().paused = false
+#	seed(String("test seed").hash())
 	randomize()
 	ui.gold_target = GOLD_TARGET
 	player.connect("on_died", $EndScreens, "on_lost")
@@ -60,8 +61,8 @@ func configure_npcs_signals():
 func on_npc_died():
 	npcs_alive -= 1
 	ui.set_npcs_alive(npcs_alive)
-	if state == MatchState.STARTED and npcs_alive <= 0:
-		$EndScreens.on_win()
+#	if state == MatchState.STARTED and npcs_alive <= 0:
+#		$EndScreens.on_win()
 		
 func on_gold_collected():
 	if player.gold >= GOLD_TARGET and state == MatchState.STARTED :

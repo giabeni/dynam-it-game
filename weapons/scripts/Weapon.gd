@@ -12,7 +12,13 @@ onready var damage_area: Area = $DamageArea
 onready var collectable_area: Area = $CollectableArea
 onready var outline: MeshInstance = $MeshInstance/Outline
 onready var hitpoint = $MeshInstance
-onready var hit_sound: AudioStreamPlayer3D = $HitSound
+onready var metal_sound: AudioStreamPlayer3D = $MetalSound
+onready var wall_sound: AudioStreamPlayer3D = $WallSound
+onready var hit_flesh_sound: AudioStreamPlayer3D = $BloodSound
+onready var wall_particles: Particles = $WallParticles
+onready var wall_particles2: Particles = $WallParticles2
+onready var blood_particles: Particles = $BloodParticles
+onready var hit_point = $HitPoint
 
 enum States {
 	COLLECTABLE,
@@ -22,8 +28,12 @@ enum States {
 
 var state = States.COLLECTABLE
 var player
+var last_wall_particles
 
 func _ready():
+	
+	last_wall_particles = wall_particles2
+	
 	if state == States.COLLECTABLE:
 		global_translate(Vector3.UP)
 		collectable_area.set_deferred("monitoring", true)
@@ -42,6 +52,7 @@ func equip(_player: Spatial):
 
 func _on_CollectableArea_body_entered(body: Spatial):
 	if  state == States.COLLECTABLE and body.is_in_group("Miners") and body.has_method("on_weapon_collected") and body.is_alive():
+		state = States.EQUIPED
 		$AnimationPlayer.play("Collected")
 		body.on_weapon_collected(TYPE)
 		yield(get_tree().create_timer(0.7), "timeout")
@@ -69,18 +80,39 @@ func _on_DamageArea_body_entered(body: Spatial):
 	if not state == States.ATTACKING or not damage_free_timer.is_stopped():
 		return
 		
+	if body.is_in_group("Terrain"):
+		if last_wall_particles.get_instance_id() == wall_particles2.get_instance_id():
+			wall_particles.emitting = true
+			last_wall_particles = wall_particles
+		elif last_wall_particles.get_instance_id() == wall_particles.get_instance_id():
+			wall_particles2.emitting = true
+			last_wall_particles = wall_particles2
+			
+		if not wall_sound.playing:
+			wall_sound.pitch_scale = rand_range(0.9, 1.2)
+			wall_sound.play()
+		
+		return
+
 	if not body.is_in_group("Miners") and not body.is_in_group("Obstacles"):
 		return
 		
 	if body.has_method("on_weapon_hit") and body.is_alive():
-		var dir = global_transform.origin.direction_to(body.global_transform.origin)
-		body.on_weapon_hit(dir * 200)
+		var point_direction = hit_point.global_transform.origin.direction_to(body.body_hitpoint.global_transform.origin)
+		var player_direction = player.global_transform.origin.direction_to(body.global_transform.origin)
+		var impulse = (point_direction + player_direction).normalized() * 1500
+		impulse.y = 800
+		body.on_weapon_hit(impulse)
 		damage_free_timer.start()
 		state = States.EQUIPED
+		blood_particles.emitting = false
+		blood_particles.emitting = true
+		hit_flesh_sound.play()
+		
 	elif body.has_method("destroy"):
 		body.destroy()
 		damage_free_timer.start()
 		state = States.EQUIPED
-		
-	hit_sound.play()
+		wall_sound.pitch_scale = rand_range(0.1, 0.8)
+		metal_sound.play()
 		
