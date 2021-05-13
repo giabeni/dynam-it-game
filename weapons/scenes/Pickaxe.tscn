@@ -264,6 +264,7 @@ omni_range = 4.14381
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
+visible = false
 shape = SubResource( 4 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -294,6 +295,11 @@ collision_mask = 38
 
 [node name="CollisionShape2" type="CollisionShape" parent="DamageArea"]
 transform = Transform( -0.473362, 0.0314056, 0, -0.0960057, -0.154847, 0, 0, 0, 0.648, 0.0884662, 0.954763, 0 )
+visible = false
+shape = SubResource( 4 )
+
+[node name="CollisionShape3" type="CollisionShape" parent="DamageArea"]
+transform = Transform( 0.337843, 0.117147, 0, -0.0958155, 0.572019, 0, 0, 0, 1.00386, 0.123755, -0.0044198, 0 )
 shape = SubResource( 4 )
 
 [node name="DamageFreeTimer" type="Timer" parent="."]

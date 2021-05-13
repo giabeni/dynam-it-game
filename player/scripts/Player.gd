@@ -26,10 +26,12 @@ onready var foot_right: BoneAttachment = $CharacterArmature/Skeleton/FootRight
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
+export(PackedScene) var MINIAXE_SCENE = preload("res://weapons/scenes/MiniAxe.tscn")
 export(PackedScene) var FOOTPRINT_SCENE = preload("res://player/scenes/Footprint.tscn")
 export(NodePath) var UI_PATH
 export(NodePath) var FOOTPRINTS_PATH = '../Map/Navigation/Footprints'
 export(float) var THROW_FORCE = 700
+export(bool) var IS_MULTIPLAYER = false
 
 var bomb: Bomb
 var weapon: Weapon
@@ -38,6 +40,7 @@ var has_weapon = false
 var should_drop_bomb = false
 var blend_carry: float = 0
 var target_blend_carry: float = 0
+var vel_factor = 0
 var state = States.ALIVE
 var gold = 0
 var bomb_range = 2.5
@@ -49,6 +52,7 @@ var throw_force_amount = 0
 var impulse = Vector3.ZERO
 var aiming = false
 var footprints: Spatial
+var player_state = {}
 
 
 signal on_died
@@ -115,6 +119,19 @@ func _physics_process(delta):
 #		print("Vel = ", vel)
 		move_and_slide(vel, Vector3.UP)
 	
+	if IS_MULTIPLAYER:
+		update_player_state()
+
+
+func update_player_state():
+	player_state = {
+		"T": Server.client_clock,
+		"O": global_transform.origin,
+		"R": controller.body.rotation,
+		"V": vel_factor,
+	}
+	Server.rooms.current_room.send_player_state(player_state)
+	
 
 func _spawn_bomb():
 	
@@ -136,7 +153,7 @@ func _grab_objects():
 				if body.is_in_group("Grabbables"):
 					body.set_grabbed_by(carry_loc, self)
 					grabbed_object = body
-					if is_instance_valid(bomb):
+					if is_instance_valid(bomb) and not bomb.is_dropped():
 						bomb.hide()
 					return
 	else:
@@ -175,7 +192,7 @@ func _set_animations(delta):
 		anim_tree.set("parameters/DeadOrAlive/current", 0)
 		
 		var h_velocity: Vector2 = Vector2(controller.velocity.x, controller.velocity.z)
-		var vel_factor = h_velocity.length() / controller.RUN_SPEED
+		vel_factor = h_velocity.length() / controller.RUN_SPEED
 		anim_tree.set("parameters/BlendRun/blend_position", vel_factor)
 		anim_tree.set("parameters/BlendRunCarry/blend_position", vel_factor)
 		
@@ -288,6 +305,9 @@ func _get_weapon_scene(type: String):
 	match type:
 		"PICKAXE":
 			return PICKAXE_SCENE
+		
+		"MINIAXE":
+			return MINIAXE_SCENE
 
 
 func on_weapon_collected(type: String):
@@ -297,11 +317,11 @@ func on_weapon_collected(type: String):
 	
 	target_blend_carry = 0
 	has_bomb = false
-	if bomb_loc.get_child_count() > 0:
+	if bomb_loc.get_child_count() > 0 and not bomb_loc.get_children()[0].is_dropped():
 		bomb_loc.get_children()[0].hide()
 		bomb_loc.get_children()[0].call_deferred("queue_free")
 
-	if is_instance_valid(bomb):
+	if is_instance_valid(bomb) and not bomb.is_dropped():
 		bomb.hide()
 		bomb.call_deferred("queue_free")
 		
@@ -330,14 +350,29 @@ func on_weapon_hit(_impulse = Vector3.ZERO):
 	
 
 func _attack():
-	if has_weapon and not anim_tree.get("parameters/Slash/active") and is_instance_valid(weapon) and weapon.damage_free_timer.is_stopped():
+	if not has_weapon or not is_instance_valid(weapon):
+		return
+	
+	if anim_tree.get("parameters/Slash/active") or not weapon.damage_free_timer.is_stopped():
+		return
+		
+	if weapon.THROWABLE:
+		anim_tree.set("parameters/Slash/active", true)		
+		yield(get_tree().create_timer(0.35), "timeout")
+		var direction = -camera.global_transform.basis.z
+		direction.y = 0
+		hurt_sound.play() 
+		if is_instance_valid(weapon):
+			(weapon as ThrowableWeapon).throw(direction.normalized(), 70)
+	else:
 		weapon.start_attack(0.2, 0.4)
 		anim_tree.set("parameters/Slash/active", true)
 
 
 func _on_WeaponTimer_timeout():
 	if is_instance_valid(weapon):
-		weapon.call_deferred("queue_free")
+		if weapon.DELETE_AFTER_TIMER:
+			weapon.call_deferred("queue_free")
 		has_weapon = false
 		player_ui.set_current_powerup_timer(0)
 		if dropped_bombs < max_bombs and not has_bomb:

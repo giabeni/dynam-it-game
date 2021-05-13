@@ -5,7 +5,13 @@ class_name Destructible
 onready var hitpoints: Spatial = $Hitpoints
 onready var contact_sound_timer: SceneTreeTimer = get_tree().create_timer(0)
 
-export(Array, PackedScene) var ITEMS_SCENES = []
+export(Array, PackedScene) var ITEMS_SCENES = [
+	preload("res://weapons/scenes/Pickaxe.tscn"),
+	preload("res://weapons/scenes/MiniAxe.tscn"),
+	preload("res://powerups/scenes/RedDiamond.tscn"),
+	preload("res://powerups/scenes/BlueDiamond.tscn"),
+	preload("res://powerups/scenes/Dinamite.tscn"),
+]
 export(float, 0, 1) var ITEM_PROB = 1
 export(float, 0, 10) var TIME_TO_EXPLODE = 1.14
 export(float) var MIN_IMPACT_TO_DESTROY = 2000

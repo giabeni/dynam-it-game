@@ -19,7 +19,9 @@ onready var bomb_trigger_area: Area = $BombTriggerArea
 onready var sight_origin: Position3D = $CharacterArmature/SightOrigin
 onready var body_hitpoint: Position3D = $CharacterArmature/BodyHitpoint
 onready var breath_sound: AudioStreamPlayer3D = $BreathSound
+onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
 onready var weapon_timer: Timer = $WeaponTimer
+onready var bomb_interval_timer: Timer = $BombIntervalTimer
 onready var random_following_timer: Timer = $RandomFollowingTimer
 onready var skeleton: Skeleton = $CharacterArmature/Skeleton
 onready var body_bone: PhysicalBone = $"CharacterArmature/Skeleton/Physical Bone abdomen"
@@ -27,9 +29,10 @@ onready var body_bone: PhysicalBone = $"CharacterArmature/Skeleton/Physical Bone
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
 export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.tscn")
-export var paused = true
+export(PackedScene) var MINIAXE_SCENE = preload("res://weapons/scenes/MiniAxe.tscn")
 export(NodePath) var NAV_GRID_PATH = null
 export(float) var MIN_IMPACT_TO_BE_DIZZY = 2000
+export var paused = true
 
 var inner_area: Area 
 var bomb: Bomb
@@ -63,6 +66,9 @@ func _ready():
 	
 	if max_bombs > 0:
 		_spawn_bomb()
+		
+	if randf() > 0.5:
+		on_weapon_collected("MINIAXE")
 		
 	if paused:
 		set_paused(true)
@@ -98,6 +104,7 @@ func _physics_process(delta):
 #		print("Vel = ", vel)
 		move_and_slide(vel, Vector3.UP)
 
+
 func _spawn_bomb():
 	if has_weapon:
 		return
@@ -106,6 +113,8 @@ func _spawn_bomb():
 	bomb_loc.add_child(bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
+	bomb_interval_timer.wait_time = 1
+	bomb_interval_timer.start()
 	has_bomb = true
 	
 func is_alive():
@@ -139,6 +148,8 @@ func _set_animations(delta):
 		if time_to_die > 0:
 			yield(get_tree().create_timer(time_to_die), "timeout")
 		anim_tree.set("parameters/DeadOrAlive/current", 1)
+	
+	_set_weapon_color(delta)
 		
 		
 
@@ -147,9 +158,27 @@ func _can_drop_bomb():
 		
 
 func _can_attack():
-	return has_weapon and not has_bomb and not is_dizzy
-	
-	
+	return has_weapon and not has_bomb and not is_dizzy and is_instance_valid(weapon) and not weapon.THROWABLE
+
+
+func _can_throw():
+	if has_bomb or is_dizzy:
+		return false
+	if has_weapon and is_instance_valid(weapon) and weapon.THROWABLE:
+		return true
+		
+
+func _set_weapon_color(delta):
+	if has_weapon and is_instance_valid(weapon) and weapon.TYPE == "MINIAXE":
+		if bomb_interval_timer.time_left <= 2:
+			weapon.outline.show()
+			var outline_color = lerp(weapon.outline_color, Color.red, 2 - bomb_interval_timer.time_left)
+			weapon.set_outline_color(outline_color)
+		else:
+			weapon.outline.hide()
+			weapon.set_outline_color(Color.white)
+
+
 func _on_bomb_dropped():
 	has_bomb = false
 	if dropped_bombs < max_bombs and not has_bomb:
@@ -176,28 +205,52 @@ func _drop_bomb():
 	is_escaping_from_bomb = true
 	
 
-func on_explosion_hit(_impulse = Vector3.ZERO):
+func _die():
 	if is_alive():
-#		print(name, "  DIED!!!!")
-		breath_sound.stop()
-		smoke_particles.emitting = true
-		impulse = _impulse
+		$HurtSound2.play()
 		state = States.DEAD
 		anim_tree.set("parameters/BlendRun/blend_position", 0)
 		anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
 		controller.velocity = Vector3.ZERO
-		_drop_gold()
 		emit_signal("on_died")
+		_drop_gold()
+		
+		if is_instance_valid(bomb) and not bomb.is_dropped():
+			bomb.hide()
+			
+		if has_weapon and is_instance_valid(weapon):
+			_drop_weapon()
+			weapon.hide()
+			weapon.call_deferred("queue_free")
+
 		controller.set_physics_process(false)
 		$TargetDetectionTimer.stop()
 		$BombIntervalTimer.stop()
 		$BombDetectionTimer.stop()
 		$BombEscapeTimer.stop()
 		$OnWallTimer.stop()
+		weapon_timer.stop()
+
+
+func on_explosion_hit(_impulse = Vector3.ZERO):
+	if is_alive():
+		smoke_particles.emitting = true
+		impulse = _impulse
+		_die()
 		
 		yield(get_tree().create_timer(5), "timeout")
 		smoke_particles.emitting = false
-		
+
+
+func on_weapon_hit(_impulse = Vector3.ZERO):
+	time_to_die = 0
+	impulse = _impulse
+#	skeleton.physical_bones_add_collision_exception(get_rid())
+#	skeleton.physical_bones_start_simulation()
+#	body_bone.apply_central_impulse(impulse)
+	_die()
+
+
 func _drop_gold():
 	if gold > 0:
 		var angle = 0
@@ -213,7 +266,14 @@ func _drop_gold():
 				offset = Vector3(0, 0, 0)
 				offset += 0.2 * Vector3.FORWARD.rotated(Vector3.UP, deg2rad(angle))
 				angle += 30
-				
+
+
+func _drop_weapon():
+	var item = _get_weapon_scene(weapon.TYPE).instance()
+	get_node("../../Items").add_child(item)
+	item.global_transform.origin = self.global_transform.origin
+	item.global_transform.origin.y = 1.2
+
 
 func _get_random_target_point():
 	var aim_vector = (self.global_transform.basis.z + Vector3.UP * 2).rotated(Vector3.LEFT, deg2rad(15))
@@ -354,17 +414,60 @@ func _on_TargetDetectionTimer_timeout():
 #					print("New target: RANDOM - ", random_point)
 
 
+func _get_best_target_around():
+	var found_miner = false
+	var found_obstacle = null
+	var found_obstacle_distance = INF
+	var space = get_world().direct_space_state
+	for body in target_detection_area.get_overlapping_bodies():
+		if body.get_instance_id() != self.get_instance_id():
+			if body.is_in_group("Player"):
+				var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
+				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
+				if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+					if ray.collider.is_in_group("Player") and ray.collider.is_alive():
+						found_miner = true
+						# Return player if there's one in sight
+						return body
+						
+			elif body.is_in_group("Obstacles") and not found_miner:
+#				if state == States.EXPLORING and (not is_instance_valid(controller.target) or not controller.target.is_in_group("Obstacles")):
+				for hit_pos in body.hitpoints.get_children():
+					var hitpoint = hit_pos.global_transform.origin
+					var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
+#					print(body.name, " - ", body, " - ", hit_pos.name, " - ", ray.collider)
+					if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+						if ray.collider.is_in_group("Obstacles"):
+							var distance = sight_origin.global_transform.origin.distance_to(hitpoint)
+							if distance < found_obstacle_distance:
+								found_obstacle_distance = distance
+								found_obstacle = body
+	
+	# If no player was detected, return closes obstacle, or null if none was around
+	if is_instance_valid(found_obstacle):
+		return found_obstacle
+	else:
+		return null
+		
+
 func _on_BombIntervalTimer_timeout():
 	if not is_alive():
 		return
-	for body in bomb_trigger_area.get_overlapping_bodies():
-		if body.get_instance_id() != self.get_instance_id():
-			if (body.is_in_group("Player") and body.is_alive()) or body.is_in_group("Obstacles"):
-				# if gets close to target, drops a bomb
-				if _can_drop_bomb():
-					_drop_bomb()
-				elif _can_attack():
-					_attack()
+		
+	if not _can_throw():
+		for body in bomb_trigger_area.get_overlapping_bodies():
+			if body.get_instance_id() != self.get_instance_id():
+				if (body.is_in_group("Player") and body.is_alive()) or body.is_in_group("Obstacles"):
+					# if gets close to target, drops a bomb
+					if _can_drop_bomb():
+						_drop_bomb()
+					elif _can_attack():
+						_attack()
+	else:
+		var target = _get_best_target_around()
+		if is_instance_valid(target):
+			_throw_weapon(target)
+		
 
 
 func _on_BombDetectionTimer_timeout():
@@ -372,6 +475,8 @@ func _on_BombDetectionTimer_timeout():
 		return
 
 	for body in bomb_trigger_area.get_overlapping_bodies():
+		if not is_instance_valid(body):
+			continue
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Bombs") and body.is_dropped():
 			if not is_escaping_from_bomb or body.global_transform.origin.distance_to(escape_point) > 3:
 				# if notice a bomb, try to escape 
@@ -389,7 +494,6 @@ func _on_BombEscapeTimer_timeout():
 #	print("No longer escaping")
 	is_escaping_from_bomb = false
 	$BombEscapeTimer.stop()
-	
 
 
 func _on_ForgetTargetTimer_timeout():
@@ -425,11 +529,11 @@ func _on_ForgetTargetTimer_timeout():
 	if not has_bomb and not has_weapon and not is_instance_valid(bomb) and dropped_bombs > 0:
 		dropped_bombs = 0
 		_spawn_bomb()
-			
+
+
 func on_gold_collected():
 	gold += 1
 #	print(name, " collected ", str(gold), " kg of gold!")
-		
 
 
 func _on_OnWallTimer_timeout():
@@ -456,6 +560,9 @@ func _get_weapon_scene(type: String):
 	match type:
 		"PICKAXE":
 			return PICKAXE_SCENE
+		
+		"MINIAXE":
+			return MINIAXE_SCENE
 
 
 func on_weapon_collected(type: String):
@@ -465,11 +572,11 @@ func on_weapon_collected(type: String):
 	
 	target_blend_carry = 0
 	has_bomb = false
-	if bomb_loc.get_child_count() > 0:
+	if bomb_loc.get_child_count() > 0 and not bomb_loc.get_children()[0].is_dropped():
 		bomb_loc.get_children()[0].hide()
 		bomb_loc.get_children()[0].call_deferred("queue_free")
 
-	if is_instance_valid(bomb):
+	if is_instance_valid(bomb) and not bomb.is_dropped():
 		bomb.hide()
 		bomb.call_deferred("queue_free")
 		
@@ -478,37 +585,39 @@ func on_weapon_collected(type: String):
 		weapon_loc.get_children()[0].call_deferred("queue_free")
 		
 	weapon_loc.call_deferred("add_child", weapon)
-	weapon_timer.start(weapon.DURATION)
-		
-func on_weapon_hit(_impulse = Vector3.ZERO):
-	breath_sound.stop()
-	$HurtSound2.play()
-	time_to_die = 0
-	impulse = _impulse	
-	state = States.DEAD
-	emit_signal("on_died")
-	if is_instance_valid(bomb) and not bomb.is_dropped():
-		bomb.hide()
-#	skeleton.physical_bones_add_collision_exception(get_rid())
-#	skeleton.physical_bones_start_simulation()
-#	body_bone.apply_central_impulse(impulse)
-
-	anim_tree.set("parameters/BlendRun/blend_position", 0)
-	anim_tree.set("parameters/BlendRunCarry/blend_position", 0)
-	controller.velocity = Vector3.ZERO
-#	move_and_slide(_impulse, Vector3.UP)
-	controller.set_physics_process(false)
 	
+	bomb_interval_timer.wait_time = weapon.ATTACK_INTERVAL
+	bomb_interval_timer.start()
+	
+	if type != "MINIAXE":
+		weapon_timer.start(weapon.DURATION)
+
 
 func _attack():
 	if has_weapon and is_instance_valid(weapon):
-		weapon.start_attack(1.042, 0.27)
+		weapon.start_attack(0.2, 0.4)
 		anim_tree.set("parameters/Slash/active", true)
 
 
+func _throw_weapon(target: Spatial):
+	if has_weapon and is_instance_valid(weapon):
+		var type = weapon.TYPE
+		anim_tree.set("parameters/Slash/active", true)		
+		yield(get_tree().create_timer(0.35), "timeout")
+		var direction: Vector3 = target.global_transform.origin - weapon_loc.global_transform.origin
+		direction = direction.rotated(Vector3.UP, rand_range(deg2rad(-10), deg2rad(10)))
+		direction.y = 0
+		hurt_sound.play() 
+		if is_instance_valid(weapon):
+			(weapon as ThrowableWeapon).throw(direction.normalized(), 70)
+#		yield(get_tree().create_timer(2), "timeout")
+#		on_weapon_collected(type)
+		
+
 func _on_WeaponTimer_timeout():
 	if is_instance_valid(weapon):
-		weapon.call_deferred("queue_free")
+		if weapon.DELETE_AFTER_TIMER:
+			weapon.queue_free()
 		has_weapon = false
 		if dropped_bombs < max_bombs and not has_bomb:
 			_spawn_bomb()

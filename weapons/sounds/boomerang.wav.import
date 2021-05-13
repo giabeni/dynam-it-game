@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/boomerang.wav-95e74b52e8083090f66d6a92e0032870.sample"
+
+[deps]
+
+source_file="res://weapons/sounds/boomerang.wav"
+dest_files=[ "res://.import/boomerang.wav-95e74b52e8083090f66d6a92e0032870.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

@@ -1,12 +1,8 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
-[ext_resource path="res://powerups/scenes/BlueDiamond.tscn" type="PackedScene" id=4]
-[ext_resource path="res://powerups/scenes/Dinamite.tscn" type="PackedScene" id=5]
-[ext_resource path="res://powerups/scenes/RedDiamond.tscn" type="PackedScene" id=6]
-[ext_resource path="res://weapons/scenes/Pickaxe.tscn" type="PackedScene" id=7]
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "support001"
@@ -105,7 +101,6 @@ collision_layer = 5
 collision_mask = 3
 mode = 1
 script = ExtResource( 2 )
-ITEMS_SCENES = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
 ITEM_PROB = 0.3
 MIN_IMPACT_TO_DESTROY = 4000.0
 

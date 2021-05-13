@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/boomerang.mp3-a25c54070607b9fc85140bd5a3585f26.mp3str"
+
+[deps]
+
+source_file="res://weapons/sounds/boomerang.mp3"
+dest_files=[ "res://.import/boomerang.mp3-a25c54070607b9fc85140bd5a3585f26.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

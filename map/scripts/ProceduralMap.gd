@@ -102,7 +102,7 @@ export(float) var MIN_AREA = 6500
 export(float) var MAX_AREA = 7500
 export(int, 0, 100) var NPCS_COUNT = 10
 export(int, 0, 100) var GOLD_PILES_COUNT = 40
-export(int, 0, 100) var ITEMS_COUNT = 25
+export(int, 0, 100) var ITEMS_COUNT = 35
 export(int, 0, 100) var WALLS_COUNT = 30
 
 export(PackedScene) var GOLD_PILE_SCENE = preload("res://obstacles/scenes/GoldRocks.tscn")
@@ -129,6 +129,7 @@ var wall_cells = {}
 var baked_nav_mesh = PoolVector3Array([])
 var should_bake_nav_meshes = false
 var loading_progress = 0
+var spawning_points = []
 
 signal finished_grid
 signal finished_walls
@@ -186,8 +187,8 @@ func _ready():
 	yield(self, "finished_objects")
 	print(">> Added items")
 	
-	if should_bake_nav_meshes and Engine.editor_hint:
-		NavigationMeshGenerator.bake(nav_mesh.navmesh, nav)
+#	if should_bake_nav_meshes and Engine.editor_hint:
+#		NavigationMeshGenerator.bake(nav_mesh.navmesh, nav)
 		
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
@@ -208,7 +209,7 @@ func _ready():
 func _generate_map():
 	grid.clear()
 	$PaintedGrid.clear()
-	NavigationMeshGenerator.clear(nav_mesh.navmesh)
+#	NavigationMeshGenerator.clear(nav_mesh.navmesh)
 	painted_cells = {}
 	yield(get_tree(), "idle_frame")
 	_generate_grid_map()
@@ -428,6 +429,12 @@ func _generate_grid_map():
 
 func _spawn_npcs():
 	var npcs_count = NPCS_COUNT
+	
+	if npcs_count <= 0:
+		yield(get_tree(), "idle_frame")
+		emit_signal("npcs_spawned")
+		return
+
 	var interval = 2
 	
 	var i = -1
@@ -460,6 +467,7 @@ func _spawn_npcs():
 				print("NPC INSIDE WALL! RETRYING...")
 				npc.call_deferred("queue_free")
 			else:
+				spawning_points.append(npc.global_transform.origin)
 				npc.remove_inner_area()
 				npcs_count -= 1
 				loading_progress += 15 / NPCS_COUNT
@@ -625,3 +633,18 @@ func _input(event):
 				$Camera.size -= 5
 			BUTTON_WHEEL_DOWN:
 				$Camera.size += 5
+
+
+func _on_NPCSpawnTimer_timeout():
+	print(">> Spawning new NPC")
+	if get_parent().ui.npcs_count - get_parent().ui.npcs_dead < 15:
+		var npc = NPC_SCENE.instance()
+		npc.NAV_GRID_PATH = $PaintedGrid.get_path()
+		npc.paused = false
+		npc.obstacles = obstacles
+		npc.gold_piles = gold_piles
+		npc.player = player
+		npcs.add_child(npc)
+		npc.global_transform.origin = spawning_points[randi() % spawning_points.size()]
+		npc.remove_inner_area()
+		get_parent().ui.increment_npc_count()

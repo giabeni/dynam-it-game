@@ -1,13 +1,9 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
-[ext_resource path="res://powerups/scenes/BlueDiamond.tscn" type="PackedScene" id=4]
-[ext_resource path="res://powerups/scenes/Dinamite.tscn" type="PackedScene" id=5]
-[ext_resource path="res://powerups/scenes/RedDiamond.tscn" type="PackedScene" id=6]
 [ext_resource path="res://tiles/models/Wood_003.material" type="Material" id=7]
-[ext_resource path="res://weapons/scenes/Pickaxe.tscn" type="PackedScene" id=8]
 [ext_resource path="res://obstacles/sounds/wood-hits/woodhit-1.wav" type="AudioStream" id=9]
 [ext_resource path="res://obstacles/sounds/wood-hits/woodhit-4.wav" type="AudioStream" id=10]
 [ext_resource path="res://obstacles/sounds/wood-hits/woodhit-3.wav" type="AudioStream" id=11]
@@ -144,7 +140,6 @@ axis_lock_angular_z = true
 linear_damp = 1.0
 angular_damp = 1.0
 script = ExtResource( 2 )
-ITEMS_SCENES = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 8 ) ]
 ITEM_PROB = 0.7
 
 [node name="support001" type="MeshInstance" parent="."]

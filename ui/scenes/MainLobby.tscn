@@ -1,0 +1,87 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://ui/scripts/MainLobby.gd" type="Script" id=1]
+[ext_resource path="res://ui/fonts/vt23 font/Adumu.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 38
+font_data = ExtResource( 2 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0.172549, 0.0784314, 0.0156863, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.968627, 0.72549, 0.356863, 1 )
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="DynamicFont" id=3]
+size = 23
+font_data = ExtResource( 2 )
+
+[node name="MainLobby" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftContainer" type="VBoxContainer" parent="HSplitContainer"]
+margin_right = 300.0
+margin_bottom = 680.0
+rect_min_size = Vector2( 300, 0 )
+
+[node name="HeaderLeft" type="MarginContainer" parent="HSplitContainer/LeftContainer"]
+margin_right = 300.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 0, 100 )
+
+[node name="Label" type="Label" parent="HSplitContainer/LeftContainer/HeaderLeft"]
+margin_top = 9.0
+margin_right = 300.0
+margin_bottom = 90.0
+custom_fonts/font = SubResource( 1 )
+text = "Rooms
+"
+
+[node name="ItemList" type="ItemList" parent="HSplitContainer/LeftContainer"]
+margin_top = 104.0
+margin_right = 300.0
+margin_bottom = 680.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/cursor_unfocused = SubResource( 2 )
+custom_styles/bg = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0.945098, 0.8, 0.478431, 1 )
+items = [ "Room 1", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
+max_text_lines = 2
+auto_height = true
+same_column_width = true
+icon_mode = 0
+
+[node name="RightContainer" type="VBoxContainer" parent="HSplitContainer"]
+margin_left = 312.0
+margin_right = 1240.0
+margin_bottom = 680.0

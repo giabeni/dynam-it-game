@@ -131,6 +131,8 @@ script = ExtResource( 17 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
 UI_PATH = NodePath("../PlayerUI")
 
+[node name="OtherPlayers" type="Spatial" parent="."]
+
 [node name="PlayerUI" parent="." instance=ExtResource( 5 )]
 visible = false
 
@@ -214,8 +216,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton"]
 anchor_right = 1.0
@@ -253,8 +253,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
 anchor_right = 1.0
@@ -346,8 +344,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton"]
 anchor_right = 1.0
@@ -385,8 +381,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
 anchor_right = 1.0
@@ -480,8 +474,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer/ResumeButton"]
 anchor_right = 1.0
@@ -520,8 +512,6 @@ size_flags_vertical = 0
 texture_normal = ExtResource( 8 )
 expand = true
 script = ExtResource( 6 )
-hover_sound_path = NodePath("../../../../../HoverSound")
-click_sound_path = NodePath("../../../../../ClickSound")
 
 [node name="Label" type="Label" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
 anchor_right = 1.0
@@ -707,6 +697,9 @@ environment = ExtResource( 16 )
 wait_time = 300.0
 one_shot = true
 
+[node name="NPCSpawnTimer" type="Timer" parent="."]
+wait_time = 30.0
+
 [connection signal="pressed" from="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton" to="EndScreens" method="_on_PlayAgainButton_pressed"]
 [connection signal="pressed" from="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton" to="EndScreens" method="_on_MainMenuButton_pressed"]
 [connection signal="pressed" from="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton" to="EndScreens" method="_on_PlayAgainButton_pressed"]
@@ -714,3 +707,4 @@ one_shot = true
 [connection signal="pressed" from="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer/ResumeButton" to="EndScreens" method="_on_ResumeButton_pressed"]
 [connection signal="pressed" from="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton" to="EndScreens" method="_on_MainMenuButton_pressed"]
 [connection signal="timeout" from="MatchTimer" to="." method="_on_MatchTimer_timeout"]
+[connection signal="timeout" from="NPCSpawnTimer" to="Map" method="_on_NPCSpawnTimer_timeout"]

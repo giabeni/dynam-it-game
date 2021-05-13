@@ -123,7 +123,7 @@ func _on_animation_finished(anim_name):
 		call_deferred("queue_free")
 		
 func is_dropped():
-	return state == State.DROPPED
+	return state == State.DROPPED or is_set_as_toplevel()
 	
 func set_range(amount):
 	bomb_range = amount

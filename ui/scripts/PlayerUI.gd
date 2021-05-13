@@ -15,7 +15,7 @@ onready var powerup_timer_icon: TextureRect = $VBoxContainer/Footer2/PowerUpTime
 
 var gold_target = 20
 var npcs_count = 0
-var npcs_alive = 0
+var npcs_dead = 0
 
 func _ready():
 #	$VBoxContainer/CenterSpace.rect_min_size.y = OS.window_size.y - $VBoxContainer/TopBar.rect_min_size.y - $VBoxContainer/Footer.rect_min_size.y - $VBoxContainer/Footer.rect_min_size.y
@@ -24,15 +24,22 @@ func _ready():
 func set_gold(gold: int):
 	gold_btn.text = str(gold) + "/" + str(gold_target) + "kg"
 
+func increment_npc_count():
+	npcs_count += 1
+	npcs_btn.text = str(npcs_dead) + "/" + str(npcs_count)
+	
+func increment_npc_dead_count():
+	npcs_dead += 1
+	npcs_btn.text = str(npcs_dead) + "/" + str(npcs_count)
+
 func set_npcs_count(count: int):
 	npcs_count = count
-	npcs_alive = count
-	npcs_btn.text = str(npcs_count - npcs_alive) + "/" + str(npcs_count)
+	npcs_btn.text = str(npcs_dead) + "/" + str(npcs_count)
 
-func set_npcs_alive(alive: int):
-	npcs_alive = alive
-	npcs_btn.text = str(npcs_count - alive) + "/" + str(npcs_count)
-
+func set_npcs_dead(dead: int):
+	npcs_dead = dead
+	npcs_btn.text = str(npcs_dead) + "/" + str(npcs_count)
+	
 func set_timer(secs: int):
 	timer_btn.text = str(secs) + " s"
 	

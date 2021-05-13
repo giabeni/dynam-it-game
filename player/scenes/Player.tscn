@@ -3610,7 +3610,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 43 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2620, 160 )
-node_connections = [ "output", 0, "Punch", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "TimeScale", 0, "BlendRun", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 4", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "TimeScale 2", 0, "BlendRunCarry", "Punch", 0, "Slash", "Punch", 1, "Animation 3" ]
+node_connections = [ "output", 0, "Punch", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 4", "TimeScale 2", 0, "BlendRunCarry", "Punch", 0, "Slash", "Punch", 1, "Animation 3" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3645,7 +3645,7 @@ bones/1/name = "foot._l"
 bones/1/parent = 0
 bones/1/rest = Transform( -1, -2.77934e-07, 1.48902e-05, 1.48924e-05, -0.0117173, 0.999932, -1.03443e-07, 0.999932, 0.0117172, 0.265425, 0.0246629, -0.0450554 )
 bones/1/enabled = true
-bones/1/bound_children = [ NodePath("FootLeft") ]
+bones/1/bound_children = [  ]
 bones/2/name = "body"
 bones/2/parent = 0
 bones/2/rest = Transform( 0.999985, -5.20437e-05, 0.00539933, 4.64993e-05, 1, 0.00102697, -0.00539938, -0.00102671, 0.999985, 0.00345641, 0.965299, 0.0988149 )
@@ -3715,7 +3715,7 @@ bones/15/name = "fist._r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.95112, -0.0224639, -0.308004, 0.0153624, 0.999558, -0.0254621, 0.30844, 0.0194858, 0.951044, 1.84149e-08, 0.425347, 6.35372e-08 )
 bones/15/enabled = true
-bones/15/bound_children = [ NodePath("HandRight") ]
+bones/15/bound_children = [  ]
 bones/16/name = "upper_leg._l"
 bones/16/parent = 2
 bones/16/rest = Transform( 0.99982, 0.0177264, 0.00651066, 0.0188075, -0.965753, -0.258752, 0.00170105, 0.25884, -0.965871, 0.253029, -0.0167021, -0.0559237 )
@@ -3745,7 +3745,7 @@ bones/21/name = "foot._r"
 bones/21/parent = 0
 bones/21/rest = Transform( -1, -8.33796e-07, -1.50613e-05, -1.50505e-05, -0.0117173, 0.999932, -1.01022e-06, 0.999932, 0.0117172, -0.262802, 0.0246629, -0.0450557 )
 bones/21/enabled = true
-bones/21/bound_children = [ NodePath("FootRight") ]
+bones/21/bound_children = [  ]
 bones/22/name = "pole_target._r"
 bones/22/parent = 0
 bones/22/rest = Transform( 1, -2.54108e-21, -1.19209e-06, 1.10115e-20, 1, 7.10547e-15, 1.19209e-06, -7.10547e-15, 1, -0.259372, 0.724533, 0.963147 )
@@ -3774,7 +3774,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.414332 )
 shape = SubResource( 6 )
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.88412, 0.310585, 0.349097, 0.17879, -0.465399, 0.866855, 0.431701, 0.828821, 0.35594, -0.290361, 1.27314, 0.693096 )
+transform = Transform( -0.937542, 0.249822, 0.242081, 0.0983261, -0.477209, 0.873272, 0.333686, 0.842533, 0.42284, -0.350512, 1.22427, 0.66916 )
 bone_name = "fist._r"
 
 [node name="SlashMesh" type="MeshInstance" parent="CharacterArmature/Skeleton/HandRight"]
