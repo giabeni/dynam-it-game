@@ -42,7 +42,7 @@ func _on_thrown_hit(should_stop):
 	if not wall_sound.playing:
 		wall_sound.pitch_scale = rand_range(0.9, 1.2)
 		wall_sound.play()
-	player._on_WeaponTimer_timeout()
+	player._on_WeaponTimer_timeout(true)
 	boomerang_sound.stop()
 	state = States.COLLECTABLE
 	set_outline_color(Color.white)

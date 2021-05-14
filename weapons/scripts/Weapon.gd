@@ -8,6 +8,7 @@ export(String) var ICON_PATH = "res://weapons/icons/pickaxe.png"
 export(bool) var THROWABLE = false
 export(bool) var DELETE_AFTER_TIMER = true
 export(float) var ATTACK_INTERVAL = 1.0
+export(float) var TIME_SPENT = 0
 
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 onready var damage_free_timer: Timer = $DamageFreeTimer
@@ -34,6 +35,12 @@ var player
 var last_wall_particles
 var outline_color = Color.white
 
+
+func _physics_process(delta):
+	if state == States.EQUIPED and THROWABLE and is_instance_valid(player) and player.is_physics_processing():
+		TIME_SPENT += delta
+
+
 func _ready():
 	
 	last_wall_particles = wall_particles2
@@ -50,6 +57,7 @@ func _ready():
 		$AnimationPlayer.play("Equiped")
 		collectable_area.set_deferred("monitoring", false)
 		damage_area.set_deferred("monitoring", true)
+		
 
 
 func equip(_player: Spatial):
@@ -63,9 +71,9 @@ func _on_CollectableArea_body_entered(body: Spatial):
 	if state == States.COLLECTABLE and body.is_in_group("Miners") and body.has_method("on_weapon_collected") and body.is_alive():
 		state = States.EQUIPED
 		$AnimationPlayer.play("Collected")
-		body.on_weapon_collected(TYPE)
+		body.on_weapon_collected(TYPE, TIME_SPENT)
 		yield(get_tree().create_timer(0.7), "timeout")
-		queue_free()
+		delete()
 		
 
 func start_attack(duration = 2, delay = 0):
@@ -77,14 +85,14 @@ func start_attack(duration = 2, delay = 0):
 	
 	if is_instance_valid(damage_free_timer):
 		damage_free_timer.stop()
+		
 	state = States.ATTACKING
 	yield(get_tree().create_timer(duration), "timeout")
 	state = States.EQUIPED
 
 
 func _on_DamageArea_body_entered(body: Spatial):
-	
-	
+
 	if body.get_instance_id() == player.get_instance_id():
 		return
 	
@@ -143,3 +151,12 @@ func set_outline_color(color: Color):
 	(outline.get_active_material(0) as SpatialMaterial).albedo_color = color
 	(outline.get_active_material(0) as SpatialMaterial).emission = color
 	outline_color = color
+	
+
+func delete():
+	print("Deleting weapon...")
+	hide()
+	collectable_area.set_deferred("monitoring", false)
+	damage_area.set_deferred("monitoring", false)
+	yield(get_tree().create_timer(2.5), "timeout")
+	call_deferred("queue_free")

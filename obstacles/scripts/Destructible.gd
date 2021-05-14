@@ -7,9 +7,13 @@ onready var contact_sound_timer: SceneTreeTimer = get_tree().create_timer(0)
 
 export(Array, PackedScene) var ITEMS_SCENES = [
 	preload("res://weapons/scenes/Pickaxe.tscn"),
+	preload("res://weapons/scenes/Pickaxe.tscn"),
 	preload("res://weapons/scenes/MiniAxe.tscn"),
 	preload("res://powerups/scenes/RedDiamond.tscn"),
+	preload("res://powerups/scenes/RedDiamond.tscn"),
 	preload("res://powerups/scenes/BlueDiamond.tscn"),
+	preload("res://powerups/scenes/BlueDiamond.tscn"),
+	preload("res://powerups/scenes/Dinamite.tscn"),
 	preload("res://powerups/scenes/Dinamite.tscn"),
 ]
 export(float, 0, 1) var ITEM_PROB = 1
@@ -28,6 +32,10 @@ var hit_sound_index = 0
 var outline: MeshInstance
 var thrown_timer: SceneTreeTimer
 var dust_particles: Particles
+var drag_sound: AudioStreamPlayer3D
+var drag_timer: Timer
+var item_scene: PackedScene = null
+
 
 var nav_grid_cells = []
 
@@ -53,6 +61,17 @@ func _ready():
 		
 	if has_node("DustParticles"):
 		dust_particles = get_node("DustParticles")
+		
+	if has_node("DragSound"):
+		drag_sound = get_node("DragSound")
+		drag_timer = Timer.new()
+		drag_timer.wait_time = 0.5
+		drag_timer.one_shot = true
+		add_child(drag_timer)
+		drag_timer.connect("timeout", self, "on_drag_timeout")
+		
+	if _should_spawn_item():
+			item_scene = _get_random_item()
 
 
 func _physics_process(delta):
@@ -68,8 +87,8 @@ func destroy():
 		destroyed = true
 		emit_signal("on_destroyed", nav_grid_cells)
 		
-		if _should_spawn_item():
-			var item = _get_random_item()
+		if item_scene != null:
+			var item = item_scene.instance()
 			get_parent().add_child(item)
 			item.global_transform.origin = self.global_transform.origin
 			item.global_transform.origin.y = 1.2
@@ -78,6 +97,7 @@ func destroy():
 
 		yield(get_tree().create_timer(TIME_TO_EXPLODE),"timeout")
 		call_deferred("queue_free")
+
 	
 func _should_spawn_item():
 	return ITEMS_SCENES.size() > 0 and randf() < ITEM_PROB
@@ -86,8 +106,7 @@ func _should_spawn_item():
 func _get_random_item():
 	var random_index = int(round(rand_range(0, ITEMS_SCENES.size() - 1)))
 	var scene: PackedScene = ITEMS_SCENES[random_index]
-	var item = scene.instance()
-	return item
+	return scene
 
 
 func is_overlapping_body():
@@ -107,6 +126,7 @@ func is_blocking_npc():
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Miners"):
 			return true
 	return false
+
 
 func remove_inner_area():
 	if not is_instance_valid(inner_area):
@@ -138,8 +158,8 @@ func set_grabbed_by(grab_node: Spatial, miner: KinematicBody):
 		if is_instance_valid(outline):
 			outline.hide()
 		self.global_transform = grab_parent.global_transform
-	
-		
+
+
 
 func throw(impulse: Vector3):
 	if bullet_area:
@@ -206,3 +226,14 @@ func _play_hit_sound():
 	hit_sound_index += 1
 	if hit_sound_index >= hit_sounds.size():
 		hit_sound_index = 0
+
+
+func play_drag_sound():
+	if not drag_sound.playing:
+		drag_sound.play()
+	drag_timer.start()
+
+
+func on_drag_timeout():
+	if drag_sound.playing:
+		drag_sound.stop()

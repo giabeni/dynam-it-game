@@ -1,8 +1,9 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
+[ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=4]
 [ext_resource path="res://tiles/models/Wood_004.material" type="Material" id=7]
 [ext_resource path="res://tiles/models/Light_Metal.material" type="Material" id=8]
 [ext_resource path="res://tiles/models/DarkWood.material" type="Material" id=9]
@@ -307,3 +308,10 @@ visibility_aabb = AABB( -6.47991, -4.9883, -6.33408, 12.7775, 15.0695, 12.7016 )
 local_coords = false
 process_material = SubResource( 14 )
 draw_pass_1 = SubResource( 16 )
+
+[node name="DragSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 4 )
+unit_db = 80.0
+unit_size = 100.0
+max_db = 6.0
+pitch_scale = 1.19

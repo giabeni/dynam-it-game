@@ -67,7 +67,7 @@ func _ready():
 	if max_bombs > 0:
 		_spawn_bomb()
 		
-	if randf() > 0.5:
+	if randf() < 0.1:
 		on_weapon_collected("MINIAXE")
 		
 	if paused:
@@ -483,7 +483,7 @@ func _on_BombDetectionTimer_timeout():
 				_get_run_away_point(body.global_transform.origin)
 				yield(self, "found_escape_point")
 				controller.move_to(escape_point)
-				if is_instance_valid(body):
+				if is_instance_valid(body) and not body.is_connected("bomb_exploded", self, "_on_BombEscapeTimer_timeout"):
 					(body as Bomb).connect("bomb_exploded", self, "_on_BombEscapeTimer_timeout")
 				$BombEscapeTimer.start()
 	#			print("Escaping!!!!! ", escape_point)
@@ -565,10 +565,11 @@ func _get_weapon_scene(type: String):
 			return MINIAXE_SCENE
 
 
-func on_weapon_collected(type: String):
+func on_weapon_collected(type: String, time_spent = 0):
 	has_weapon = true
 	weapon = _get_weapon_scene(type).instance()
 	weapon.equip(self)
+	weapon.TIME_SPENT = time_spent
 	
 	target_blend_carry = 0
 	has_bomb = false
@@ -589,8 +590,9 @@ func on_weapon_collected(type: String):
 	bomb_interval_timer.wait_time = weapon.ATTACK_INTERVAL
 	bomb_interval_timer.start()
 	
-	if type != "MINIAXE":
-		weapon_timer.start(weapon.DURATION)
+	var time_left = weapon.DURATION - time_spent
+	weapon_timer.paused = false
+	weapon_timer.start(time_left)
 
 
 func _attack():
@@ -610,14 +612,18 @@ func _throw_weapon(target: Spatial):
 		hurt_sound.play() 
 		if is_instance_valid(weapon):
 			(weapon as ThrowableWeapon).throw(direction.normalized(), 70)
+			weapon_timer.stop()
+			weapon_timer.paused = false
+			
 #		yield(get_tree().create_timer(2), "timeout")
 #		on_weapon_collected(type)
 		
 
-func _on_WeaponTimer_timeout():
+func _on_WeaponTimer_timeout(prevent_deletion = false):
 	if is_instance_valid(weapon):
-		if weapon.DELETE_AFTER_TIMER:
-			weapon.queue_free()
+		if not prevent_deletion and weapon.DELETE_AFTER_TIMER:
+			weapon.delete()
+			weapon = null
 		has_weapon = false
 		if dropped_bombs < max_bombs and not has_bomb:
 			_spawn_bomb()

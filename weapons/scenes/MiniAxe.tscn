@@ -251,9 +251,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 4 )
 TYPE = "MINIAXE"
-DURATION = 20.0
+DURATION = 40.0
 ICON_PATH = "res://weapons/icons/miniaxe.png"
-DELETE_AFTER_TIMER = false
 ATTACK_INTERVAL = 5.0
 
 [node name="MeshInstance" type="MeshInstance" parent="."]

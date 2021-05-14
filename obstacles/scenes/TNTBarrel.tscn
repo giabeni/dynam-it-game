@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://particles/explosion04.png" type="Texture" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://powerups/scenes/RedDiamond.tscn" type="PackedScene" id=14]
 [ext_resource path="res://powerups/scenes/BlueDiamond.tscn" type="PackedScene" id=15]
 [ext_resource path="res://powerups/scenes/Dinamite.tscn" type="PackedScene" id=16]
+[ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=17]
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "Cylinder001"
@@ -424,3 +425,9 @@ visibility_aabb = AABB( -6.47991, -4.9883, -6.33408, 12.7775, 15.0695, 12.7016 )
 local_coords = false
 process_material = SubResource( 16 )
 draw_pass_1 = SubResource( 18 )
+
+[node name="DragSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 17 )
+unit_db = 71.325
+unit_size = 94.6
+max_db = 6.0

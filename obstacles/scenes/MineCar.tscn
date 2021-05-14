@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
+[ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=4]
 [ext_resource path="res://tiles/models/Metal_007.material" type="Material" id=7]
 
 [sub_resource type="ArrayMesh" id=1]
@@ -158,3 +159,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0376947, 1.44338, -0.0432968
 
 [node name="Hitpoint3" type="Position3D" parent="Hitpoints"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.39701, 0.646046, 1.9987 )
+
+[node name="DragSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource( 4 )
+unit_db = 80.0
+unit_size = 100.0
+max_db = 6.0

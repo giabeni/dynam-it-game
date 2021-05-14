@@ -114,6 +114,7 @@ func _physics_process(delta):
 		var collision = player.get_slide_collision(col)
 		if collision.collider.is_in_group("Pushables") and (not is_instance_valid(player.grabbed_object) or collision.collider_id != player.grabbed_object.get_instance_id()):
 			(collision.collider as RigidBody).apply_central_impulse(-collision.normal * INERTIA * 0.1)
+			collision.collider.play_drag_sound()
 	
 	#Zoom
 	current_zoom = lerp(current_zoom, zoom_factor, delta * ZOOM_SPEED)

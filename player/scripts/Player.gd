@@ -310,10 +310,11 @@ func _get_weapon_scene(type: String):
 			return MINIAXE_SCENE
 
 
-func on_weapon_collected(type: String):
+func on_weapon_collected(type: String, time_spent = 0):
 	has_weapon = true
 	weapon = _get_weapon_scene(type).instance()
 	weapon.equip(self)
+	weapon.TIME_SPENT = time_spent
 	
 	target_blend_carry = 0
 	has_bomb = false
@@ -330,8 +331,10 @@ func on_weapon_collected(type: String):
 		weapon_loc.get_child(0).queue_free()
 		
 	weapon_loc.call_deferred("add_child", weapon)
-	weapon_timer.start(weapon.DURATION)
-	player_ui.set_current_powerup_timer(weapon.DURATION)
+	var time_left = weapon.DURATION - time_spent
+	weapon_timer.paused = false
+	weapon_timer.start(time_left)
+	player_ui.set_current_powerup_timer(time_left)
 	player_ui.set_powerup_timer(weapon.ICON_PATH, weapon.DURATION)
 		
 		
@@ -364,15 +367,17 @@ func _attack():
 		hurt_sound.play() 
 		if is_instance_valid(weapon):
 			(weapon as ThrowableWeapon).throw(direction.normalized(), 70)
+			player_ui.set_current_powerup_timer(0)
+			weapon_timer.paused = true
 	else:
 		weapon.start_attack(0.2, 0.4)
 		anim_tree.set("parameters/Slash/active", true)
 
 
-func _on_WeaponTimer_timeout():
+func _on_WeaponTimer_timeout(prevent_deletion = false):
 	if is_instance_valid(weapon):
-		if weapon.DELETE_AFTER_TIMER:
-			weapon.call_deferred("queue_free")
+		if not prevent_deletion and weapon.DELETE_AFTER_TIMER:
+			weapon.delete()
 		has_weapon = false
 		player_ui.set_current_powerup_timer(0)
 		if dropped_bombs < max_bombs and not has_bomb:

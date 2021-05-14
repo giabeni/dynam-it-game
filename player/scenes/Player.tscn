@@ -3774,7 +3774,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.414332 )
 shape = SubResource( 6 )
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.937542, 0.249822, 0.242081, 0.0983261, -0.477209, 0.873272, 0.333686, 0.842533, 0.42284, -0.350512, 1.22427, 0.66916 )
+transform = Transform( -0.898186, 0.296008, 0.325025, 0.136478, -0.515056, 0.846222, 0.417895, 0.804424, 0.422218, -0.305802, 1.24004, 0.660173 )
 bone_name = "fist._r"
 
 [node name="SlashMesh" type="MeshInstance" parent="CharacterArmature/Skeleton/HandRight"]
