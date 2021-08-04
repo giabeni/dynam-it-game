@@ -8,6 +8,7 @@ onready var loading_screen = $LoadingScreen
 onready var loading_bar = $LoadingScreen/CenterContainer2/VBoxContainer/CenterContainer/LoadingProgress
 onready var loading_label = $LoadingScreen/CenterContainer2/VBoxContainer/CenterContainer2/LoadingLabel
 
+
 var target_loading_progress = 0
 var target_alpha = 1
 
@@ -41,10 +42,13 @@ func on_win():
 	get_tree().paused = true
 	
 func _input(event):
-	if event.is_action_released("ui_cancel"):
-		$PauseScreen.show()
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		get_tree().paused = true
+	if event.is_action_released("pause"):
+		if not get_tree().paused:
+			$PauseScreen.show()
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			get_tree().paused = true
+		else:
+			_on_ResumeButton_pressed()
 	
 
 func _on_PlayAgainButton_pressed():
@@ -66,5 +70,5 @@ func set_loading_screen(progress: float, text: String):
 	target_loading_progress = progress
 	loading_label.text = text.to_upper() + "(" + str(progress) + ")%"
 	if progress >= 100:
-		$"../PlayerUI".show()
+		get_parent().show_UIs()
 		target_alpha = 0

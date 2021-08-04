@@ -6,7 +6,7 @@ onready var light = $Light
 onready var anim_player = $AnimationPlayer
 
 func _ready():
-	blink_timer.wait_time = rand_range(1, 7)
+	blink_timer.wait_time = rand_range(5, 20)
 	blink_timer.start()
 
 

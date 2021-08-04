@@ -1,18 +1,16 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://tiles/models/TNT_002.material" type="Material" id=1]
 [ext_resource path="res://tiles/models/Paper.material" type="Material" id=2]
 [ext_resource path="res://tiles/models/Metal_002.material" type="Material" id=3]
 [ext_resource path="res://bombs/TNTPile.gd" type="Script" id=4]
-[ext_resource path="res://particles/explosion04.png" type="Texture" id=5]
+[ext_resource path="res://ui/textures/splash.png" type="Texture" id=5]
 [ext_resource path="res://bombs/sounds/explosion2.wav" type="AudioStream" id=6]
 [ext_resource path="res://bombs/sounds/wick.wav" type="AudioStream" id=7]
 [ext_resource path="res://particles/particle_materials/WickSpark.material" type="Material" id=8]
-[ext_resource path="res://particles/particle_materials/ExplosionSmoke.material" type="Material" id=9]
-[ext_resource path="res://particles/particle_materials/ExplosionFlames.material" type="Material" id=10]
-[ext_resource path="res://particles/materials/explosion-smoke.material" type="Material" id=11]
 [ext_resource path="res://particles/scenes/DustParticles.tscn" type="PackedScene" id=12]
 [ext_resource path="res://assets/forcefield_shader/force_field1.tres" type="Shader" id=13]
+[ext_resource path="res://particles/materials/explode-shader.material" type="Material" id=14]
 
 [sub_resource type="ArrayMesh" id=1]
 surfaces/0 = {
@@ -77,30 +75,10 @@ emission_on_uv2 = false
 material = SubResource( 4 )
 size = Vector3( 0.01, 0.08, 0.01 )
 
-[sub_resource type="SpatialMaterial" id=6]
-flags_transparent = true
-flags_unshaded = true
-params_billboard_mode = 3
-particles_anim_h_frames = 1
-particles_anim_v_frames = 1
-particles_anim_loop = false
-albedo_texture = ExtResource( 5 )
-
-[sub_resource type="QuadMesh" id=7]
-material = SubResource( 6 )
-size = Vector2( 20, 20 )
-
-[sub_resource type="SphereMesh" id=8]
-material = ExtResource( 11 )
-radius = 5.0
-height = 10.0
-radial_segments = 8
-rings = 8
-
-[sub_resource type="SphereShape" id=9]
+[sub_resource type="SphereShape" id=6]
 radius = 5.69143
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=7]
 length = 3.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sparks/Spark:emitting")
@@ -187,7 +165,7 @@ tracks/6/keys = {
 "values": [ 1.5 ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=8]
 length = 5.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("DamageArea/DamageCollisionShape:shape:radius")
@@ -202,55 +180,55 @@ tracks/0/keys = {
 "values": [ 0.254648, 17.199, 0.0 ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Explosion:emitting")
+tracks/1/path = NodePath("Light:omni_range")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath("Explosion2:emitting")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("Light:omni_range")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
 "times": PoolRealArray( 0, 0.0400372, 0.399902, 0.5 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ 5.0, 25.0, 25.0, 0.0 ]
 }
-tracks/4/type = "value"
-tracks/4/path = NodePath("Light:light_energy")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/path = NodePath("Light:light_energy")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
 "times": PoolRealArray( 0, 0.00769009, 0.039534, 0.401422, 0.499497 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
 "values": [ 0.0, 1.5, 4.0, 4.0, 0.0 ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("ExplosionSound:playing")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("WickSound:playing")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 tracks/5/type = "value"
-tracks/5/path = NodePath("ExplosionSound:playing")
+tracks/5/path = NodePath("Sparks/Spark:emitting")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
@@ -259,10 +237,10 @@ tracks/5/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ true ]
+"values": [ false ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath("WickSound:playing")
+tracks/6/path = NodePath("Sparks/Spark2:emitting")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/imported = false
@@ -274,7 +252,7 @@ tracks/6/keys = {
 "values": [ false ]
 }
 tracks/7/type = "value"
-tracks/7/path = NodePath("Sparks/Spark:emitting")
+tracks/7/path = NodePath("Sparks/Spark3:emitting")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/imported = false
@@ -286,48 +264,24 @@ tracks/7/keys = {
 "values": [ false ]
 }
 tracks/8/type = "value"
-tracks/8/path = NodePath("Sparks/Spark2:emitting")
+tracks/8/path = NodePath("DamageArea:monitoring")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/imported = false
 tracks/8/enabled = true
 tracks/8/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("Sparks/Spark3:emitting")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/10/type = "value"
-tracks/10/path = NodePath("DamageArea:monitoring")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/keys = {
 "times": PoolRealArray( 0, 0.768995 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
-tracks/11/type = "method"
-tracks/11/path = NodePath(".")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/keys = {
+tracks/9/type = "method"
+tracks/9/path = NodePath(".")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
 "times": PoolRealArray( 0.153086 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
@@ -335,13 +289,13 @@ tracks/11/keys = {
 "method": "_do_damage"
 } ]
 }
-tracks/12/type = "method"
-tracks/12/path = NodePath(".")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/keys = {
+tracks/10/type = "method"
+tracks/10/path = NodePath(".")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
 "times": PoolRealArray( 4.99604 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
@@ -349,6 +303,351 @@ tracks/12/keys = {
 "method": "queue_free"
 } ]
 }
+tracks/11/type = "value"
+tracks/11/path = NodePath("DustParticles:emitting")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0, 0.0646307, 1.75546 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("ExplosionMesh:material/0:shader_param/flash_power")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0, 0.213946, 0.613946 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.7, 0.0 ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("ExplosionMesh:material/0:shader_param/fire_power")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0, 0.213946, 0.441597, 1.01395 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.948, 0.948, 0.0 ]
+}
+tracks/14/type = "value"
+tracks/14/path = NodePath("ExplosionMesh:material/0:shader_param/fire_aperture")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/keys = {
+"times": PoolRealArray( 0, 0.213946, 0.625093, 0.776726 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.25, 0.0, 0.284, 0.791 ]
+}
+tracks/15/type = "value"
+tracks/15/path = NodePath("ExplosionMesh:material/0:shader_param/smoke_power")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/keys = {
+"times": PoolRealArray( 0, 0.15, 0.310677, 0.602209, 1.31395 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.0, 0.937, 0.885, 0.0 ]
+}
+tracks/16/type = "value"
+tracks/16/path = NodePath("ExplosionMesh:material/0:shader_param/smoke_aperture")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/keys = {
+"times": PoolRealArray( 0, 0.15, 0.413946, 1.31395 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.836, 0.248, 0.0, 0.365 ]
+}
+tracks/17/type = "value"
+tracks/17/path = NodePath("SmokeParticles:emitting")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/keys = {
+"times": PoolRealArray( 0, 0.0388578, 2.94212 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/18/type = "value"
+tracks/18/path = NodePath("SmokeParticles:draw_pass_1:material:shader_param/smoke_aperture")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/keys = {
+"times": PoolRealArray( 0, 1.62226 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.585, 0.0 ]
+}
+tracks/19/type = "value"
+tracks/19/path = NodePath("SmokeParticles:draw_pass_1:material:shader_param/smoke_power")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/keys = {
+"times": PoolRealArray( 0, 1.62226 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.939, 0.0 ]
+}
+tracks/20/type = "value"
+tracks/20/path = NodePath("CanvasLayer/ShockwaveRect:material:shader_param/size")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/keys = {
+"times": PoolRealArray( 0, 0.850917, 0.955526 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 3.129, 0.0 ]
+}
+tracks/21/type = "value"
+tracks/21/path = NodePath("CanvasLayer/ShockwaveRect:material:shader_param/thickness")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/imported = false
+tracks/21/enabled = false
+tracks/21/keys = {
+"times": PoolRealArray( 0, 4.67219, 4.7327, 4.86383 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.712, 1.3, 0.737, 0.0 ]
+}
+tracks/22/type = "value"
+tracks/22/path = NodePath("CanvasLayer/ShockwaveRect:material:shader_param/force")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/keys = {
+"times": PoolRealArray( 0, 0.855837 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.109, 0.0 ]
+}
+tracks/23/type = "value"
+tracks/23/path = NodePath("ExplosionMesh:translation")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/keys = {
+"times": PoolRealArray( 0, 1.00004 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, -1.49012e-08, 7.45058e-09 ), Vector3( 0, 5.53502, 0 ) ]
+}
+tracks/24/type = "value"
+tracks/24/path = NodePath("ExplosionSparks:emitting")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/keys = {
+"times": PoolRealArray( 0, 0.0186054, 0.300013 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+
+[sub_resource type="QuadMesh" id=9]
+resource_local_to_scene = true
+size = Vector2( 10, 10 )
+
+[sub_resource type="Curve" id=10]
+_data = [ Vector2( 0.00724638, 0.413462 ), 0.0, 0.0, 0, 0, Vector2( 0.253623, 0.663462 ), 0.0, 0.0, 0, 0, Vector2( 0.630435, 0.0192307 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 10 )
+
+[sub_resource type="ParticlesMaterial" id=12]
+resource_local_to_scene = true
+direction = Vector3( 0, 1, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 12.09
+initial_velocity_random = 0.73
+angular_velocity = 324.24
+damping = 1.56
+scale_random = 0.54
+scale_curve = SubResource( 11 )
+
+[sub_resource type="Shader" id=13]
+code = "/*
+	爆破シェーダー for Godot Engine by あるる（きのもと 結衣） @arlez80
+	Explode Shader for Godot Engine by Yui Kinomoto @arlez80
+
+	MIT License
+*/
+
+shader_type spatial;
+render_mode depth_draw_opaque, shadows_disabled, skip_vertex_transform, blend_add;
+
+uniform vec2 tex_speed = vec2( 0.0, 0.1 );
+uniform vec2 shift = vec2( 10.0, 10.0 );
+
+uniform float smoke_power : hint_range( 0.0, 10.0 ) = 1.0;
+uniform float smoke_aperture : hint_range( 0.0, 3.0 ) = 0.45;
+uniform vec4 smoke_color : hint_color = vec4( 0.185, 0.185, 0.185, 1.0 );
+
+void vertex( )
+{
+	MODELVIEW_MATRIX = INV_CAMERA_MATRIX * mat4(CAMERA_MATRIX[0],CAMERA_MATRIX[1],CAMERA_MATRIX[2],WORLD_MATRIX[3]);
+	VERTEX = ( MODELVIEW_MATRIX * vec4( VERTEX, 1.0 ) ).xyz;
+}
+
+float random( vec2 pos )
+{ 
+	return fract(sin(dot(pos, vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float value_noise( vec2 pos )
+{
+	vec2 p = floor( pos );
+	vec2 f = fract( pos );
+
+	float v00 = random( p + vec2( 0.0, 0.0 ) );
+	float v10 = random( p + vec2( 1.0, 0.0 ) );
+	float v01 = random( p + vec2( 0.0, 1.0 ) );
+	float v11 = random( p + vec2( 1.0, 1.0 ) );
+
+	vec2 u = f * f * ( 3.0 - 2.0 * f );
+
+	return mix( mix( v00, v10, u.x ), mix( v01, v11, u.x ), u.y );
+}
+
+float noise_tex( vec2 uv )
+{
+	return (
+		value_noise( uv * 0.984864 ) * 0.5
+	+	value_noise( uv * 2.543 ) * 0.25
+	+	value_noise( uv * 9.543543 ) * 0.125
+	+	value_noise( uv * 21.65436 ) * 0.0625
+	+	value_noise( uv * 42.0 ) * 0.03125
+	+	value_noise( uv * 87.135148 ) * 0.015625
+	+	value_noise( uv * 340.66534654 ) * 0.0078125
+	);
+}
+
+void fragment( )
+{
+	float p[9];
+
+	for( int y = 0; y < 3; y ++ ) {
+		for( int x = 0; x < 3; x ++ ) {
+			p[y*3 + x] = noise_tex( UV * 2.0 + tex_speed * TIME + shift * vec2( float(x - 1), float(y - 1) ) );
+		}
+	}
+
+	float smoke = clamp( ( 1.0 - length( vec2( 0.5, 0.5 ) - UV ) * 2.0 ) * smoke_power, 0.0, 1.0 );
+	float smoke_noise = smoke * ( ( ( smoke + smoke_aperture ) * p[4] - smoke_aperture ) * 75.0 );
+
+	ALBEDO = smoke_color.rgb;
+	ALPHA = clamp( smoke_noise, 0.0, 1.0 );
+	NORMAL = normalize( vec3( ( p[3] - p[5] ) * smoke, 0.1, ( p[1] - p[7] ) * smoke ) - VERTEX * 0.01 );
+}
+"
+
+[sub_resource type="ShaderMaterial" id=14]
+resource_local_to_scene = true
+shader = SubResource( 13 )
+shader_param/tex_speed = Vector2( 0, 0.5 )
+shader_param/shift = Vector2( 10, 10 )
+shader_param/smoke_power = 0.939
+shader_param/smoke_aperture = 0.585
+shader_param/smoke_color = Color( 0.352941, 0.313726, 0.235294, 1 )
+
+[sub_resource type="QuadMesh" id=15]
+resource_local_to_scene = true
+material = SubResource( 14 )
+size = Vector2( 10, 10 )
+
+[sub_resource type="Curve" id=16]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=17]
+curve = SubResource( 16 )
+
+[sub_resource type="ParticlesMaterial" id=18]
+flag_align_y = true
+direction = Vector3( 0, 0, 1 )
+spread = 180.0
+gravity = Vector3( 0, -10, 0 )
+initial_velocity = 15.35
+initial_velocity_random = 0.27
+tangential_accel = 0.43
+angle = 180.0
+scale = 1.43
+scale_random = 1.0
+scale_curve = SubResource( 17 )
+
+[sub_resource type="SpatialMaterial" id=19]
+vertex_color_use_as_albedo = true
+albedo_color = Color( 0.972549, 0.682353, 0, 1 )
+metallic = 1.0
+roughness = 0.3
+emission_enabled = true
+emission = Color( 0.94902, 0.435294, 0.372549, 1 )
+emission_energy = 1.46
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="CylinderMesh" id=20]
+material = SubResource( 19 )
+top_radius = 0.065
+bottom_radius = 0.023
+height = 0.63
+radial_segments = 8
+rings = 2
+
+[sub_resource type="Shader" id=21]
+code = "shader_type canvas_item;
+
+uniform vec2 center;
+uniform float force;
+uniform float size;
+uniform float thickness;
+uniform float feather;
+
+void fragment() {
+	float ratio = SCREEN_PIXEL_SIZE.x / SCREEN_PIXEL_SIZE.y;
+	vec2 scaledUV = ( SCREEN_UV - vec2(0.5, 0.0) ) / vec2(ratio, 1.0) + vec2(0.5, 0.0);
+	float mask = (1.0 - smoothstep(size - feather, size, length(scaledUV - center))) * smoothstep(size - thickness - feather, size - thickness, length(scaledUV - center));
+	vec2 disp = normalize(scaledUV - center) * force;
+	COLOR = texture(SCREEN_TEXTURE, SCREEN_UV - disp) * mask;
+//	COLOR.rgb = vec3(mask);
+}"
+
+[sub_resource type="ShaderMaterial" id=22]
+resource_local_to_scene = true
+shader = SubResource( 21 )
+shader_param/center = Vector2( 0.245, 0.546 )
+shader_param/force = 0.109
+shader_param/size = 0.0
+shader_param/thickness = 0.1
+shader_param/feather = 0.1
 
 [node name="TNTPile" type="RigidBody" groups=[
 "Bombs",
@@ -377,7 +676,6 @@ one_shot = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20757, 0, 0 )
 light_color = Color( 1, 0.831373, 0.0666667, 1 )
 light_energy = 0.0
-omni_range = 0.0
 omni_attenuation = 2.21914
 
 [node name="RangeLight" type="OmniLight" parent="."]
@@ -426,43 +724,19 @@ speed_scale = 1.17
 process_material = ExtResource( 8 )
 draw_pass_1 = SubResource( 5 )
 
-[node name="Explosion" type="Particles" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
-emitting = false
-amount = 128
-one_shot = true
-speed_scale = 4.0
-explosiveness = 1.0
-visibility_aabb = AABB( -44.2456, -34.8084, -31.9045, 88.4911, 69.6168, 63.8091 )
-process_material = ExtResource( 10 )
-draw_pass_1 = SubResource( 7 )
-
-[node name="Explosion2" type="Particles" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
-emitting = false
-amount = 128
-lifetime = 0.4
-one_shot = true
-speed_scale = 4.0
-explosiveness = 1.0
-local_coords = false
-process_material = ExtResource( 9 )
-draw_pass_1 = SubResource( 8 )
-
 [node name="DamageArea" type="Area" parent="."]
-monitoring = false
 monitorable = false
 collision_layer = 0
 collision_mask = 4
 
 [node name="DamageCollisionShape" type="CollisionShape" parent="DamageArea"]
-shape = SubResource( 9 )
+shape = SubResource( 6 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_process_mode = 0
 method_call_mode = 1
-anims/Drop = SubResource( 10 )
-anims/Explode = SubResource( 11 )
+anims/Drop = SubResource( 7 )
+anims/Explode = SubResource( 8 )
 
 [node name="ExplosionSound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 6 )
@@ -473,10 +747,69 @@ max_db = 4.0
 stream = ExtResource( 7 )
 unit_size = 40.0
 max_db = 4.0
-pitch_scale = 0.8
+pitch_scale = 0.829748
 
 [node name="DustParticles" parent="." instance=ExtResource( 12 )]
-lifetime = 4.0
+amount = 4
+lifetime = 5.69
+explosiveness = 1.0
+randomness = 0.52
+
+[node name="ExplosionMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, -2.29358e-15, 1, 0, 1.01152e-15, 0, 1, 0, -1.49012e-08, 7.45058e-09 )
+mesh = SubResource( 9 )
+material/0 = ExtResource( 14 )
+
+[node name="SmokeParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
+emitting = false
+amount = 10
+lifetime = 2.76
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 12 )
+draw_pass_1 = SubResource( 15 )
+
+[node name="ExplosionSparks" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.51199, 0 )
+emitting = false
+amount = 80
+lifetime = 2.01
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 18 )
+draw_pass_1 = SubResource( 20 )
+
+[node name="BG" type="TextureRect" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -406.25
+margin_top = -253.015
+margin_right = 233.75
+margin_bottom = 26.9847
+texture = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ShockwaveRect" type="ColorRect" parent="CanvasLayer"]
+material = SubResource( 22 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VisibilityNotifier" type="VisibilityNotifier" parent="."]
+aabb = AABB( -9.07348, -8.34447, -8.53557, 18.147, 16.6889, 17.0711 )
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]
+[connection signal="screen_entered" from="VisibilityNotifier" to="." method="_on_VisibilityNotifier_screen_entered"]
+[connection signal="screen_exited" from="VisibilityNotifier" to="." method="_on_VisibilityNotifier_screen_exited"]

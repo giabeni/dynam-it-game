@@ -1,9 +1,10 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
 [ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=4]
+[ext_resource path="res://obstacles/scenes/ObstacleCommon.tscn" type="PackedScene" id=5]
 [ext_resource path="res://tiles/models/Wood_004.material" type="Material" id=7]
 [ext_resource path="res://tiles/models/Light_Metal.material" type="Material" id=8]
 [ext_resource path="res://tiles/models/DarkWood.material" type="Material" id=9]
@@ -213,7 +214,7 @@ axis_lock_angular_z = true
 linear_damp = 1.0
 angular_damp = 1.0
 script = ExtResource( 2 )
-ITEM_PROB = 0.85
+ITEM_PROB = 0.7
 
 [node name="support001" type="MeshInstance" parent="."]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 1.42655, 0 )
@@ -315,3 +316,11 @@ unit_db = 80.0
 unit_size = 100.0
 max_db = 6.0
 pitch_scale = 1.19
+
+[node name="ObstacleCommon" parent="." instance=ExtResource( 5 )]
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74744, 0 )
+aabb = AABB( -3.07183, -2.75209, -2.179, 6.14369, 5.50415, 4.35799 )
+
+[editable path="ObstacleCommon"]

@@ -677,10 +677,10 @@ func _input(event):
 		$Camera.size -= 20
 	elif Input.is_action_just_pressed("ui_focus_next") and not $Camera.current:
 		$Camera.current = true
-		$"../Player".camera.current = false
+		player.camera.current = false
 	elif Input.is_action_just_pressed("ui_focus_next") and $Camera.current:
 		$Camera.current = false
-		$"../Player".camera.current = true
+		player.camera.current = true
 	elif Input.is_action_just_pressed("ui_page_up"):
 		_generate_map()
 		

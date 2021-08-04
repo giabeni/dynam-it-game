@@ -13,8 +13,10 @@ export var NPCS_COUNT = 10
 export var ENEMIES_COUNT = 0
 export var SEED = false
 export var MAIN_SCENE: PackedScene
+export var SPAWN_NPCS_TIMER_ACTIVE = true
 
 var npcs_dead = 0
+var npcs_count = 0
 var npc_miners: Array = []
 var state = MatchState.STARTED
 var room
@@ -44,11 +46,12 @@ func _process(delta):
 
 
 func _randomize_miners_locations():
-	# Takes a random NPC and makes it the player location
-	var random_index = randi() % npcs.get_child_count()
-	var random_npc = npcs.get_child(random_index)
-	player.global_transform.origin = random_npc.global_transform.origin
-	random_npc.queue_free()
+	if npcs.get_child_count() > 0:
+		# Takes a random NPC and makes it the player location
+		var random_index = randi() % npcs.get_child_count()
+		var random_npc = npcs.get_child(random_index)
+		player.global_transform.origin = random_npc.global_transform.origin
+		random_npc.queue_free()
 
 
 func spawn_remote_player(username, room_spot):
@@ -63,11 +66,16 @@ func start_match():
 func configure_npcs_signals():
 	_randomize_miners_locations()
 	
+	npcs_count = npcs.get_child_count()
 	ui.set_npcs_count(npcs.get_child_count())
 	npc_miners.append(player)
 	for npc in npcs.get_children():
-		npc.connect("on_died", self, "on_npc_died")
-		npc_miners.append(npc)
+		set_npc_signals(npc)
+
+
+func set_npc_signals(npc):
+	npc.connect("on_died", self, "on_npc_died")
+	npc_miners.append(npc)
 		
 
 
@@ -89,4 +97,14 @@ func _on_MatchTimer_timeout():
 	else:
 		$EndScreens.on_lost()
 		
+func show_UIs():
+	ui.show()		
 
+	
+func increment_npc_count():
+	ui.increment_npc_count()
+	
+
+func _input(event):
+	if event.is_action_released("toggle_fullscreen"):
+		OS.window_fullscreen = not OS.window_fullscreen

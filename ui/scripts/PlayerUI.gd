@@ -70,4 +70,9 @@ func set_current_powerup_timer(time: float):
 	
 	if time <= 0.1:
 		powerup_timer.hide()
+
+
+func _input(event):
+	if event.is_action_released("toggle_fullscreen"):
+		OS.window_fullscreen = not OS.window_fullscreen
 	

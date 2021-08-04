@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://obstacles/scripts/Destructible.gd" type="Script" id=2]
 [ext_resource path="res://tiles/models/Wood_001.material" type="Material" id=3]
 [ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=4]
+[ext_resource path="res://obstacles/scenes/ObstacleCommon.tscn" type="PackedScene" id=5]
 [ext_resource path="res://tiles/models/Wood_003.material" type="Material" id=7]
 [ext_resource path="res://obstacles/sounds/wood-hits/woodhit-1.wav" type="AudioStream" id=9]
 [ext_resource path="res://obstacles/sounds/wood-hits/woodhit-4.wav" type="AudioStream" id=10]
@@ -106,7 +107,7 @@ tracks/2/keys = {
 "values": [ true, false ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("CollisionShape2:disabled")
+tracks/3/path = NodePath("CollisionShape:disabled")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
@@ -154,7 +155,7 @@ visible = false
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )
 
-[node name="CollisionShape2" type="CollisionShape" parent="."]
+[node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 1.02344, 0 )
 shape = SubResource( 4 )
 
@@ -230,3 +231,11 @@ stream = ExtResource( 10 )
 unit_size = 100.0
 
 [node name="DustParticles" parent="." instance=ExtResource( 13 )]
+
+[node name="ObstacleCommon" parent="." instance=ExtResource( 5 )]
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.20715, 0 )
+aabb = AABB( -3.11777, -2.18414, -2.179, 6.23559, 4.36825, 4.35799 )
+
+[editable path="ObstacleCommon"]

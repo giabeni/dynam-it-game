@@ -1,0 +1,763 @@
+[gd_scene load_steps=37 format=2]
+
+[ext_resource path="res://player/scenes/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/scenes/PlayerInterface.tscn" type="PackedScene" id=2]
+[ext_resource path="res://environments/CaveEnv.tres" type="Environment" id=3]
+[ext_resource path="res://map/scripts/NavGrid.gd" type="Script" id=4]
+[ext_resource path="res://player/models/Shirt.material" type="Material" id=5]
+[ext_resource path="res://test/scripts/SplitMatch.gd" type="Script" id=6]
+[ext_resource path="res://tiles/libs/CaveLib.meshlib" type="MeshLibrary" id=7]
+[ext_resource path="res://ui/fonts/vt23 font/Adumu.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://ui/textures/stone-button.png" type="Texture" id=9]
+[ext_resource path="res://ui/sounds/victory.ogg" type="AudioStream" id=10]
+[ext_resource path="res://ui/sounds/soundtrack.mp3" type="AudioStream" id=11]
+[ext_resource path="res://ui/textures/empty_progress.png" type="Texture" id=12]
+[ext_resource path="res://ui/textures/full_progress.png" type="Texture" id=13]
+[ext_resource path="res://ui/sounds/wood-hover.wav" type="AudioStream" id=14]
+[ext_resource path="res://ui/sounds/defeat.ogg" type="AudioStream" id=15]
+[ext_resource path="res://ui/sounds/wood-click.wav" type="AudioStream" id=16]
+[ext_resource path="res://ui/scripts/HoverButton.gd" type="Script" id=17]
+[ext_resource path="res://ui/scripts/EndScreens.gd" type="Script" id=18]
+[ext_resource path="res://map/scripts/ProceduralMap.gd" type="Script" id=19]
+
+[sub_resource type="DynamicFont" id=1]
+size = 100
+outline_size = 5
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 30
+outline_size = 4
+outline_color = Color( 1, 1, 1, 0 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 30
+outline_size = 4
+outline_color = Color( 1, 1, 1, 0 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 100
+outline_size = 5
+outline_color = Color( 1, 0.815686, 0.384314, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_char = 5
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 30
+outline_size = 4
+outline_color = Color( 1, 1, 1, 0 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 30
+outline_size = 4
+outline_color = Color( 1, 1, 1, 0 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 30
+outline_size = 4
+outline_color = Color( 1, 1, 1, 0 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=8]
+size = 62
+outline_size = 5
+outline_color = Color( 1, 0.815686, 0.384314, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_char = 5
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 19
+outline_size = 5
+outline_color = Color( 1, 1, 1, 0 )
+use_filter = true
+extra_spacing_char = 5
+font_data = ExtResource( 8 )
+
+[sub_resource type="SpatialMaterial" id=10]
+flags_transparent = true
+albedo_color = Color( 0.184314, 0.658824, 0.74902, 0.788235 )
+
+[sub_resource type="CubeMesh" id=11]
+material = SubResource( 10 )
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=12]
+albedo_color = Color( 0.588235, 0.152941, 0.152941, 0.733333 )
+
+[sub_resource type="CubeMesh" id=13]
+material = SubResource( 12 )
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=14]
+albedo_color = Color( 0.113725, 0.811765, 0.254902, 0.733333 )
+
+[sub_resource type="CubeMesh" id=15]
+material = SubResource( 14 )
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="MeshLibrary" id=16]
+item/0/name = ""
+item/0/mesh = SubResource( 11 )
+item/0/mesh_transform = null
+item/0/shapes = [  ]
+item/0/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/1/name = ""
+item/1/mesh = SubResource( 13 )
+item/1/mesh_transform = null
+item/1/shapes = [  ]
+item/1/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/2/name = ""
+item/2/mesh = SubResource( 15 )
+item/2/mesh_transform = null
+item/2/shapes = [  ]
+item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[sub_resource type="NavigationMesh" id=17]
+
+[node name="SplitMatch" type="Spatial"]
+script = ExtResource( 6 )
+NPCS_COUNT = 4
+
+[node name="View" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="View"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VC1" type="ViewportContainer" parent="View/HBoxContainer"]
+margin_right = 638.0
+margin_bottom = 720.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="Viewport" type="Viewport" parent="View/HBoxContainer/VC1"]
+size = Vector2( 638, 720 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_3d = true
+
+[node name="Player1" parent="View/HBoxContainer/VC1/Viewport" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
+UI_PATH = NodePath("../PlayerUI")
+FOOTPRINTS_PATH = NodePath("../../../../../Map/Navigation/Footprints")
+
+[node name="PlayerUI" parent="View/HBoxContainer/VC1/Viewport" instance=ExtResource( 2 )]
+
+[node name="VC2" type="ViewportContainer" parent="View/HBoxContainer"]
+margin_left = 642.0
+margin_right = 1280.0
+margin_bottom = 720.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="Viewport" type="Viewport" parent="View/HBoxContainer/VC2"]
+size = Vector2( 638, 720 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_3d = true
+
+[node name="Player2" parent="View/HBoxContainer/VC2/Viewport" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
+UI_PATH = NodePath("../PlayerUI2")
+FOOTPRINTS_PATH = NodePath("../../../../../Map/Navigation/Footprints")
+INPUT_SRC = 1
+
+[node name="PlayerUI2" parent="View/HBoxContainer/VC2/Viewport" instance=ExtResource( 2 )]
+
+[node name="OtherPlayers" type="Spatial" parent="."]
+
+[node name="EndScreens" type="Control" parent="."]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 18 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LostScreen" type="Control" parent="EndScreens"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="ColorRect" parent="EndScreens/LostScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 0.788235 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/LostScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/LostScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EndScreens/LostScreen/CenterContainer2"]
+margin_left = 417.0
+margin_top = 156.0
+margin_right = 863.0
+margin_bottom = 564.0
+
+[node name="YOU LOST" type="Label" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer"]
+margin_right = 446.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 0, 160 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 1, 0.384314, 0.384314, 1 )
+text = "YOU LOST"
+align = 1
+valign = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer"]
+margin_top = 164.0
+margin_right = 446.0
+margin_bottom = 284.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="PlayAgainButton" type="TextureButton" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer"]
+margin_left = 98.0
+margin_top = 20.0
+margin_right = 348.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "PLAY AGAIN"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer"]
+margin_top = 288.0
+margin_right = 446.0
+margin_bottom = 408.0
+rect_min_size = Vector2( 0, 120 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenuButton" type="TextureButton" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer2"]
+margin_left = 98.0
+margin_top = 20.0
+margin_right = 348.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "MAIN MENU"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DefeatSound" type="AudioStreamPlayer" parent="EndScreens/LostScreen"]
+stream = ExtResource( 15 )
+
+[node name="WinScreen" type="Control" parent="EndScreens"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="ColorRect" parent="EndScreens/WinScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 0.788235 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/WinScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/WinScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EndScreens/WinScreen/CenterContainer2"]
+margin_left = 438.0
+margin_top = 156.0
+margin_right = 842.0
+margin_bottom = 564.0
+
+[node name="YOU LOST" type="Label" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer"]
+margin_right = 404.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 0, 160 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 1, 0.976471, 0.796078, 1 )
+text = "YOU WIN"
+align = 1
+valign = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer"]
+margin_top = 164.0
+margin_right = 404.0
+margin_bottom = 284.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="PlayAgainButton" type="TextureButton" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer"]
+margin_left = 77.0
+margin_top = 20.0
+margin_right = 327.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 5 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "PLAY AGAIN"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer"]
+margin_top = 288.0
+margin_right = 404.0
+margin_bottom = 408.0
+rect_min_size = Vector2( 0, 120 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenuButton" type="TextureButton" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer2"]
+margin_left = 77.0
+margin_top = 20.0
+margin_right = 327.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 6 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "MAIN MENU"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WinSound" type="AudioStreamPlayer" parent="EndScreens/WinScreen"]
+stream = ExtResource( 10 )
+volume_db = -7.812
+
+[node name="PauseScreen" type="Control" parent="EndScreens"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="ColorRect" parent="EndScreens/PauseScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 0.788235 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/PauseScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/PauseScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EndScreens/PauseScreen/CenterContainer2"]
+margin_left = 402.0
+margin_top = 156.0
+margin_right = 877.0
+margin_bottom = 564.0
+
+[node name="YOU LOST" type="Label" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer"]
+margin_right = 475.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 0, 160 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0.780392, 0.780392, 0.780392, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+text = "PAUSED..."
+align = 1
+valign = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer"]
+margin_top = 164.0
+margin_right = 475.0
+margin_bottom = 284.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="ResumeButton" type="TextureButton" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer"]
+margin_left = 112.0
+margin_top = 20.0
+margin_right = 362.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer/ResumeButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "RESUME >"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer"]
+margin_top = 288.0
+margin_right = 475.0
+margin_bottom = 408.0
+rect_min_size = Vector2( 0, 120 )
+mouse_default_cursor_shape = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenuButton" type="TextureButton" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer2"]
+margin_left = 112.0
+margin_top = 20.0
+margin_right = 362.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 250, 80 )
+mouse_default_cursor_shape = 2
+size_flags_vertical = 0
+texture_normal = ExtResource( 9 )
+expand = true
+script = ExtResource( 17 )
+
+[node name="Label" type="Label" parent="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -45.0
+margin_bottom = 52.0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 6 )
+custom_colors/font_color = Color( 0.0700073, 0.111741, 0.144531, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+text = "< MAIN MENU"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WinSound" type="AudioStreamPlayer" parent="EndScreens/PauseScreen"]
+stream = ExtResource( 10 )
+
+[node name="LoadingScreen" type="Control" parent="EndScreens"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bg" type="ColorRect" parent="EndScreens/LoadingScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 0.984314 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/LoadingScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EndScreens/LoadingScreen/CenterContainer2"]
+margin_left = 441.0
+margin_top = 156.0
+margin_right = 839.0
+margin_bottom = 564.0
+
+[node name="LoadingTitle" type="Label" parent="EndScreens/LoadingScreen/CenterContainer2/VBoxContainer"]
+margin_right = 398.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 0, 160 )
+size_flags_vertical = 0
+custom_fonts/font = SubResource( 8 )
+custom_colors/font_color = Color( 0.780392, 0.780392, 0.780392, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+text = "Loading"
+align = 1
+valign = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="EndScreens/LoadingScreen/CenterContainer2/VBoxContainer"]
+margin_top = 164.0
+margin_right = 398.0
+margin_bottom = 284.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="LoadingProgress" type="TextureProgress" parent="EndScreens/LoadingScreen/CenterContainer2/VBoxContainer/CenterContainer"]
+margin_top = 45.0
+margin_right = 398.0
+margin_bottom = 75.0
+value = 30.0
+texture_under = ExtResource( 12 )
+texture_progress = ExtResource( 13 )
+nine_patch_stretch = true
+stretch_margin_top = 15
+stretch_margin_right = 398
+stretch_margin_bottom = 15
+
+[node name="CenterContainer2" type="CenterContainer" parent="EndScreens/LoadingScreen/CenterContainer2/VBoxContainer"]
+margin_top = 288.0
+margin_right = 398.0
+margin_bottom = 408.0
+rect_min_size = Vector2( 0, 120 )
+
+[node name="LoadingLabel" type="Label" parent="EndScreens/LoadingScreen/CenterContainer2/VBoxContainer/CenterContainer2"]
+margin_left = 24.0
+margin_top = 50.0
+margin_right = 374.0
+margin_bottom = 70.0
+custom_fonts/font = SubResource( 9 )
+text = "LOADING RESOURCES...(0%)"
+align = 1
+
+[node name="WinSound" type="AudioStreamPlayer" parent="EndScreens/LoadingScreen"]
+stream = ExtResource( 10 )
+
+[node name="HoverSound" type="AudioStreamPlayer" parent="EndScreens"]
+stream = ExtResource( 14 )
+pitch_scale = 0.85
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="EndScreens"]
+stream = ExtResource( 16 )
+
+[node name="Soundtrack" type="AudioStreamPlayer" parent="EndScreens"]
+stream = ExtResource( 11 )
+volume_db = -15.0
+autoplay = true
+
+[node name="Map" type="Spatial" parent="."]
+script = ExtResource( 19 )
+NPCS_COUNT = 2
+PLAYER1_PATH = NodePath("../View/HBoxContainer/VC1/Viewport/Player1")
+PLAYER2_PATH = NodePath("../View/HBoxContainer/VC2/Viewport/Player2")
+
+[node name="PaintedGrid" type="GridMap" parent="Map"]
+visible = false
+mesh_library = SubResource( 16 )
+cell_size = Vector3( 1.5, 1, 1.5 )
+cell_scale = 1.5
+data = {
+"cells": PoolIntArray( 0, 0, 1, 1, 0, 1, 2, 0, 1, 3, 0, 1, 4, 0, 1, 5, 0, 1, 6, 0, 1, 7, 0, 1, 8, 0, 1, 9, 0, 1, 10, 0, 1, 11, 0, 1, 12, 0, 1, 13, 0, 1, 14, 0, 1, 15, 0, 1, 16, 0, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1, 4, 1, 1, 5, 1, 1, 6, 1, 1, 7, 1, 1, 8, 1, 1, 9, 1, 1, 10, 1, 1, 11, 1, 1, 12, 1, 1, 13, 1, 1, 14, 1, 1, 15, 1, 1, 16, 1, 1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2, 1, 5, 2, 1, 6, 2, 1, 7, 2, 1, 8, 2, 1, 9, 2, 1, 10, 2, 1, 11, 2, 1, 12, 2, 1, 13, 2, 1, 14, 2, 1, 15, 2, 1, 16, 2, 1, 0, 3, 1, 1, 3, 1, 2, 3, 1, 3, 3, 1, 4, 3, 1, 5, 3, 1, 6, 3, 1, 7, 3, 1, 8, 3, 1, 9, 3, 1, 10, 3, 1, 11, 3, 1, 12, 3, 1, 13, 3, 1, 14, 3, 1, 15, 3, 1, 16, 3, 1, 10, 4, 1, 11, 4, 1, 12, 4, 1, 13, 4, 1, 14, 4, 1, 15, 4, 1, 16, 4, 1, 10, 5, 1, 11, 5, 1, 12, 5, 1, 13, 5, 1, 14, 5, 1, 15, 5, 1, 16, 5, 1, 0, 65293, 1, 1, 65293, 1, 2, 65293, 1, 3, 65293, 1, 4, 65293, 1, 5, 65293, 1, 6, 65293, 1, 7, 65293, 1, 8, 65293, 1, 9, 65293, 1, 10, 65293, 1, 65530, 65293, 1, 65531, 65293, 1, 65532, 65293, 1, 65533, 65293, 1, 65534, 65293, 1, 65535, 65293, 1, 0, 65294, 1, 1, 65294, 1, 2, 65294, 1, 3, 65294, 1, 4, 65294, 1, 5, 65294, 1, 6, 65294, 1, 7, 65294, 1, 8, 65294, 1, 9, 65294, 1, 10, 65294, 1, 65530, 65294, 1, 65531, 65294, 1, 65532, 65294, 1, 65533, 65294, 1, 65534, 65294, 1, 65535, 65294, 1, 0, 65295, 1, 1, 65295, 1, 2, 65295, 1, 3, 65295, 1, 4, 65295, 1, 5, 65295, 1, 6, 65295, 1, 7, 65295, 1, 8, 65295, 1, 9, 65295, 1, 10, 65295, 1, 65530, 65295, 1, 65531, 65295, 1, 65532, 65295, 1, 65533, 65295, 1, 65534, 65295, 1, 65535, 65295, 1, 0, 65296, 1, 1, 65296, 1, 2, 65296, 1, 3, 65296, 1, 4, 65296, 1, 5, 65296, 1, 6, 65296, 1, 7, 65296, 1, 8, 65296, 1, 9, 65296, 1, 10, 65296, 1, 65530, 65296, 1, 65531, 65296, 1, 65532, 65296, 1, 65533, 65296, 1, 65534, 65296, 1, 65535, 65296, 1, 0, 65297, 1, 1, 65297, 1, 2, 65297, 1, 3, 65297, 1, 4, 65297, 1, 5, 65297, 1, 6, 65297, 1, 7, 65297, 1, 8, 65297, 1, 9, 65297, 1, 10, 65297, 1, 11, 65297, 1, 12, 65297, 1, 13, 65297, 1, 14, 65297, 1, 15, 65297, 1, 16, 65297, 1, 17, 65297, 1, 18, 65297, 1, 19, 65297, 1, 20, 65297, 1, 65530, 65297, 1, 65531, 65297, 1, 65532, 65297, 1, 65533, 65297, 1, 65534, 65297, 1, 65535, 65297, 1, 0, 65298, 1, 1, 65298, 1, 2, 65298, 1, 3, 65298, 1, 4, 65298, 1, 5, 65298, 1, 6, 65298, 1, 7, 65298, 1, 8, 65298, 1, 9, 65298, 1, 10, 65298, 1, 11, 65298, 1, 12, 65298, 1, 13, 65298, 1, 14, 65298, 1, 15, 65298, 1, 16, 65298, 1, 17, 65298, 1, 18, 65298, 1, 19, 65298, 1, 20, 65298, 1, 65530, 65298, 1, 65531, 65298, 1, 65532, 65298, 1, 65533, 65298, 1, 65534, 65298, 1, 65535, 65298, 1, 0, 65299, 1, 1, 65299, 1, 2, 65299, 1, 3, 65299, 1, 4, 65299, 1, 5, 65299, 1, 6, 65299, 1, 7, 65299, 1, 8, 65299, 1, 9, 65299, 1, 10, 65299, 1, 11, 65299, 1, 12, 65299, 1, 13, 65299, 1, 14, 65299, 1, 15, 65299, 1, 16, 65299, 1, 17, 65299, 1, 18, 65299, 1, 19, 65299, 1, 20, 65299, 1, 65530, 65299, 1, 65531, 65299, 1, 65532, 65299, 1, 65533, 65299, 1, 65534, 65299, 1, 65535, 65299, 1, 0, 65300, 1, 1, 65300, 1, 2, 65300, 1, 3, 65300, 1, 4, 65300, 1, 5, 65300, 1, 6, 65300, 1, 7, 65300, 1, 8, 65300, 1, 9, 65300, 1, 10, 65300, 1, 11, 65300, 1, 12, 65300, 1, 13, 65300, 1, 14, 65300, 1, 15, 65300, 1, 16, 65300, 1, 17, 65300, 1, 18, 65300, 1, 19, 65300, 1, 20, 65300, 1, 65530, 65300, 1, 65531, 65300, 1, 65532, 65300, 1, 65533, 65300, 1, 65534, 65300, 1, 65535, 65300, 1, 0, 65301, 1, 1, 65301, 1, 2, 65301, 1, 3, 65301, 1, 4, 65301, 1, 5, 65301, 1, 6, 65301, 1, 7, 65301, 1, 8, 65301, 1, 9, 65301, 1, 10, 65301, 1, 11, 65301, 1, 12, 65301, 1, 13, 65301, 1, 14, 65301, 1, 15, 65301, 1, 16, 65301, 1, 17, 65301, 1, 18, 65301, 1, 19, 65301, 1, 20, 65301, 1, 65530, 65301, 1, 65531, 65301, 1, 65532, 65301, 1, 65533, 65301, 1, 65534, 65301, 1, 65535, 65301, 1, 0, 65302, 1, 1, 65302, 1, 2, 65302, 1, 3, 65302, 1, 4, 65302, 1, 5, 65302, 1, 6, 65302, 1, 7, 65302, 1, 8, 65302, 1, 9, 65302, 1, 10, 65302, 1, 11, 65302, 1, 12, 65302, 1, 13, 65302, 1, 14, 65302, 1, 15, 65302, 1, 16, 65302, 1, 17, 65302, 1, 18, 65302, 1, 19, 65302, 1, 20, 65302, 1, 65530, 65302, 1, 65531, 65302, 1, 65532, 65302, 1, 65533, 65302, 1, 65534, 65302, 1, 65535, 65302, 1, 0, 65303, 1, 1, 65303, 1, 2, 65303, 1, 3, 65303, 1, 4, 65303, 1, 5, 65303, 1, 6, 65303, 1, 7, 65303, 1, 8, 65303, 1, 9, 65303, 1, 11, 65303, 1, 12, 65303, 1, 13, 65303, 1, 14, 65303, 1, 15, 65303, 1, 16, 65303, 1, 17, 65303, 1, 18, 65303, 1, 19, 65303, 1, 20, 65303, 1, 0, 65304, 1, 1, 65304, 1, 2, 65304, 1, 3, 65304, 1, 4, 65304, 1, 5, 65304, 1, 6, 65304, 1, 7, 65304, 1, 8, 65304, 1, 9, 65304, 1, 13, 65304, 1, 14, 65304, 1, 15, 65304, 1, 16, 65304, 1, 17, 65304, 1, 18, 65304, 1, 0, 65305, 1, 1, 65305, 1, 2, 65305, 1, 3, 65305, 1, 4, 65305, 1, 5, 65305, 1, 6, 65305, 1, 7, 65305, 1, 8, 65305, 1, 9, 65305, 1, 13, 65305, 1, 14, 65305, 1, 15, 65305, 1, 16, 65305, 1, 17, 65305, 1, 18, 65305, 1, 0, 65306, 1, 1, 65306, 1, 2, 65306, 1, 3, 65306, 1, 4, 65306, 1, 5, 65306, 1, 6, 65306, 1, 7, 65306, 1, 8, 65306, 1, 9, 65306, 1, 13, 65306, 1, 14, 65306, 1, 15, 65306, 1, 16, 65306, 1, 17, 65306, 1, 18, 65306, 1, 0, 65307, 1, 1, 65307, 1, 2, 65307, 1, 3, 65307, 1, 4, 65307, 1, 5, 65307, 1, 6, 65307, 1, 7, 65307, 1, 8, 65307, 1, 9, 65307, 1, 13, 65307, 1, 14, 65307, 1, 15, 65307, 1, 16, 65307, 1, 17, 65307, 1, 18, 65307, 1, 0, 65308, 1, 1, 65308, 1, 2, 65308, 1, 3, 65308, 1, 4, 65308, 1, 5, 65308, 1, 6, 65308, 1, 7, 65308, 1, 8, 65308, 1, 9, 65308, 1, 13, 65308, 1, 14, 65308, 1, 15, 65308, 1, 16, 65308, 1, 17, 65308, 1, 18, 65308, 1, 0, 65309, 1, 1, 65309, 1, 2, 65309, 1, 3, 65309, 1, 4, 65309, 1, 5, 65309, 1, 6, 65309, 1, 7, 65309, 1, 8, 65309, 1, 9, 65309, 1, 13, 65309, 1, 14, 65309, 1, 15, 65309, 1, 16, 65309, 1, 17, 65309, 1, 18, 65309, 1, 0, 65310, 1, 1, 65310, 1, 2, 65310, 1, 3, 65310, 1, 4, 65310, 1, 5, 65310, 1, 6, 65310, 1, 7, 65310, 1, 8, 65310, 1, 9, 65310, 1, 13, 65310, 1, 14, 65310, 1, 15, 65310, 1, 16, 65310, 1, 17, 65310, 1, 18, 65310, 1, 0, 65311, 1, 1, 65311, 1, 2, 65311, 1, 3, 65311, 1, 4, 65311, 1, 5, 65311, 1, 6, 65311, 1, 7, 65311, 1, 8, 65311, 1, 9, 65311, 1, 13, 65311, 1, 14, 65311, 1, 15, 65311, 1, 16, 65311, 1, 17, 65311, 1, 18, 65311, 1, 0, 65312, 1, 1, 65312, 1, 2, 65312, 1, 3, 65312, 1, 4, 65312, 1, 5, 65312, 1, 6, 65312, 1, 7, 65312, 1, 8, 65312, 1, 9, 65312, 1, 13, 65312, 1, 14, 65312, 1, 15, 65312, 1, 16, 65312, 1, 17, 65312, 1, 18, 65312, 1, 13, 65313, 1, 14, 65313, 1, 15, 65313, 1, 16, 65313, 1, 17, 65313, 1, 18, 65313, 1, 13, 65314, 1, 14, 65314, 1, 15, 65314, 1, 16, 65314, 1, 17, 65314, 1, 18, 65314, 1, 13, 65315, 1, 14, 65315, 1, 15, 65315, 1, 16, 65315, 1, 17, 65315, 1, 18, 65315, 1, 13, 65316, 1, 14, 65316, 1, 15, 65316, 1, 16, 65316, 1, 17, 65316, 1, 18, 65316, 1, 13, 65317, 1, 14, 65317, 1, 15, 65317, 1, 16, 65317, 1, 17, 65317, 1, 18, 65317, 1, 13, 65318, 1, 14, 65318, 1, 15, 65318, 1, 16, 65318, 1, 17, 65318, 1, 18, 65318, 1, 13, 65319, 1, 14, 65319, 1, 15, 65319, 1, 16, 65319, 1, 17, 65319, 1, 18, 65319, 1, 13, 65320, 1, 14, 65320, 1, 15, 65320, 1, 16, 65320, 1, 17, 65320, 1, 18, 65320, 1, 13, 65321, 1, 14, 65321, 1, 15, 65321, 1, 16, 65321, 1, 17, 65321, 1, 18, 65321, 1, 13, 65322, 1, 14, 65322, 1, 15, 65322, 1, 16, 65322, 1, 17, 65322, 1, 18, 65322, 1, 13, 65323, 1, 14, 65323, 1, 15, 65323, 1, 16, 65323, 1, 17, 65323, 1, 18, 65323, 1, 13, 65324, 1, 14, 65324, 1, 15, 65324, 1, 16, 65324, 1, 17, 65324, 1, 18, 65324, 1, 13, 65325, 1, 14, 65325, 1, 15, 65325, 1, 16, 65325, 1, 17, 65325, 1, 18, 65325, 1, 13, 65326, 1, 14, 65326, 1, 15, 65326, 1, 16, 65326, 1, 17, 65326, 1, 18, 65326, 1, 13, 65327, 1, 14, 65327, 1, 15, 65327, 1, 16, 65327, 1, 17, 65327, 1, 18, 65327, 1, 13, 65328, 1, 14, 65328, 1, 15, 65328, 1, 16, 65328, 1, 17, 65328, 1, 18, 65328, 1, 13, 65329, 1, 14, 65329, 1, 15, 65329, 1, 16, 65329, 1, 17, 65329, 1, 18, 65329, 1, 13, 65330, 1, 14, 65330, 1, 15, 65330, 1, 16, 65330, 1, 17, 65330, 1, 18, 65330, 1, 13, 65331, 1, 14, 65331, 1, 15, 65331, 1, 16, 65331, 1, 17, 65331, 1, 18, 65331, 1, 13, 65332, 1, 14, 65332, 1, 15, 65332, 1, 16, 65332, 1, 17, 65332, 1, 18, 65332, 1, 13, 65333, 1, 14, 65333, 1, 15, 65333, 1, 16, 65333, 1, 17, 65333, 1, 18, 65333, 1, 0, 65334, 1, 1, 65334, 1, 2, 65334, 1, 3, 65334, 1, 4, 65334, 1, 5, 65334, 1, 6, 65334, 1, 7, 65334, 1, 8, 65334, 1, 9, 65334, 1, 10, 65334, 1, 14, 65334, 1, 15, 65334, 1, 16, 65334, 1, 17, 65334, 1, 65509, 65334, 1, 65510, 65334, 1, 65511, 65334, 1, 65512, 65334, 1, 65513, 65334, 1, 65514, 65334, 1, 65515, 65334, 1, 65516, 65334, 1, 65517, 65334, 1, 65518, 65334, 1, 65519, 65334, 1, 65520, 65334, 1, 65521, 65334, 1, 65522, 65334, 1, 65523, 65334, 1, 65524, 65334, 1, 65525, 65334, 1, 65527, 65334, 1, 65528, 65334, 1, 65529, 65334, 1, 65530, 65334, 1, 65531, 65334, 1, 65532, 65334, 1, 65533, 65334, 1, 65534, 65334, 1, 65535, 65334, 1, 0, 65335, 1, 1, 65335, 1, 2, 65335, 1, 3, 65335, 1, 4, 65335, 1, 5, 65335, 1, 6, 65335, 1, 7, 65335, 1, 8, 65335, 1, 9, 65335, 1, 10, 65335, 1, 11, 65335, 1, 12, 65335, 1, 13, 65335, 1, 14, 65335, 1, 15, 65335, 1, 16, 65335, 1, 17, 65335, 1, 18, 65335, 1, 19, 65335, 1, 20, 65335, 1, 65509, 65335, 1, 65510, 65335, 1, 65511, 65335, 1, 65512, 65335, 1, 65513, 65335, 1, 65514, 65335, 1, 65515, 65335, 1, 65516, 65335, 1, 65517, 65335, 1, 65518, 65335, 1, 65519, 65335, 1, 65520, 65335, 1, 65521, 65335, 1, 65522, 65335, 1, 65523, 65335, 1, 65524, 65335, 1, 65525, 65335, 1, 65527, 65335, 1, 65528, 65335, 1, 65529, 65335, 1, 65530, 65335, 1, 65531, 65335, 1, 65532, 65335, 1, 65533, 65335, 1, 65534, 65335, 1, 65535, 65335, 1, 0, 65336, 1, 1, 65336, 1, 2, 65336, 1, 3, 65336, 1, 4, 65336, 1, 5, 65336, 1, 6, 65336, 1, 7, 65336, 1, 8, 65336, 1, 9, 65336, 1, 10, 65336, 1, 11, 65336, 1, 12, 65336, 1, 13, 65336, 1, 14, 65336, 1, 15, 65336, 1, 16, 65336, 1, 17, 65336, 1, 18, 65336, 1, 19, 65336, 1, 20, 65336, 1, 65509, 65336, 1, 65510, 65336, 1, 65511, 65336, 1, 65512, 65336, 1, 65513, 65336, 1, 65514, 65336, 1, 65515, 65336, 1, 65516, 65336, 1, 65517, 65336, 1, 65518, 65336, 1, 65519, 65336, 1, 65520, 65336, 1, 65521, 65336, 1, 65522, 65336, 1, 65523, 65336, 1, 65524, 65336, 1, 65525, 65336, 1, 65527, 65336, 1, 65528, 65336, 1, 65529, 65336, 1, 65530, 65336, 1, 65531, 65336, 1, 65532, 65336, 1, 65533, 65336, 1, 65534, 65336, 1, 65535, 65336, 1, 0, 65337, 1, 1, 65337, 1, 2, 65337, 1, 3, 65337, 1, 4, 65337, 1, 5, 65337, 1, 6, 65337, 1, 7, 65337, 1, 8, 65337, 1, 9, 65337, 1, 10, 65337, 1, 11, 65337, 1, 12, 65337, 1, 13, 65337, 1, 14, 65337, 1, 15, 65337, 1, 16, 65337, 1, 17, 65337, 1, 18, 65337, 1, 19, 65337, 1, 20, 65337, 1, 65509, 65337, 1, 65510, 65337, 1, 65511, 65337, 1, 65512, 65337, 1, 65513, 65337, 1, 65514, 65337, 1, 65515, 65337, 1, 65516, 65337, 1, 65517, 65337, 1, 65518, 65337, 1, 65519, 65337, 1, 65520, 65337, 1, 65521, 65337, 1, 65522, 65337, 1, 65523, 65337, 1, 65524, 65337, 1, 65525, 65337, 1, 65526, 65337, 1, 65527, 65337, 1, 65528, 65337, 1, 65529, 65337, 1, 65530, 65337, 1, 65531, 65337, 1, 65532, 65337, 1, 65533, 65337, 1, 65534, 65337, 1, 65535, 65337, 1, 0, 65338, 1, 1, 65338, 1, 2, 65338, 1, 3, 65338, 1, 4, 65338, 1, 5, 65338, 1, 6, 65338, 1, 7, 65338, 1, 8, 65338, 1, 9, 65338, 1, 10, 65338, 1, 11, 65338, 1, 12, 65338, 1, 13, 65338, 1, 14, 65338, 1, 15, 65338, 1, 16, 65338, 1, 17, 65338, 1, 18, 65338, 1, 19, 65338, 1, 20, 65338, 1, 65509, 65338, 1, 65510, 65338, 1, 65511, 65338, 1, 65512, 65338, 1, 65513, 65338, 1, 65514, 65338, 1, 65515, 65338, 1, 65516, 65338, 1, 65517, 65338, 1, 65518, 65338, 1, 65519, 65338, 1, 65520, 65338, 1, 65521, 65338, 1, 65522, 65338, 1, 65523, 65338, 1, 65524, 65338, 1, 65525, 65338, 1, 65526, 65338, 1, 65527, 65338, 1, 65528, 65338, 1, 65529, 65338, 1, 65530, 65338, 1, 65531, 65338, 1, 65532, 65338, 1, 65533, 65338, 1, 65534, 65338, 1, 65535, 65338, 1, 0, 65339, 1, 1, 65339, 1, 2, 65339, 1, 3, 65339, 1, 4, 65339, 1, 5, 65339, 1, 6, 65339, 1, 7, 65339, 1, 8, 65339, 1, 9, 65339, 1, 10, 65339, 1, 11, 65339, 1, 12, 65339, 1, 13, 65339, 1, 14, 65339, 1, 15, 65339, 1, 16, 65339, 1, 17, 65339, 1, 18, 65339, 1, 19, 65339, 1, 20, 65339, 1, 65509, 65339, 1, 65510, 65339, 1, 65511, 65339, 1, 65512, 65339, 1, 65513, 65339, 1, 65514, 65339, 1, 65515, 65339, 1, 65516, 65339, 1, 65517, 65339, 1, 65518, 65339, 1, 65519, 65339, 1, 65520, 65339, 1, 65521, 65339, 1, 65522, 65339, 1, 65523, 65339, 1, 65524, 65339, 1, 65525, 65339, 1, 65526, 65339, 1, 65527, 65339, 1, 65528, 65339, 1, 65529, 65339, 1, 65530, 65339, 1, 65531, 65339, 1, 65532, 65339, 1, 65533, 65339, 1, 65534, 65339, 1, 65535, 65339, 1, 0, 65340, 1, 1, 65340, 1, 2, 65340, 1, 3, 65340, 1, 4, 65340, 1, 5, 65340, 1, 6, 65340, 1, 7, 65340, 1, 8, 65340, 1, 9, 65340, 1, 10, 65340, 1, 11, 65340, 1, 12, 65340, 1, 13, 65340, 1, 14, 65340, 1, 15, 65340, 1, 16, 65340, 1, 17, 65340, 1, 18, 65340, 1, 19, 65340, 1, 20, 65340, 1, 65509, 65340, 1, 65510, 65340, 1, 65511, 65340, 1, 65512, 65340, 1, 65513, 65340, 1, 65514, 65340, 1, 65515, 65340, 1, 65516, 65340, 1, 65517, 65340, 1, 65518, 65340, 1, 65519, 65340, 1, 65520, 65340, 1, 65521, 65340, 1, 65522, 65340, 1, 65523, 65340, 1, 65524, 65340, 1, 65525, 65340, 1, 65526, 65340, 1, 65527, 65340, 1, 65528, 65340, 1, 65529, 65340, 1, 65530, 65340, 1, 65531, 65340, 1, 65532, 65340, 1, 65533, 65340, 1, 65534, 65340, 1, 65535, 65340, 1, 0, 65341, 1, 1, 65341, 1, 2, 65341, 1, 3, 65341, 1, 4, 65341, 1, 5, 65341, 1, 6, 65341, 1, 7, 65341, 1, 8, 65341, 1, 9, 65341, 1, 10, 65341, 1, 11, 65341, 1, 12, 65341, 1, 13, 65341, 1, 14, 65341, 1, 15, 65341, 1, 16, 65341, 1, 17, 65341, 1, 18, 65341, 1, 19, 65341, 1, 20, 65341, 1, 65509, 65341, 1, 65510, 65341, 1, 65511, 65341, 1, 65512, 65341, 1, 65513, 65341, 1, 65514, 65341, 1, 65515, 65341, 1, 65516, 65341, 1, 65517, 65341, 1, 65518, 65341, 1, 65519, 65341, 1, 65520, 65341, 1, 65521, 65341, 1, 65522, 65341, 1, 65523, 65341, 1, 65524, 65341, 1, 65525, 65341, 1, 65527, 65341, 1, 65528, 65341, 1, 65529, 65341, 1, 65530, 65341, 1, 65531, 65341, 1, 65532, 65341, 1, 65533, 65341, 1, 65534, 65341, 1, 65535, 65341, 1, 0, 65342, 1, 1, 65342, 1, 2, 65342, 1, 3, 65342, 1, 4, 65342, 1, 5, 65342, 1, 6, 65342, 1, 7, 65342, 1, 8, 65342, 1, 9, 65342, 1, 10, 65342, 1, 11, 65342, 1, 12, 65342, 1, 13, 65342, 1, 14, 65342, 1, 15, 65342, 1, 16, 65342, 1, 17, 65342, 1, 18, 65342, 1, 19, 65342, 1, 20, 65342, 1, 65509, 65342, 1, 65510, 65342, 1, 65511, 65342, 1, 65512, 65342, 1, 65513, 65342, 1, 65514, 65342, 1, 65515, 65342, 1, 65516, 65342, 1, 65517, 65342, 1, 65518, 65342, 1, 65519, 65342, 1, 65520, 65342, 1, 65521, 65342, 1, 65522, 65342, 1, 65523, 65342, 1, 65524, 65342, 1, 65525, 65342, 1, 65527, 65342, 1, 65528, 65342, 1, 65529, 65342, 1, 65530, 65342, 1, 65531, 65342, 1, 65532, 65342, 1, 65533, 65342, 1, 65534, 65342, 1, 65535, 65342, 1, 0, 65343, 1, 1, 65343, 1, 2, 65343, 1, 3, 65343, 1, 4, 65343, 1, 5, 65343, 1, 6, 65343, 1, 7, 65343, 1, 8, 65343, 1, 9, 65343, 1, 10, 65343, 1, 11, 65343, 1, 12, 65343, 1, 13, 65343, 1, 14, 65343, 1, 15, 65343, 1, 16, 65343, 1, 17, 65343, 1, 18, 65343, 1, 19, 65343, 1, 20, 65343, 1, 65509, 65343, 1, 65510, 65343, 1, 65511, 65343, 1, 65512, 65343, 1, 65513, 65343, 1, 65514, 65343, 1, 65515, 65343, 1, 65516, 65343, 1, 65517, 65343, 1, 65518, 65343, 1, 65519, 65343, 1, 65520, 65343, 1, 65521, 65343, 1, 65522, 65343, 1, 65523, 65343, 1, 65524, 65343, 1, 65525, 65343, 1, 65527, 65343, 1, 65528, 65343, 1, 65529, 65343, 1, 65530, 65343, 1, 65531, 65343, 1, 65532, 65343, 1, 65533, 65343, 1, 65534, 65343, 1, 65535, 65343, 1, 3, 65344, 1, 4, 65344, 1, 5, 65344, 1, 6, 65344, 1, 11, 65344, 1, 12, 65344, 1, 13, 65344, 1, 14, 65344, 1, 15, 65344, 1, 16, 65344, 1, 17, 65344, 1, 18, 65344, 1, 19, 65344, 1, 20, 65344, 1, 65507, 65344, 1, 65508, 65344, 1, 65509, 65344, 1, 65510, 65344, 1, 65511, 65344, 1, 65512, 65344, 1, 65517, 65344, 1, 65518, 65344, 1, 65519, 65344, 1, 65520, 65344, 1, 65521, 65344, 1, 65522, 65344, 1, 65529, 65344, 1, 65530, 65344, 1, 65531, 65344, 1, 65532, 65344, 1, 0, 65345, 1, 1, 65345, 1, 2, 65345, 1, 3, 65345, 1, 4, 65345, 1, 5, 65345, 1, 6, 65345, 1, 7, 65345, 1, 8, 65345, 1, 9, 65345, 1, 13, 65345, 1, 14, 65345, 1, 15, 65345, 1, 16, 65345, 1, 17, 65345, 1, 18, 65345, 1, 65507, 65345, 1, 65508, 65345, 1, 65509, 65345, 1, 65510, 65345, 1, 65511, 65345, 1, 65512, 65345, 1, 65517, 65345, 1, 65518, 65345, 1, 65519, 65345, 1, 65520, 65345, 1, 65521, 65345, 1, 65522, 65345, 1, 65528, 65345, 1, 65529, 65345, 1, 65530, 65345, 1, 65531, 65345, 1, 65532, 65345, 1, 65533, 65345, 1, 0, 65346, 1, 1, 65346, 1, 2, 65346, 1, 3, 65346, 1, 4, 65346, 1, 5, 65346, 1, 6, 65346, 1, 7, 65346, 1, 8, 65346, 1, 9, 65346, 1, 13, 65346, 1, 14, 65346, 1, 15, 65346, 1, 16, 65346, 1, 17, 65346, 1, 18, 65346, 1, 65507, 65346, 1, 65508, 65346, 1, 65509, 65346, 1, 65510, 65346, 1, 65511, 65346, 1, 65512, 65346, 1, 65517, 65346, 1, 65518, 65346, 1, 65519, 65346, 1, 65520, 65346, 1, 65521, 65346, 1, 65522, 65346, 1, 65528, 65346, 1, 65529, 65346, 1, 65530, 65346, 1, 65531, 65346, 1, 65532, 65346, 1, 65533, 65346, 1, 0, 65347, 1, 1, 65347, 1, 2, 65347, 1, 3, 65347, 1, 4, 65347, 1, 5, 65347, 1, 6, 65347, 1, 7, 65347, 1, 8, 65347, 1, 9, 65347, 1, 13, 65347, 1, 14, 65347, 1, 15, 65347, 1, 16, 65347, 1, 17, 65347, 1, 18, 65347, 1, 65507, 65347, 1, 65508, 65347, 1, 65509, 65347, 1, 65510, 65347, 1, 65511, 65347, 1, 65512, 65347, 1, 65517, 65347, 1, 65518, 65347, 1, 65519, 65347, 1, 65520, 65347, 1, 65521, 65347, 1, 65522, 65347, 1, 65528, 65347, 1, 65529, 65347, 1, 65530, 65347, 1, 65531, 65347, 1, 65532, 65347, 1, 65533, 65347, 1, 0, 65348, 1, 1, 65348, 1, 2, 65348, 1, 3, 65348, 1, 4, 65348, 1, 5, 65348, 1, 6, 65348, 1, 7, 65348, 1, 8, 65348, 1, 9, 65348, 1, 13, 65348, 1, 14, 65348, 1, 15, 65348, 1, 16, 65348, 1, 17, 65348, 1, 18, 65348, 1, 65507, 65348, 1, 65508, 65348, 1, 65509, 65348, 1, 65510, 65348, 1, 65511, 65348, 1, 65512, 65348, 1, 65517, 65348, 1, 65518, 65348, 1, 65519, 65348, 1, 65520, 65348, 1, 65521, 65348, 1, 65522, 65348, 1, 65528, 65348, 1, 65529, 65348, 1, 65530, 65348, 1, 65531, 65348, 1, 65532, 65348, 1, 65533, 65348, 1, 0, 65349, 1, 1, 65349, 1, 2, 65349, 1, 3, 65349, 1, 4, 65349, 1, 5, 65349, 1, 6, 65349, 1, 7, 65349, 1, 8, 65349, 1, 9, 65349, 1, 10, 65349, 1, 11, 65349, 1, 12, 65349, 1, 13, 65349, 1, 14, 65349, 1, 15, 65349, 1, 16, 65349, 1, 17, 65349, 1, 18, 65349, 1, 65507, 65349, 1, 65508, 65349, 1, 65509, 65349, 1, 65510, 65349, 1, 65511, 65349, 1, 65512, 65349, 1, 65517, 65349, 1, 65518, 65349, 1, 65519, 65349, 1, 65520, 65349, 1, 65521, 65349, 1, 65522, 65349, 1, 65528, 65349, 1, 65529, 65349, 1, 65530, 65349, 1, 65531, 65349, 1, 65532, 65349, 1, 65533, 65349, 1, 0, 65350, 1, 1, 65350, 1, 2, 65350, 1, 3, 65350, 1, 4, 65350, 1, 5, 65350, 1, 6, 65350, 1, 7, 65350, 1, 8, 65350, 1, 9, 65350, 1, 10, 65350, 1, 11, 65350, 1, 12, 65350, 1, 13, 65350, 1, 14, 65350, 1, 15, 65350, 1, 16, 65350, 1, 17, 65350, 1, 18, 65350, 1, 65507, 65350, 1, 65508, 65350, 1, 65509, 65350, 1, 65510, 65350, 1, 65511, 65350, 1, 65512, 65350, 1, 65517, 65350, 1, 65518, 65350, 1, 65519, 65350, 1, 65520, 65350, 1, 65521, 65350, 1, 65522, 65350, 1, 65526, 65350, 1, 65527, 65350, 1, 65528, 65350, 1, 65529, 65350, 1, 65530, 65350, 1, 65531, 65350, 1, 65532, 65350, 1, 65533, 65350, 1, 65534, 65350, 1, 65535, 65350, 1, 0, 65351, 1, 1, 65351, 1, 2, 65351, 1, 3, 65351, 1, 4, 65351, 1, 5, 65351, 1, 6, 65351, 1, 7, 65351, 1, 8, 65351, 1, 9, 65351, 1, 10, 65351, 1, 11, 65351, 1, 12, 65351, 1, 13, 65351, 1, 14, 65351, 1, 15, 65351, 1, 16, 65351, 1, 17, 65351, 1, 18, 65351, 1, 65507, 65351, 1, 65508, 65351, 1, 65509, 65351, 1, 65510, 65351, 1, 65511, 65351, 1, 65512, 65351, 1, 65517, 65351, 1, 65518, 65351, 1, 65519, 65351, 1, 65520, 65351, 1, 65521, 65351, 1, 65522, 65351, 1, 65526, 65351, 1, 65527, 65351, 1, 65528, 65351, 1, 65529, 65351, 1, 65530, 65351, 1, 65531, 65351, 1, 65532, 65351, 1, 65533, 65351, 1, 65534, 65351, 1, 65535, 65351, 1, 0, 65352, 1, 1, 65352, 1, 2, 65352, 1, 3, 65352, 1, 4, 65352, 1, 5, 65352, 1, 6, 65352, 1, 7, 65352, 1, 8, 65352, 1, 9, 65352, 1, 10, 65352, 1, 11, 65352, 1, 12, 65352, 1, 13, 65352, 1, 14, 65352, 1, 15, 65352, 1, 16, 65352, 1, 17, 65352, 1, 18, 65352, 1, 65507, 65352, 1, 65508, 65352, 1, 65509, 65352, 1, 65510, 65352, 1, 65511, 65352, 1, 65512, 65352, 1, 65517, 65352, 1, 65518, 65352, 1, 65519, 65352, 1, 65520, 65352, 1, 65521, 65352, 1, 65522, 65352, 1, 65526, 65352, 1, 65527, 65352, 1, 65528, 65352, 1, 65529, 65352, 1, 65530, 65352, 1, 65531, 65352, 1, 65532, 65352, 1, 65533, 65352, 1, 65534, 65352, 1, 65535, 65352, 1, 0, 65353, 1, 1, 65353, 1, 2, 65353, 1, 3, 65353, 1, 4, 65353, 1, 5, 65353, 1, 6, 65353, 1, 7, 65353, 1, 8, 65353, 1, 9, 65353, 1, 13, 65353, 1, 14, 65353, 1, 15, 65353, 1, 16, 65353, 1, 17, 65353, 1, 18, 65353, 1, 65507, 65353, 1, 65508, 65353, 1, 65509, 65353, 1, 65510, 65353, 1, 65511, 65353, 1, 65512, 65353, 1, 65517, 65353, 1, 65518, 65353, 1, 65519, 65353, 1, 65520, 65353, 1, 65521, 65353, 1, 65522, 65353, 1, 65526, 65353, 1, 65527, 65353, 1, 65528, 65353, 1, 65529, 65353, 1, 65530, 65353, 1, 65531, 65353, 1, 65532, 65353, 1, 65533, 65353, 1, 65534, 65353, 1, 65535, 65353, 1, 0, 65354, 1, 1, 65354, 1, 2, 65354, 1, 3, 65354, 1, 4, 65354, 1, 5, 65354, 1, 6, 65354, 1, 7, 65354, 1, 8, 65354, 1, 9, 65354, 1, 13, 65354, 1, 14, 65354, 1, 15, 65354, 1, 16, 65354, 1, 17, 65354, 1, 18, 65354, 1, 65507, 65354, 1, 65508, 65354, 1, 65509, 65354, 1, 65510, 65354, 1, 65511, 65354, 1, 65512, 65354, 1, 65517, 65354, 1, 65518, 65354, 1, 65519, 65354, 1, 65520, 65354, 1, 65521, 65354, 1, 65522, 65354, 1, 65526, 65354, 1, 65527, 65354, 1, 65528, 65354, 1, 65529, 65354, 1, 65530, 65354, 1, 65531, 65354, 1, 65532, 65354, 1, 65533, 65354, 1, 65534, 65354, 1, 65535, 65354, 1, 0, 65355, 1, 6, 65355, 1, 7, 65355, 1, 8, 65355, 1, 9, 65355, 1, 10, 65355, 1, 11, 65355, 1, 12, 65355, 1, 13, 65355, 1, 14, 65355, 1, 15, 65355, 1, 16, 65355, 1, 17, 65355, 1, 18, 65355, 1, 19, 65355, 1, 20, 65355, 1, 21, 65355, 1, 22, 65355, 1, 23, 65355, 1, 24, 65355, 1, 25, 65355, 1, 65507, 65355, 1, 65508, 65355, 1, 65509, 65355, 1, 65510, 65355, 1, 65511, 65355, 1, 65512, 65355, 1, 65517, 65355, 1, 65518, 65355, 1, 65519, 65355, 1, 65520, 65355, 1, 65521, 65355, 1, 65522, 65355, 1, 65526, 65355, 1, 65527, 65355, 1, 65528, 65355, 1, 65529, 65355, 1, 65530, 65355, 1, 65531, 65355, 1, 65532, 65355, 1, 65533, 65355, 1, 65534, 65355, 1, 65535, 65355, 1, 0, 65356, 1, 6, 65356, 1, 7, 65356, 1, 8, 65356, 1, 9, 65356, 1, 10, 65356, 1, 11, 65356, 1, 12, 65356, 1, 13, 65356, 1, 14, 65356, 1, 15, 65356, 1, 16, 65356, 1, 17, 65356, 1, 18, 65356, 1, 19, 65356, 1, 20, 65356, 1, 21, 65356, 1, 22, 65356, 1, 23, 65356, 1, 24, 65356, 1, 25, 65356, 1, 65507, 65356, 1, 65508, 65356, 1, 65509, 65356, 1, 65510, 65356, 1, 65511, 65356, 1, 65512, 65356, 1, 65517, 65356, 1, 65518, 65356, 1, 65519, 65356, 1, 65520, 65356, 1, 65521, 65356, 1, 65522, 65356, 1, 65526, 65356, 1, 65527, 65356, 1, 65528, 65356, 1, 65529, 65356, 1, 65530, 65356, 1, 65531, 65356, 1, 65532, 65356, 1, 65533, 65356, 1, 65534, 65356, 1, 65535, 65356, 1, 0, 65357, 1, 6, 65357, 1, 7, 65357, 1, 8, 65357, 1, 9, 65357, 1, 10, 65357, 1, 11, 65357, 1, 12, 65357, 1, 13, 65357, 1, 14, 65357, 1, 15, 65357, 1, 16, 65357, 1, 17, 65357, 1, 18, 65357, 1, 19, 65357, 1, 20, 65357, 1, 21, 65357, 1, 22, 65357, 1, 23, 65357, 1, 24, 65357, 1, 25, 65357, 1, 65507, 65357, 1, 65508, 65357, 1, 65509, 65357, 1, 65510, 65357, 1, 65511, 65357, 1, 65512, 65357, 1, 65517, 65357, 1, 65518, 65357, 1, 65519, 65357, 1, 65520, 65357, 1, 65521, 65357, 1, 65522, 65357, 1, 65526, 65357, 1, 65527, 65357, 1, 65528, 65357, 1, 65529, 65357, 1, 65530, 65357, 1, 65531, 65357, 1, 65532, 65357, 1, 65533, 65357, 1, 65534, 65357, 1, 65535, 65357, 1, 6, 65358, 1, 7, 65358, 1, 8, 65358, 1, 9, 65358, 1, 10, 65358, 1, 11, 65358, 1, 12, 65358, 1, 13, 65358, 1, 14, 65358, 1, 15, 65358, 1, 16, 65358, 1, 17, 65358, 1, 18, 65358, 1, 19, 65358, 1, 20, 65358, 1, 21, 65358, 1, 22, 65358, 1, 23, 65358, 1, 24, 65358, 1, 25, 65358, 1, 65507, 65358, 1, 65508, 65358, 1, 65509, 65358, 1, 65510, 65358, 1, 65511, 65358, 1, 65512, 65358, 1, 65517, 65358, 1, 65518, 65358, 1, 65519, 65358, 1, 65520, 65358, 1, 65521, 65358, 1, 65522, 65358, 1, 65526, 65358, 1, 65527, 65358, 1, 65528, 65358, 1, 65529, 65358, 1, 65530, 65358, 1, 65531, 65358, 1, 65532, 65358, 1, 65533, 65358, 1, 65534, 65358, 1, 65535, 65358, 1, 6, 65359, 1, 7, 65359, 1, 8, 65359, 1, 9, 65359, 1, 10, 65359, 1, 11, 65359, 1, 12, 65359, 1, 13, 65359, 1, 14, 65359, 1, 15, 65359, 1, 16, 65359, 1, 17, 65359, 1, 18, 65359, 1, 19, 65359, 1, 20, 65359, 1, 21, 65359, 1, 22, 65359, 1, 23, 65359, 1, 24, 65359, 1, 25, 65359, 1, 65517, 65359, 1, 65518, 65359, 1, 65519, 65359, 1, 65520, 65359, 1, 65521, 65359, 1, 65522, 65359, 1, 65526, 65359, 1, 65527, 65359, 1, 65528, 65359, 1, 65529, 65359, 1, 65530, 65359, 1, 65531, 65359, 1, 65532, 65359, 1, 65533, 65359, 1, 65534, 65359, 1, 65535, 65359, 1, 6, 65360, 1, 7, 65360, 1, 8, 65360, 1, 9, 65360, 1, 10, 65360, 1, 11, 65360, 1, 12, 65360, 1, 13, 65360, 1, 14, 65360, 1, 15, 65360, 1, 16, 65360, 1, 17, 65360, 1, 18, 65360, 1, 19, 65360, 1, 20, 65360, 1, 21, 65360, 1, 22, 65360, 1, 23, 65360, 1, 24, 65360, 1, 25, 65360, 1, 65517, 65360, 1, 65518, 65360, 1, 65519, 65360, 1, 65520, 65360, 1, 65521, 65360, 1, 65522, 65360, 1, 65529, 65360, 1, 65530, 65360, 1, 65531, 65360, 1, 65532, 65360, 1, 6, 65361, 1, 7, 65361, 1, 8, 65361, 1, 9, 65361, 1, 10, 65361, 1, 11, 65361, 1, 12, 65361, 1, 13, 65361, 1, 14, 65361, 1, 15, 65361, 1, 16, 65361, 1, 17, 65361, 1, 18, 65361, 1, 19, 65361, 1, 20, 65361, 1, 21, 65361, 1, 22, 65361, 1, 23, 65361, 1, 24, 65361, 1, 25, 65361, 1, 65517, 65361, 1, 65518, 65361, 1, 65519, 65361, 1, 65520, 65361, 1, 65521, 65361, 1, 65522, 65361, 1, 65526, 65361, 1, 65527, 65361, 1, 65528, 65361, 1, 65529, 65361, 1, 65530, 65361, 1, 65531, 65361, 1, 65532, 65361, 1, 65533, 65361, 1, 65534, 65361, 1, 65535, 65361, 1, 6, 65362, 1, 7, 65362, 1, 8, 65362, 1, 9, 65362, 1, 10, 65362, 1, 11, 65362, 1, 12, 65362, 1, 13, 65362, 1, 14, 65362, 1, 15, 65362, 1, 16, 65362, 1, 17, 65362, 1, 18, 65362, 1, 19, 65362, 1, 20, 65362, 1, 21, 65362, 1, 22, 65362, 1, 23, 65362, 1, 24, 65362, 1, 25, 65362, 1, 65517, 65362, 1, 65518, 65362, 1, 65519, 65362, 1, 65520, 65362, 1, 65521, 65362, 1, 65522, 65362, 1, 65526, 65362, 1, 65527, 65362, 1, 65528, 65362, 1, 65529, 65362, 1, 65530, 65362, 1, 65531, 65362, 1, 65532, 65362, 1, 65533, 65362, 1, 65534, 65362, 1, 65535, 65362, 1, 6, 65363, 1, 7, 65363, 1, 8, 65363, 1, 9, 65363, 1, 10, 65363, 1, 11, 65363, 1, 12, 65363, 1, 13, 65363, 1, 14, 65363, 1, 15, 65363, 1, 16, 65363, 1, 17, 65363, 1, 18, 65363, 1, 19, 65363, 1, 20, 65363, 1, 21, 65363, 1, 22, 65363, 1, 23, 65363, 1, 24, 65363, 1, 25, 65363, 1, 65517, 65363, 1, 65518, 65363, 1, 65519, 65363, 1, 65520, 65363, 1, 65521, 65363, 1, 65522, 65363, 1, 65526, 65363, 1, 65527, 65363, 1, 65528, 65363, 1, 65529, 65363, 1, 65530, 65363, 1, 65531, 65363, 1, 65532, 65363, 1, 65533, 65363, 1, 65534, 65363, 1, 65535, 65363, 1, 6, 65364, 1, 7, 65364, 1, 8, 65364, 1, 9, 65364, 1, 10, 65364, 1, 11, 65364, 1, 12, 65364, 1, 13, 65364, 1, 14, 65364, 1, 15, 65364, 1, 16, 65364, 1, 17, 65364, 1, 18, 65364, 1, 19, 65364, 1, 20, 65364, 1, 21, 65364, 1, 22, 65364, 1, 23, 65364, 1, 24, 65364, 1, 25, 65364, 1, 65517, 65364, 1, 65518, 65364, 1, 65519, 65364, 1, 65520, 65364, 1, 65521, 65364, 1, 65522, 65364, 1, 65526, 65364, 1, 65527, 65364, 1, 65528, 65364, 1, 65529, 65364, 1, 65530, 65364, 1, 65531, 65364, 1, 65532, 65364, 1, 65533, 65364, 1, 65534, 65364, 1, 65535, 65364, 1, 6, 65365, 1, 7, 65365, 1, 8, 65365, 1, 9, 65365, 1, 10, 65365, 1, 11, 65365, 1, 12, 65365, 1, 13, 65365, 1, 14, 65365, 1, 15, 65365, 1, 16, 65365, 1, 17, 65365, 1, 18, 65365, 1, 19, 65365, 1, 20, 65365, 1, 21, 65365, 1, 22, 65365, 1, 23, 65365, 1, 24, 65365, 1, 25, 65365, 1, 65517, 65365, 1, 65518, 65365, 1, 65519, 65365, 1, 65520, 65365, 1, 65521, 65365, 1, 65522, 65365, 1, 65526, 65365, 1, 65527, 65365, 1, 65528, 65365, 1, 65529, 65365, 1, 65530, 65365, 1, 65531, 65365, 1, 65532, 65365, 1, 65533, 65365, 1, 65534, 65365, 1, 65535, 65365, 1, 6, 65366, 1, 7, 65366, 1, 8, 65366, 1, 9, 65366, 1, 10, 65366, 1, 11, 65366, 1, 12, 65366, 1, 13, 65366, 1, 14, 65366, 1, 15, 65366, 1, 16, 65366, 1, 17, 65366, 1, 18, 65366, 1, 19, 65366, 1, 20, 65366, 1, 21, 65366, 1, 22, 65366, 1, 23, 65366, 1, 24, 65366, 1, 25, 65366, 1, 65517, 65366, 1, 65518, 65366, 1, 65519, 65366, 1, 65520, 65366, 1, 65521, 65366, 1, 65522, 65366, 1, 65526, 65366, 1, 65527, 65366, 1, 65528, 65366, 1, 65529, 65366, 1, 65530, 65366, 1, 65531, 65366, 1, 65532, 65366, 1, 65533, 65366, 1, 65534, 65366, 1, 65535, 65366, 1, 6, 65367, 1, 7, 65367, 1, 8, 65367, 1, 9, 65367, 1, 10, 65367, 1, 11, 65367, 1, 12, 65367, 1, 13, 65367, 1, 14, 65367, 1, 15, 65367, 1, 16, 65367, 1, 17, 65367, 1, 18, 65367, 1, 19, 65367, 1, 20, 65367, 1, 21, 65367, 1, 22, 65367, 1, 23, 65367, 1, 24, 65367, 1, 25, 65367, 1, 65517, 65367, 1, 65518, 65367, 1, 65519, 65367, 1, 65520, 65367, 1, 65521, 65367, 1, 65522, 65367, 1, 65526, 65367, 1, 65527, 65367, 1, 65528, 65367, 1, 65529, 65367, 1, 65530, 65367, 1, 65531, 65367, 1, 65532, 65367, 1, 65533, 65367, 1, 65534, 65367, 1, 65535, 65367, 1, 6, 65368, 1, 7, 65368, 1, 8, 65368, 1, 9, 65368, 1, 10, 65368, 1, 11, 65368, 1, 12, 65368, 1, 13, 65368, 1, 14, 65368, 1, 15, 65368, 1, 16, 65368, 1, 17, 65368, 1, 18, 65368, 1, 19, 65368, 1, 20, 65368, 1, 21, 65368, 1, 22, 65368, 1, 23, 65368, 1, 24, 65368, 1, 25, 65368, 1, 65517, 65368, 1, 65518, 65368, 1, 65519, 65368, 1, 65520, 65368, 1, 65521, 65368, 1, 65522, 65368, 1, 65526, 65368, 1, 65527, 65368, 1, 65528, 65368, 1, 65529, 65368, 1, 65530, 65368, 1, 65531, 65368, 1, 65532, 65368, 1, 65533, 65368, 1, 65534, 65368, 1, 65535, 65368, 1, 6, 65369, 1, 7, 65369, 1, 8, 65369, 1, 9, 65369, 1, 10, 65369, 1, 11, 65369, 1, 12, 65369, 1, 13, 65369, 1, 14, 65369, 1, 15, 65369, 1, 16, 65369, 1, 17, 65369, 1, 18, 65369, 1, 19, 65369, 1, 20, 65369, 1, 21, 65369, 1, 22, 65369, 1, 23, 65369, 1, 24, 65369, 1, 25, 65369, 1, 65526, 65369, 1, 65527, 65369, 1, 65528, 65369, 1, 65529, 65369, 1, 65530, 65369, 1, 65531, 65369, 1, 65532, 65369, 1, 65533, 65369, 1, 65534, 65369, 1, 65535, 65369, 1, 6, 65370, 1, 7, 65370, 1, 8, 65370, 1, 9, 65370, 1, 10, 65370, 1, 11, 65370, 1, 12, 65370, 1, 13, 65370, 1, 14, 65370, 1, 15, 65370, 1, 16, 65370, 1, 17, 65370, 1, 18, 65370, 1, 19, 65370, 1, 20, 65370, 1, 21, 65370, 1, 22, 65370, 1, 23, 65370, 1, 24, 65370, 1, 25, 65370, 1, 65526, 65370, 1, 65527, 65370, 1, 65528, 65370, 1, 65529, 65370, 1, 65530, 65370, 1, 65531, 65370, 1, 65532, 65370, 1, 65533, 65370, 1, 65534, 65370, 1, 65535, 65370, 1, 6, 65371, 1, 7, 65371, 1, 8, 65371, 1, 9, 65371, 1, 10, 65371, 1, 11, 65371, 1, 12, 65371, 1, 13, 65371, 1, 14, 65371, 1, 15, 65371, 1, 16, 65371, 1, 17, 65371, 1, 18, 65371, 1, 19, 65371, 1, 20, 65371, 1, 21, 65371, 1, 22, 65371, 1, 23, 65371, 1, 24, 65371, 1, 25, 65371, 1, 6, 65372, 1, 7, 65372, 1, 8, 65372, 1, 9, 65372, 1, 10, 65372, 1, 11, 65372, 1, 12, 65372, 1, 13, 65372, 1, 14, 65372, 1, 15, 65372, 1, 16, 65372, 1, 17, 65372, 1, 18, 65372, 1, 19, 65372, 1, 20, 65372, 1, 21, 65372, 1, 22, 65372, 1, 23, 65372, 1, 24, 65372, 1, 25, 65372, 1, 6, 65373, 1, 7, 65373, 1, 8, 65373, 1, 9, 65373, 1, 10, 65373, 1, 11, 65373, 1, 12, 65373, 1, 13, 65373, 1, 14, 65373, 1, 15, 65373, 1, 16, 65373, 1, 17, 65373, 1, 18, 65373, 1, 19, 65373, 1, 20, 65373, 1, 21, 65373, 1, 22, 65373, 1, 23, 65373, 1, 24, 65373, 1, 25, 65373, 1, 6, 65374, 1, 7, 65374, 1, 8, 65374, 1, 9, 65374, 1, 10, 65374, 1, 11, 65374, 1, 12, 65374, 1, 13, 65374, 1, 14, 65374, 1, 15, 65374, 1, 16, 65374, 1, 17, 65374, 1, 18, 65374, 1, 19, 65374, 1, 20, 65374, 1, 21, 65374, 1, 22, 65374, 1, 23, 65374, 1, 24, 65374, 1, 25, 65374, 1, 13, 65375, 1, 14, 65375, 1, 15, 65375, 1, 16, 65375, 1, 17, 65375, 1, 18, 65375, 1, 13, 65376, 1, 14, 65376, 1, 15, 65376, 1, 16, 65376, 1, 17, 65376, 1, 18, 65376, 1, 13, 65377, 1, 14, 65377, 1, 15, 65377, 1, 16, 65377, 1, 17, 65377, 1, 18, 65377, 1, 13, 65378, 1, 14, 65378, 1, 15, 65378, 1, 16, 65378, 1, 17, 65378, 1, 18, 65378, 1, 13, 65379, 1, 14, 65379, 1, 15, 65379, 1, 16, 65379, 1, 17, 65379, 1, 18, 65379, 1, 14, 65380, 1, 15, 65380, 1, 16, 65380, 1, 17, 65380, 1, 0, 65381, 1, 14, 65381, 1, 15, 65381, 1, 16, 65381, 1, 17, 65381, 1, 65530, 65381, 1, 65531, 65381, 1, 65532, 65381, 1, 65533, 65381, 1, 65534, 65381, 1, 65535, 65381, 1, 0, 65382, 1, 11, 65382, 1, 12, 65382, 1, 13, 65382, 1, 14, 65382, 1, 15, 65382, 1, 16, 65382, 1, 17, 65382, 1, 18, 65382, 1, 19, 65382, 1, 20, 65382, 1, 65530, 65382, 1, 65531, 65382, 1, 65532, 65382, 1, 65533, 65382, 1, 65534, 65382, 1, 65535, 65382, 1, 0, 65383, 1, 1, 65383, 1, 2, 65383, 1, 3, 65383, 1, 4, 65383, 1, 5, 65383, 1, 6, 65383, 1, 7, 65383, 1, 8, 65383, 1, 9, 65383, 1, 10, 65383, 1, 11, 65383, 1, 12, 65383, 1, 13, 65383, 1, 14, 65383, 1, 15, 65383, 1, 16, 65383, 1, 17, 65383, 1, 18, 65383, 1, 19, 65383, 1, 20, 65383, 1, 65530, 65383, 1, 65531, 65383, 1, 65532, 65383, 1, 65533, 65383, 1, 65534, 65383, 1, 65535, 65383, 1, 0, 65384, 1, 1, 65384, 1, 2, 65384, 1, 3, 65384, 1, 4, 65384, 1, 5, 65384, 1, 6, 65384, 1, 7, 65384, 1, 8, 65384, 1, 9, 65384, 1, 10, 65384, 1, 11, 65384, 1, 12, 65384, 1, 13, 65384, 1, 14, 65384, 1, 15, 65384, 1, 16, 65384, 1, 17, 65384, 1, 18, 65384, 1, 19, 65384, 1, 20, 65384, 1, 65530, 65384, 1, 65531, 65384, 1, 65532, 65384, 1, 65533, 65384, 1, 65534, 65384, 1, 65535, 65384, 1, 0, 65385, 1, 1, 65385, 1, 2, 65385, 1, 3, 65385, 1, 4, 65385, 1, 5, 65385, 1, 6, 65385, 1, 7, 65385, 1, 8, 65385, 1, 9, 65385, 1, 10, 65385, 1, 11, 65385, 1, 12, 65385, 1, 13, 65385, 1, 14, 65385, 1, 15, 65385, 1, 16, 65385, 1, 17, 65385, 1, 18, 65385, 1, 19, 65385, 1, 20, 65385, 1, 65530, 65385, 1, 65531, 65385, 1, 65532, 65385, 1, 65533, 65385, 1, 65534, 65385, 1, 65535, 65385, 1, 0, 65386, 1, 1, 65386, 1, 2, 65386, 1, 3, 65386, 1, 4, 65386, 1, 5, 65386, 1, 6, 65386, 1, 7, 65386, 1, 8, 65386, 1, 9, 65386, 1, 10, 65386, 1, 11, 65386, 1, 12, 65386, 1, 13, 65386, 1, 14, 65386, 1, 15, 65386, 1, 16, 65386, 1, 17, 65386, 1, 18, 65386, 1, 19, 65386, 1, 20, 65386, 1, 65530, 65386, 1, 65531, 65386, 1, 65532, 65386, 1, 65533, 65386, 1, 65534, 65386, 1, 65535, 65386, 1, 0, 65387, 1, 1, 65387, 1, 2, 65387, 1, 3, 65387, 1, 4, 65387, 1, 5, 65387, 1, 6, 65387, 1, 7, 65387, 1, 8, 65387, 1, 9, 65387, 1, 10, 65387, 1, 11, 65387, 1, 12, 65387, 1, 13, 65387, 1, 14, 65387, 1, 15, 65387, 1, 16, 65387, 1, 17, 65387, 1, 18, 65387, 1, 19, 65387, 1, 20, 65387, 1, 65530, 65387, 1, 65531, 65387, 1, 65532, 65387, 1, 65533, 65387, 1, 65534, 65387, 1, 65535, 65387, 1, 0, 65388, 1, 1, 65388, 1, 2, 65388, 1, 3, 65388, 1, 4, 65388, 1, 5, 65388, 1, 6, 65388, 1, 7, 65388, 1, 8, 65388, 1, 9, 65388, 1, 10, 65388, 1, 11, 65388, 1, 12, 65388, 1, 13, 65388, 1, 14, 65388, 1, 15, 65388, 1, 16, 65388, 1, 17, 65388, 1, 18, 65388, 1, 19, 65388, 1, 20, 65388, 1, 65530, 65388, 1, 65531, 65388, 1, 65532, 65388, 1, 65533, 65388, 1, 65534, 65388, 1, 65535, 65388, 1, 0, 65389, 1, 11, 65389, 1, 12, 65389, 1, 13, 65389, 1, 14, 65389, 1, 15, 65389, 1, 16, 65389, 1, 17, 65389, 1, 18, 65389, 1, 19, 65389, 1, 20, 65389, 1, 65530, 65389, 1, 65531, 65389, 1, 65532, 65389, 1, 65533, 65389, 1, 65534, 65389, 1, 65535, 65389, 1, 0, 65390, 1, 11, 65390, 1, 12, 65390, 1, 13, 65390, 1, 14, 65390, 1, 15, 65390, 1, 16, 65390, 1, 17, 65390, 1, 18, 65390, 1, 19, 65390, 1, 20, 65390, 1, 65530, 65390, 1, 65531, 65390, 1, 65532, 65390, 1, 65533, 65390, 1, 65534, 65390, 1, 65535, 65390, 1, 0, 65391, 1, 1, 65391, 1, 2, 65391, 1, 3, 65391, 1, 4, 65391, 1, 11, 65391, 1, 12, 65391, 1, 13, 65391, 1, 14, 65391, 1, 15, 65391, 1, 16, 65391, 1, 17, 65391, 1, 18, 65391, 1, 19, 65391, 1, 20, 65391, 1, 65521, 65391, 1, 65522, 65391, 1, 65523, 65391, 1, 65524, 65391, 1, 65525, 65391, 1, 65526, 65391, 1, 65527, 65391, 1, 65528, 65391, 1, 65529, 65391, 1, 65530, 65391, 1, 65531, 65391, 1, 65532, 65391, 1, 65533, 65391, 1, 65534, 65391, 1, 65535, 65391, 1, 0, 65392, 1, 1, 65392, 1, 2, 65392, 1, 3, 65392, 1, 4, 65392, 1, 13, 65392, 1, 14, 65392, 1, 15, 65392, 1, 16, 65392, 1, 17, 65392, 1, 18, 65392, 1, 65521, 65392, 1, 65522, 65392, 1, 65523, 65392, 1, 65524, 65392, 1, 65525, 65392, 1, 65526, 65392, 1, 65527, 65392, 1, 65528, 65392, 1, 65529, 65392, 1, 65530, 65392, 1, 65531, 65392, 1, 65532, 65392, 1, 65533, 65392, 1, 65534, 65392, 1, 65535, 65392, 1, 0, 65393, 1, 1, 65393, 1, 2, 65393, 1, 3, 65393, 1, 4, 65393, 1, 13, 65393, 1, 14, 65393, 1, 15, 65393, 1, 16, 65393, 1, 17, 65393, 1, 18, 65393, 1, 65521, 65393, 1, 65522, 65393, 1, 65523, 65393, 1, 65524, 65393, 1, 65525, 65393, 1, 65526, 65393, 1, 65527, 65393, 1, 65528, 65393, 1, 65529, 65393, 1, 65530, 65393, 1, 65531, 65393, 1, 65532, 65393, 1, 65533, 65393, 1, 65534, 65393, 1, 65535, 65393, 1, 0, 65394, 1, 1, 65394, 1, 2, 65394, 1, 3, 65394, 1, 4, 65394, 1, 13, 65394, 1, 14, 65394, 1, 15, 65394, 1, 16, 65394, 1, 17, 65394, 1, 18, 65394, 1, 65521, 65394, 1, 65522, 65394, 1, 65523, 65394, 1, 65524, 65394, 1, 65525, 65394, 1, 65526, 65394, 1, 65527, 65394, 1, 65528, 65394, 1, 65529, 65394, 1, 65530, 65394, 1, 65531, 65394, 1, 65532, 65394, 1, 65533, 65394, 1, 65534, 65394, 1, 65535, 65394, 1, 0, 65395, 1, 1, 65395, 1, 2, 65395, 1, 3, 65395, 1, 4, 65395, 1, 13, 65395, 1, 14, 65395, 1, 15, 65395, 1, 16, 65395, 1, 17, 65395, 1, 18, 65395, 1, 65521, 65395, 1, 65522, 65395, 1, 65523, 65395, 1, 65524, 65395, 1, 65525, 65395, 1, 65526, 65395, 1, 65527, 65395, 1, 65528, 65395, 1, 65529, 65395, 1, 65530, 65395, 1, 65531, 65395, 1, 65532, 65395, 1, 65533, 65395, 1, 65534, 65395, 1, 65535, 65395, 1, 0, 65396, 1, 1, 65396, 1, 2, 65396, 1, 3, 65396, 1, 4, 65396, 1, 13, 65396, 1, 14, 65396, 1, 15, 65396, 1, 16, 65396, 1, 17, 65396, 1, 18, 65396, 1, 65521, 65396, 1, 65522, 65396, 1, 65523, 65396, 1, 65524, 65396, 1, 65525, 65396, 1, 65526, 65396, 1, 65527, 65396, 1, 65528, 65396, 1, 65529, 65396, 1, 65530, 65396, 1, 65531, 65396, 1, 65532, 65396, 1, 65533, 65396, 1, 65534, 65396, 1, 65535, 65396, 1, 0, 65397, 1, 1, 65397, 1, 2, 65397, 1, 3, 65397, 1, 4, 65397, 1, 13, 65397, 1, 14, 65397, 1, 15, 65397, 1, 16, 65397, 1, 17, 65397, 1, 18, 65397, 1, 65521, 65397, 1, 65522, 65397, 1, 65523, 65397, 1, 65524, 65397, 1, 65525, 65397, 1, 65526, 65397, 1, 65527, 65397, 1, 65528, 65397, 1, 65529, 65397, 1, 65530, 65397, 1, 65531, 65397, 1, 65532, 65397, 1, 65533, 65397, 1, 65534, 65397, 1, 65535, 65397, 1, 0, 65398, 1, 1, 65398, 1, 2, 65398, 1, 3, 65398, 1, 4, 65398, 1, 13, 65398, 1, 14, 65398, 1, 15, 65398, 1, 16, 65398, 1, 17, 65398, 1, 18, 65398, 1, 65521, 65398, 1, 65522, 65398, 1, 65523, 65398, 1, 65524, 65398, 1, 65525, 65398, 1, 65526, 65398, 1, 65527, 65398, 1, 65528, 65398, 1, 65529, 65398, 1, 65530, 65398, 1, 65531, 65398, 1, 65532, 65398, 1, 65533, 65398, 1, 65534, 65398, 1, 65535, 65398, 1, 0, 65399, 1, 1, 65399, 1, 2, 65399, 1, 3, 65399, 1, 4, 65399, 1, 13, 65399, 1, 14, 65399, 1, 15, 65399, 1, 16, 65399, 1, 17, 65399, 1, 18, 65399, 1, 65521, 65399, 1, 65522, 65399, 1, 65523, 65399, 1, 65524, 65399, 1, 65525, 65399, 1, 65526, 65399, 1, 65527, 65399, 1, 65528, 65399, 1, 65529, 65399, 1, 65530, 65399, 1, 65531, 65399, 1, 65532, 65399, 1, 65533, 65399, 1, 65534, 65399, 1, 65535, 65399, 1, 0, 65400, 1, 1, 65400, 1, 2, 65400, 1, 3, 65400, 1, 4, 65400, 1, 13, 65400, 1, 14, 65400, 1, 15, 65400, 1, 16, 65400, 1, 17, 65400, 1, 18, 65400, 1, 65521, 65400, 1, 65522, 65400, 1, 65523, 65400, 1, 65524, 65400, 1, 65525, 65400, 1, 65526, 65400, 1, 65527, 65400, 1, 65528, 65400, 1, 65529, 65400, 1, 65530, 65400, 1, 65531, 65400, 1, 65532, 65400, 1, 65533, 65400, 1, 65534, 65400, 1, 65535, 65400, 1, 0, 65401, 1, 1, 65401, 1, 2, 65401, 1, 3, 65401, 1, 4, 65401, 1, 13, 65401, 1, 14, 65401, 1, 15, 65401, 1, 16, 65401, 1, 17, 65401, 1, 18, 65401, 1, 65521, 65401, 1, 65522, 65401, 1, 65523, 65401, 1, 65524, 65401, 1, 65525, 65401, 1, 65526, 65401, 1, 65527, 65401, 1, 65528, 65401, 1, 65529, 65401, 1, 65530, 65401, 1, 65531, 65401, 1, 65532, 65401, 1, 65533, 65401, 1, 65534, 65401, 1, 65535, 65401, 1, 0, 65402, 1, 1, 65402, 1, 2, 65402, 1, 3, 65402, 1, 4, 65402, 1, 13, 65402, 1, 14, 65402, 1, 15, 65402, 1, 16, 65402, 1, 17, 65402, 1, 18, 65402, 1, 65521, 65402, 1, 65522, 65402, 1, 65523, 65402, 1, 65524, 65402, 1, 65525, 65402, 1, 65526, 65402, 1, 65527, 65402, 1, 65528, 65402, 1, 65529, 65402, 1, 65530, 65402, 1, 65531, 65402, 1, 65532, 65402, 1, 65533, 65402, 1, 65534, 65402, 1, 65535, 65402, 1, 0, 65403, 1, 1, 65403, 1, 2, 65403, 1, 3, 65403, 1, 4, 65403, 1, 13, 65403, 1, 14, 65403, 1, 15, 65403, 1, 16, 65403, 1, 17, 65403, 1, 18, 65403, 1, 65521, 65403, 1, 65522, 65403, 1, 65523, 65403, 1, 65524, 65403, 1, 65525, 65403, 1, 65526, 65403, 1, 65527, 65403, 1, 65528, 65403, 1, 65529, 65403, 1, 65530, 65403, 1, 65531, 65403, 1, 65532, 65403, 1, 65533, 65403, 1, 65534, 65403, 1, 65535, 65403, 1, 0, 65404, 1, 1, 65404, 1, 2, 65404, 1, 3, 65404, 1, 4, 65404, 1, 13, 65404, 1, 14, 65404, 1, 15, 65404, 1, 16, 65404, 1, 17, 65404, 1, 18, 65404, 1, 65521, 65404, 1, 65522, 65404, 1, 65523, 65404, 1, 65524, 65404, 1, 65525, 65404, 1, 65526, 65404, 1, 65527, 65404, 1, 65528, 65404, 1, 65529, 65404, 1, 65530, 65404, 1, 65531, 65404, 1, 65532, 65404, 1, 65533, 65404, 1, 65534, 65404, 1, 65535, 65404, 1, 0, 65405, 1, 1, 65405, 1, 2, 65405, 1, 3, 65405, 1, 4, 65405, 1, 13, 65405, 1, 14, 65405, 1, 15, 65405, 1, 16, 65405, 1, 17, 65405, 1, 18, 65405, 1, 65521, 65405, 1, 65522, 65405, 1, 65523, 65405, 1, 65524, 65405, 1, 65525, 65405, 1, 65526, 65405, 1, 65527, 65405, 1, 65528, 65405, 1, 65529, 65405, 1, 65530, 65405, 1, 65531, 65405, 1, 65532, 65405, 1, 65533, 65405, 1, 65534, 65405, 1, 65535, 65405, 1, 0, 65406, 1, 1, 65406, 1, 2, 65406, 1, 3, 65406, 1, 4, 65406, 1, 13, 65406, 1, 14, 65406, 1, 15, 65406, 1, 16, 65406, 1, 17, 65406, 1, 18, 65406, 1, 65521, 65406, 1, 65522, 65406, 1, 65523, 65406, 1, 65524, 65406, 1, 65525, 65406, 1, 65526, 65406, 1, 65527, 65406, 1, 65528, 65406, 1, 65529, 65406, 1, 65530, 65406, 1, 65531, 65406, 1, 65532, 65406, 1, 65533, 65406, 1, 65534, 65406, 1, 65535, 65406, 1, 0, 65407, 1, 1, 65407, 1, 2, 65407, 1, 3, 65407, 1, 4, 65407, 1, 13, 65407, 1, 14, 65407, 1, 15, 65407, 1, 16, 65407, 1, 17, 65407, 1, 18, 65407, 1, 65521, 65407, 1, 65522, 65407, 1, 65523, 65407, 1, 65524, 65407, 1, 65525, 65407, 1, 65526, 65407, 1, 65527, 65407, 1, 65528, 65407, 1, 65529, 65407, 1, 65530, 65407, 1, 65531, 65407, 1, 65532, 65407, 1, 65533, 65407, 1, 65534, 65407, 1, 65535, 65407, 1, 0, 65408, 1, 1, 65408, 1, 2, 65408, 1, 3, 65408, 1, 4, 65408, 1, 13, 65408, 1, 14, 65408, 1, 15, 65408, 1, 16, 65408, 1, 17, 65408, 1, 18, 65408, 1, 65521, 65408, 1, 65522, 65408, 1, 65523, 65408, 1, 65524, 65408, 1, 65525, 65408, 1, 65526, 65408, 1, 65527, 65408, 1, 65528, 65408, 1, 65529, 65408, 1, 65530, 65408, 1, 65531, 65408, 1, 65532, 65408, 1, 65533, 65408, 1, 65534, 65408, 1, 65535, 65408, 1, 0, 65409, 1, 1, 65409, 1, 2, 65409, 1, 3, 65409, 1, 4, 65409, 1, 13, 65409, 1, 14, 65409, 1, 15, 65409, 1, 16, 65409, 1, 17, 65409, 1, 18, 65409, 1, 65521, 65409, 1, 65522, 65409, 1, 65523, 65409, 1, 65524, 65409, 1, 65525, 65409, 1, 65526, 65409, 1, 65527, 65409, 1, 65528, 65409, 1, 65529, 65409, 1, 65530, 65409, 1, 65531, 65409, 1, 65532, 65409, 1, 65533, 65409, 1, 65534, 65409, 1, 65535, 65409, 1, 0, 65410, 1, 1, 65410, 1, 2, 65410, 1, 3, 65410, 1, 4, 65410, 1, 13, 65410, 1, 14, 65410, 1, 15, 65410, 1, 16, 65410, 1, 17, 65410, 1, 18, 65410, 1, 65521, 65410, 1, 65522, 65410, 1, 65523, 65410, 1, 65524, 65410, 1, 65525, 65410, 1, 65526, 65410, 1, 65527, 65410, 1, 65528, 65410, 1, 65529, 65410, 1, 65530, 65410, 1, 65531, 65410, 1, 65532, 65410, 1, 65533, 65410, 1, 65534, 65410, 1, 65535, 65410, 1, 4, 65411, 1, 5, 65411, 1, 6, 65411, 1, 7, 65411, 1, 8, 65411, 1, 9, 65411, 1, 10, 65411, 1, 13, 65411, 1, 14, 65411, 1, 15, 65411, 1, 16, 65411, 1, 17, 65411, 1, 18, 65411, 1, 65526, 65411, 1, 65527, 65411, 1, 65528, 65411, 1, 65529, 65411, 1, 65530, 65411, 1, 65531, 65411, 1, 65532, 65411, 1, 65533, 65411, 1, 65534, 65411, 1, 65535, 65411, 1, 4, 65412, 1, 5, 65412, 1, 6, 65412, 1, 7, 65412, 1, 8, 65412, 1, 9, 65412, 1, 10, 65412, 1, 11, 65412, 1, 12, 65412, 1, 13, 65412, 1, 14, 65412, 1, 15, 65412, 1, 16, 65412, 1, 17, 65412, 1, 18, 65412, 1, 19, 65412, 1, 20, 65412, 1, 65526, 65412, 1, 65527, 65412, 1, 65528, 65412, 1, 65529, 65412, 1, 65530, 65412, 1, 65531, 65412, 1, 65532, 65412, 1, 65533, 65412, 1, 65534, 65412, 1, 65535, 65412, 1, 4, 65413, 1, 5, 65413, 1, 6, 65413, 1, 7, 65413, 1, 8, 65413, 1, 9, 65413, 1, 10, 65413, 1, 11, 65413, 1, 12, 65413, 1, 13, 65413, 1, 14, 65413, 1, 15, 65413, 1, 16, 65413, 1, 17, 65413, 1, 18, 65413, 1, 19, 65413, 1, 20, 65413, 1, 65526, 65413, 1, 65527, 65413, 1, 65528, 65413, 1, 65529, 65413, 1, 65530, 65413, 1, 65531, 65413, 1, 65532, 65413, 1, 65533, 65413, 1, 65534, 65413, 1, 65535, 65413, 1, 4, 65414, 1, 5, 65414, 1, 6, 65414, 1, 7, 65414, 1, 8, 65414, 1, 9, 65414, 1, 10, 65414, 1, 11, 65414, 1, 12, 65414, 1, 13, 65414, 1, 14, 65414, 1, 15, 65414, 1, 16, 65414, 1, 17, 65414, 1, 18, 65414, 1, 19, 65414, 1, 20, 65414, 1, 65526, 65414, 1, 65527, 65414, 1, 65528, 65414, 1, 65529, 65414, 1, 65530, 65414, 1, 65531, 65414, 1, 65532, 65414, 1, 65533, 65414, 1, 65534, 65414, 1, 65535, 65414, 1, 0, 65415, 1, 1, 65415, 1, 2, 65415, 1, 3, 65415, 1, 4, 65415, 1, 5, 65415, 1, 6, 65415, 1, 7, 65415, 1, 8, 65415, 1, 9, 65415, 1, 10, 65415, 1, 11, 65415, 1, 12, 65415, 1, 13, 65415, 1, 14, 65415, 1, 15, 65415, 1, 16, 65415, 1, 17, 65415, 1, 18, 65415, 1, 19, 65415, 1, 20, 65415, 1, 65526, 65415, 1, 65527, 65415, 1, 65528, 65415, 1, 65529, 65415, 1, 65530, 65415, 1, 65531, 65415, 1, 65532, 65415, 1, 65533, 65415, 1, 65534, 65415, 1, 65535, 65415, 1, 0, 65416, 1, 1, 65416, 1, 2, 65416, 1, 3, 65416, 1, 4, 65416, 1, 5, 65416, 1, 6, 65416, 1, 7, 65416, 1, 8, 65416, 1, 9, 65416, 1, 10, 65416, 1, 11, 65416, 1, 12, 65416, 1, 13, 65416, 1, 14, 65416, 1, 15, 65416, 1, 16, 65416, 1, 17, 65416, 1, 18, 65416, 1, 19, 65416, 1, 20, 65416, 1, 65526, 65416, 1, 65527, 65416, 1, 65528, 65416, 1, 65529, 65416, 1, 65530, 65416, 1, 65531, 65416, 1, 65532, 65416, 1, 65533, 65416, 1, 65534, 65416, 1, 65535, 65416, 1, 0, 65417, 1, 1, 65417, 1, 2, 65417, 1, 3, 65417, 1, 4, 65417, 1, 5, 65417, 1, 6, 65417, 1, 7, 65417, 1, 8, 65417, 1, 9, 65417, 1, 10, 65417, 1, 11, 65417, 1, 12, 65417, 1, 13, 65417, 1, 14, 65417, 1, 15, 65417, 1, 16, 65417, 1, 17, 65417, 1, 18, 65417, 1, 19, 65417, 1, 20, 65417, 1, 65526, 65417, 1, 65527, 65417, 1, 65528, 65417, 1, 65529, 65417, 1, 65530, 65417, 1, 65531, 65417, 1, 65532, 65417, 1, 65533, 65417, 1, 65534, 65417, 1, 65535, 65417, 1, 0, 65418, 1, 1, 65418, 1, 2, 65418, 1, 3, 65418, 1, 4, 65418, 1, 5, 65418, 1, 6, 65418, 1, 7, 65418, 1, 8, 65418, 1, 9, 65418, 1, 10, 65418, 1, 11, 65418, 1, 12, 65418, 1, 13, 65418, 1, 14, 65418, 1, 15, 65418, 1, 16, 65418, 1, 17, 65418, 1, 18, 65418, 1, 19, 65418, 1, 20, 65418, 1, 65526, 65418, 1, 65527, 65418, 1, 65528, 65418, 1, 65529, 65418, 1, 65530, 65418, 1, 65531, 65418, 1, 65532, 65418, 1, 65533, 65418, 1, 65534, 65418, 1, 65535, 65418, 1, 4, 65419, 1, 5, 65419, 1, 6, 65419, 1, 7, 65419, 1, 8, 65419, 1, 9, 65419, 1, 10, 65419, 1, 11, 65419, 1, 12, 65419, 1, 13, 65419, 1, 14, 65419, 1, 15, 65419, 1, 16, 65419, 1, 17, 65419, 1, 18, 65419, 1, 19, 65419, 1, 20, 65419, 1, 65526, 65419, 1, 65527, 65419, 1, 65528, 65419, 1, 65529, 65419, 1, 65530, 65419, 1, 65531, 65419, 1, 65532, 65419, 1, 65533, 65419, 1, 65534, 65419, 1, 65535, 65419, 1, 4, 65420, 1, 5, 65420, 1, 6, 65420, 1, 7, 65420, 1, 8, 65420, 1, 9, 65420, 1, 10, 65420, 1, 11, 65420, 1, 12, 65420, 1, 13, 65420, 1, 14, 65420, 1, 15, 65420, 1, 16, 65420, 1, 17, 65420, 1, 18, 65420, 1, 19, 65420, 1, 20, 65420, 1, 65526, 65420, 1, 65527, 65420, 1, 65528, 65420, 1, 65529, 65420, 1, 65530, 65420, 1, 65531, 65420, 1, 65532, 65420, 1, 65533, 65420, 1, 65534, 65420, 1, 65535, 65420, 1, 3, 65421, 1, 4, 65421, 1, 5, 65421, 1, 6, 65421, 1, 11, 65421, 1, 12, 65421, 1, 13, 65421, 1, 14, 65421, 1, 15, 65421, 1, 16, 65421, 1, 17, 65421, 1, 18, 65421, 1, 19, 65421, 1, 20, 65421, 1, 65528, 65421, 1, 65529, 65421, 1, 65530, 65421, 1, 65531, 65421, 1, 65532, 65421, 1, 65533, 65421, 1, 6, 65422, 1, 7, 65422, 1, 8, 65422, 1, 9, 65422, 1, 10, 65422, 1, 11, 65422, 1, 12, 65422, 1, 13, 65422, 1, 14, 65422, 1, 15, 65422, 1, 16, 65422, 1, 17, 65422, 1, 18, 65422, 1, 19, 65422, 1, 20, 65422, 1, 21, 65422, 1, 22, 65422, 1, 23, 65422, 1, 24, 65422, 1, 25, 65422, 1, 65528, 65422, 1, 65529, 65422, 1, 65530, 65422, 1, 65531, 65422, 1, 65532, 65422, 1, 65533, 65422, 1, 6, 65423, 1, 7, 65423, 1, 8, 65423, 1, 9, 65423, 1, 10, 65423, 1, 11, 65423, 1, 12, 65423, 1, 13, 65423, 1, 14, 65423, 1, 15, 65423, 1, 16, 65423, 1, 17, 65423, 1, 18, 65423, 1, 19, 65423, 1, 20, 65423, 1, 21, 65423, 1, 22, 65423, 1, 23, 65423, 1, 24, 65423, 1, 25, 65423, 1, 65528, 65423, 1, 65529, 65423, 1, 65530, 65423, 1, 65531, 65423, 1, 65532, 65423, 1, 65533, 65423, 1, 6, 65424, 1, 7, 65424, 1, 8, 65424, 1, 9, 65424, 1, 10, 65424, 1, 11, 65424, 1, 12, 65424, 1, 13, 65424, 1, 14, 65424, 1, 15, 65424, 1, 16, 65424, 1, 17, 65424, 1, 18, 65424, 1, 19, 65424, 1, 20, 65424, 1, 21, 65424, 1, 22, 65424, 1, 23, 65424, 1, 24, 65424, 1, 25, 65424, 1, 65528, 65424, 1, 65529, 65424, 1, 65530, 65424, 1, 65531, 65424, 1, 65532, 65424, 1, 65533, 65424, 1, 6, 65425, 1, 7, 65425, 1, 8, 65425, 1, 9, 65425, 1, 10, 65425, 1, 11, 65425, 1, 12, 65425, 1, 13, 65425, 1, 14, 65425, 1, 15, 65425, 1, 16, 65425, 1, 17, 65425, 1, 18, 65425, 1, 19, 65425, 1, 20, 65425, 1, 21, 65425, 1, 22, 65425, 1, 23, 65425, 1, 24, 65425, 1, 25, 65425, 1, 65528, 65425, 1, 65529, 65425, 1, 65530, 65425, 1, 65531, 65425, 1, 65532, 65425, 1, 65533, 65425, 1, 6, 65426, 1, 7, 65426, 1, 8, 65426, 1, 9, 65426, 1, 10, 65426, 1, 11, 65426, 1, 12, 65426, 1, 13, 65426, 1, 14, 65426, 1, 15, 65426, 1, 16, 65426, 1, 17, 65426, 1, 18, 65426, 1, 19, 65426, 1, 20, 65426, 1, 21, 65426, 1, 22, 65426, 1, 23, 65426, 1, 24, 65426, 1, 25, 65426, 1, 65528, 65426, 1, 65529, 65426, 1, 65530, 65426, 1, 65531, 65426, 1, 65532, 65426, 1, 65533, 65426, 1, 6, 65427, 1, 7, 65427, 1, 8, 65427, 1, 9, 65427, 1, 10, 65427, 1, 11, 65427, 1, 12, 65427, 1, 13, 65427, 1, 14, 65427, 1, 15, 65427, 1, 16, 65427, 1, 17, 65427, 1, 18, 65427, 1, 19, 65427, 1, 20, 65427, 1, 21, 65427, 1, 22, 65427, 1, 23, 65427, 1, 24, 65427, 1, 25, 65427, 1, 65528, 65427, 1, 65529, 65427, 1, 65530, 65427, 1, 65531, 65427, 1, 65532, 65427, 1, 65533, 65427, 1, 6, 65428, 1, 7, 65428, 1, 8, 65428, 1, 9, 65428, 1, 10, 65428, 1, 11, 65428, 1, 12, 65428, 1, 13, 65428, 1, 14, 65428, 1, 15, 65428, 1, 16, 65428, 1, 17, 65428, 1, 18, 65428, 1, 19, 65428, 1, 20, 65428, 1, 21, 65428, 1, 22, 65428, 1, 23, 65428, 1, 24, 65428, 1, 25, 65428, 1, 65528, 65428, 1, 65529, 65428, 1, 65530, 65428, 1, 65531, 65428, 1, 65532, 65428, 1, 65533, 65428, 1, 6, 65429, 1, 7, 65429, 1, 8, 65429, 1, 9, 65429, 1, 10, 65429, 1, 11, 65429, 1, 12, 65429, 1, 13, 65429, 1, 14, 65429, 1, 15, 65429, 1, 16, 65429, 1, 17, 65429, 1, 18, 65429, 1, 19, 65429, 1, 20, 65429, 1, 21, 65429, 1, 22, 65429, 1, 23, 65429, 1, 24, 65429, 1, 25, 65429, 1, 65528, 65429, 1, 65529, 65429, 1, 65530, 65429, 1, 65531, 65429, 1, 65532, 65429, 1, 65533, 65429, 1, 6, 65430, 1, 7, 65430, 1, 8, 65430, 1, 9, 65430, 1, 10, 65430, 1, 11, 65430, 1, 12, 65430, 1, 13, 65430, 1, 14, 65430, 1, 15, 65430, 1, 16, 65430, 1, 17, 65430, 1, 18, 65430, 1, 19, 65430, 1, 20, 65430, 1, 21, 65430, 1, 22, 65430, 1, 23, 65430, 1, 24, 65430, 1, 25, 65430, 1, 65528, 65430, 1, 65529, 65430, 1, 65530, 65430, 1, 65531, 65430, 1, 65532, 65430, 1, 65533, 65430, 1, 6, 65431, 1, 7, 65431, 1, 8, 65431, 1, 9, 65431, 1, 10, 65431, 1, 11, 65431, 1, 12, 65431, 1, 13, 65431, 1, 14, 65431, 1, 15, 65431, 1, 16, 65431, 1, 17, 65431, 1, 18, 65431, 1, 19, 65431, 1, 20, 65431, 1, 21, 65431, 1, 22, 65431, 1, 23, 65431, 1, 24, 65431, 1, 25, 65431, 1, 65528, 65431, 1, 65529, 65431, 1, 65530, 65431, 1, 65531, 65431, 1, 65532, 65431, 1, 65533, 65431, 1, 6, 65432, 1, 7, 65432, 1, 8, 65432, 1, 9, 65432, 1, 10, 65432, 1, 11, 65432, 1, 12, 65432, 1, 13, 65432, 1, 14, 65432, 1, 15, 65432, 1, 16, 65432, 1, 17, 65432, 1, 18, 65432, 1, 19, 65432, 1, 20, 65432, 1, 21, 65432, 1, 22, 65432, 1, 23, 65432, 1, 24, 65432, 1, 25, 65432, 1, 65528, 65432, 1, 65529, 65432, 1, 65530, 65432, 1, 65531, 65432, 1, 65532, 65432, 1, 65533, 65432, 1, 6, 65433, 1, 7, 65433, 1, 8, 65433, 1, 9, 65433, 1, 10, 65433, 1, 11, 65433, 1, 12, 65433, 1, 13, 65433, 1, 14, 65433, 1, 15, 65433, 1, 16, 65433, 1, 17, 65433, 1, 18, 65433, 1, 19, 65433, 1, 20, 65433, 1, 21, 65433, 1, 22, 65433, 1, 23, 65433, 1, 24, 65433, 1, 25, 65433, 1, 65528, 65433, 1, 65529, 65433, 1, 65530, 65433, 1, 65531, 65433, 1, 65532, 65433, 1, 65533, 65433, 1, 6, 65434, 1, 7, 65434, 1, 8, 65434, 1, 9, 65434, 1, 10, 65434, 1, 11, 65434, 1, 12, 65434, 1, 13, 65434, 1, 14, 65434, 1, 15, 65434, 1, 16, 65434, 1, 17, 65434, 1, 18, 65434, 1, 19, 65434, 1, 20, 65434, 1, 21, 65434, 1, 22, 65434, 1, 23, 65434, 1, 24, 65434, 1, 25, 65434, 1, 65528, 65434, 1, 65529, 65434, 1, 65530, 65434, 1, 65531, 65434, 1, 65532, 65434, 1, 65533, 65434, 1, 65575, 65434, 0, 6, 65435, 1, 7, 65435, 1, 8, 65435, 1, 9, 65435, 1, 10, 65435, 1, 11, 65435, 1, 12, 65435, 1, 13, 65435, 1, 14, 65435, 1, 15, 65435, 1, 16, 65435, 1, 17, 65435, 1, 18, 65435, 1, 19, 65435, 1, 20, 65435, 1, 21, 65435, 1, 22, 65435, 1, 23, 65435, 1, 24, 65435, 1, 25, 65435, 1, 65528, 65435, 1, 65529, 65435, 1, 65530, 65435, 1, 65531, 65435, 1, 65532, 65435, 1, 65533, 65435, 1, 65575, 65435, 0, 6, 65436, 1, 7, 65436, 1, 8, 65436, 1, 9, 65436, 1, 10, 65436, 1, 11, 65436, 1, 12, 65436, 1, 13, 65436, 1, 14, 65436, 1, 15, 65436, 1, 16, 65436, 1, 17, 65436, 1, 18, 65436, 1, 19, 65436, 1, 20, 65436, 1, 21, 65436, 1, 22, 65436, 1, 23, 65436, 1, 24, 65436, 1, 25, 65436, 1, 65528, 65436, 1, 65529, 65436, 1, 65530, 65436, 1, 65531, 65436, 1, 65532, 65436, 1, 65533, 65436, 1, 65575, 65436, 0, 6, 65437, 1, 7, 65437, 1, 8, 65437, 1, 9, 65437, 1, 10, 65437, 1, 11, 65437, 1, 12, 65437, 1, 13, 65437, 1, 14, 65437, 1, 15, 65437, 1, 16, 65437, 1, 17, 65437, 1, 18, 65437, 1, 19, 65437, 1, 20, 65437, 1, 21, 65437, 1, 22, 65437, 1, 23, 65437, 1, 24, 65437, 1, 25, 65437, 1, 65528, 65437, 1, 65529, 65437, 1, 65530, 65437, 1, 65531, 65437, 1, 65532, 65437, 1, 65533, 65437, 1, 65575, 65437, 0, 65576, 65437, 0, 65577, 65437, 0, 65578, 65437, 0, 65579, 65437, 0, 65580, 65437, 0, 6, 65438, 1, 7, 65438, 1, 8, 65438, 1, 9, 65438, 1, 10, 65438, 1, 11, 65438, 1, 12, 65438, 1, 13, 65438, 1, 14, 65438, 1, 15, 65438, 1, 16, 65438, 1, 17, 65438, 1, 18, 65438, 1, 19, 65438, 1, 20, 65438, 1, 21, 65438, 1, 22, 65438, 1, 23, 65438, 1, 24, 65438, 1, 25, 65438, 1, 65528, 65438, 1, 65529, 65438, 1, 65530, 65438, 1, 65531, 65438, 1, 65532, 65438, 1, 65533, 65438, 1, 65575, 65438, 0, 6, 65439, 1, 7, 65439, 1, 8, 65439, 1, 9, 65439, 1, 10, 65439, 1, 11, 65439, 1, 12, 65439, 1, 13, 65439, 1, 14, 65439, 1, 15, 65439, 1, 16, 65439, 1, 17, 65439, 1, 18, 65439, 1, 19, 65439, 1, 20, 65439, 1, 21, 65439, 1, 22, 65439, 1, 23, 65439, 1, 24, 65439, 1, 25, 65439, 1, 65528, 65439, 1, 65529, 65439, 1, 65530, 65439, 1, 65531, 65439, 1, 65532, 65439, 1, 65533, 65439, 1, 6, 65440, 1, 7, 65440, 1, 8, 65440, 1, 9, 65440, 1, 10, 65440, 1, 11, 65440, 1, 12, 65440, 1, 13, 65440, 1, 14, 65440, 1, 15, 65440, 1, 16, 65440, 1, 17, 65440, 1, 18, 65440, 1, 19, 65440, 1, 20, 65440, 1, 21, 65440, 1, 22, 65440, 1, 23, 65440, 1, 24, 65440, 1, 25, 65440, 1, 65528, 65440, 1, 65529, 65440, 1, 65530, 65440, 1, 65531, 65440, 1, 65532, 65440, 1, 65533, 65440, 1, 65575, 65440, 0, 6, 65441, 1, 7, 65441, 1, 8, 65441, 1, 9, 65441, 1, 10, 65441, 1, 11, 65441, 1, 12, 65441, 1, 13, 65441, 1, 14, 65441, 1, 15, 65441, 1, 16, 65441, 1, 17, 65441, 1, 18, 65441, 1, 19, 65441, 1, 20, 65441, 1, 21, 65441, 1, 22, 65441, 1, 23, 65441, 1, 24, 65441, 1, 25, 65441, 1, 65529, 65441, 1, 65530, 65441, 1, 65531, 65441, 1, 65532, 65441, 1, 65575, 65441, 0, 6, 65442, 1, 7, 65442, 1, 8, 65442, 1, 9, 65442, 1, 10, 65442, 1, 11, 65442, 1, 12, 65442, 1, 13, 65442, 1, 14, 65442, 1, 15, 65442, 1, 16, 65442, 1, 17, 65442, 1, 18, 65442, 1, 19, 65442, 1, 20, 65442, 1, 21, 65442, 1, 22, 65442, 1, 23, 65442, 1, 24, 65442, 1, 25, 65442, 1, 65528, 65442, 1, 65529, 65442, 1, 65530, 65442, 1, 65531, 65442, 1, 65532, 65442, 1, 65533, 65442, 1, 65575, 65442, 0, 65576, 65442, 0, 65577, 65442, 0, 65578, 65442, 0, 65579, 65442, 0, 65580, 65442, 0, 65581, 65442, 0, 65582, 65442, 0, 65583, 65442, 0, 65584, 65442, 0, 65585, 65442, 0, 6, 65443, 1, 7, 65443, 1, 8, 65443, 1, 9, 65443, 1, 10, 65443, 1, 11, 65443, 1, 12, 65443, 1, 13, 65443, 1, 14, 65443, 1, 15, 65443, 1, 16, 65443, 1, 17, 65443, 1, 18, 65443, 1, 19, 65443, 1, 20, 65443, 1, 21, 65443, 1, 22, 65443, 1, 23, 65443, 1, 24, 65443, 1, 25, 65443, 1, 65528, 65443, 1, 65529, 65443, 1, 65530, 65443, 1, 65531, 65443, 1, 65532, 65443, 1, 65533, 65443, 1, 65575, 65443, 0, 6, 65444, 1, 7, 65444, 1, 8, 65444, 1, 9, 65444, 1, 10, 65444, 1, 11, 65444, 1, 12, 65444, 1, 13, 65444, 1, 14, 65444, 1, 15, 65444, 1, 16, 65444, 1, 17, 65444, 1, 18, 65444, 1, 19, 65444, 1, 20, 65444, 1, 21, 65444, 1, 22, 65444, 1, 23, 65444, 1, 24, 65444, 1, 25, 65444, 1, 65528, 65444, 1, 65529, 65444, 1, 65530, 65444, 1, 65531, 65444, 1, 65532, 65444, 1, 65533, 65444, 1, 65575, 65444, 0, 6, 65445, 1, 7, 65445, 1, 8, 65445, 1, 9, 65445, 1, 10, 65445, 1, 11, 65445, 1, 12, 65445, 1, 13, 65445, 1, 14, 65445, 1, 15, 65445, 1, 16, 65445, 1, 17, 65445, 1, 18, 65445, 1, 19, 65445, 1, 20, 65445, 1, 21, 65445, 1, 22, 65445, 1, 23, 65445, 1, 24, 65445, 1, 25, 65445, 1, 65528, 65445, 1, 65529, 65445, 1, 65530, 65445, 1, 65531, 65445, 1, 65532, 65445, 1, 65533, 65445, 1, 6, 65446, 1, 7, 65446, 1, 8, 65446, 1, 9, 65446, 1, 10, 65446, 1, 11, 65446, 1, 12, 65446, 1, 13, 65446, 1, 14, 65446, 1, 15, 65446, 1, 16, 65446, 1, 17, 65446, 1, 18, 65446, 1, 19, 65446, 1, 20, 65446, 1, 21, 65446, 1, 22, 65446, 1, 23, 65446, 1, 24, 65446, 1, 25, 65446, 1, 65528, 65446, 1, 65529, 65446, 1, 65530, 65446, 1, 65531, 65446, 1, 65532, 65446, 1, 65533, 65446, 1, 6, 65447, 1, 7, 65447, 1, 8, 65447, 1, 9, 65447, 1, 10, 65447, 1, 11, 65447, 1, 12, 65447, 1, 13, 65447, 1, 14, 65447, 1, 15, 65447, 1, 16, 65447, 1, 17, 65447, 1, 18, 65447, 1, 19, 65447, 1, 20, 65447, 1, 21, 65447, 1, 22, 65447, 1, 23, 65447, 1, 24, 65447, 1, 25, 65447, 1, 65526, 65447, 1, 65527, 65447, 1, 65528, 65447, 1, 65529, 65447, 1, 65530, 65447, 1, 65531, 65447, 1, 65532, 65447, 1, 65533, 65447, 1, 65534, 65447, 1, 65535, 65447, 1, 6, 65448, 1, 7, 65448, 1, 8, 65448, 1, 9, 65448, 1, 10, 65448, 1, 11, 65448, 1, 12, 65448, 1, 13, 65448, 1, 14, 65448, 1, 15, 65448, 1, 16, 65448, 1, 17, 65448, 1, 18, 65448, 1, 19, 65448, 1, 20, 65448, 1, 21, 65448, 1, 22, 65448, 1, 23, 65448, 1, 24, 65448, 1, 25, 65448, 1, 65526, 65448, 1, 65527, 65448, 1, 65528, 65448, 1, 65529, 65448, 1, 65530, 65448, 1, 65531, 65448, 1, 65532, 65448, 1, 65533, 65448, 1, 65534, 65448, 1, 65535, 65448, 1, 6, 65449, 1, 7, 65449, 1, 8, 65449, 1, 9, 65449, 1, 10, 65449, 1, 11, 65449, 1, 12, 65449, 1, 13, 65449, 1, 14, 65449, 1, 15, 65449, 1, 16, 65449, 1, 17, 65449, 1, 18, 65449, 1, 19, 65449, 1, 20, 65449, 1, 21, 65449, 1, 22, 65449, 1, 23, 65449, 1, 24, 65449, 1, 25, 65449, 1, 65526, 65449, 1, 65527, 65449, 1, 65528, 65449, 1, 65529, 65449, 1, 65530, 65449, 1, 65531, 65449, 1, 65532, 65449, 1, 65533, 65449, 1, 65534, 65449, 1, 65535, 65449, 1, 0, 65450, 1, 1, 65450, 1, 2, 65450, 1, 3, 65450, 1, 4, 65450, 1, 6, 65450, 1, 7, 65450, 1, 8, 65450, 1, 9, 65450, 1, 10, 65450, 1, 11, 65450, 1, 12, 65450, 1, 13, 65450, 1, 14, 65450, 1, 15, 65450, 1, 16, 65450, 1, 17, 65450, 1, 18, 65450, 1, 19, 65450, 1, 20, 65450, 1, 21, 65450, 1, 22, 65450, 1, 23, 65450, 1, 24, 65450, 1, 25, 65450, 1, 65526, 65450, 1, 65527, 65450, 1, 65528, 65450, 1, 65529, 65450, 1, 65530, 65450, 1, 65531, 65450, 1, 65532, 65450, 1, 65533, 65450, 1, 65534, 65450, 1, 65535, 65450, 1, 65579, 65450, 0, 65580, 65450, 0, 65581, 65450, 0, 65582, 65450, 0, 65583, 65450, 0, 65584, 65450, 0, 65589, 65450, 0, 0, 65451, 1, 1, 65451, 1, 2, 65451, 1, 3, 65451, 1, 4, 65451, 1, 5, 65451, 1, 6, 65451, 1, 7, 65451, 1, 8, 65451, 1, 9, 65451, 1, 10, 65451, 1, 11, 65451, 1, 12, 65451, 1, 13, 65451, 1, 14, 65451, 1, 15, 65451, 1, 16, 65451, 1, 17, 65451, 1, 18, 65451, 1, 19, 65451, 1, 20, 65451, 1, 21, 65451, 1, 22, 65451, 1, 23, 65451, 1, 24, 65451, 1, 25, 65451, 1, 65526, 65451, 1, 65527, 65451, 1, 65528, 65451, 1, 65529, 65451, 1, 65530, 65451, 1, 65531, 65451, 1, 65532, 65451, 1, 65533, 65451, 1, 65534, 65451, 1, 65535, 65451, 1, 65579, 65451, 0, 0, 65452, 1, 1, 65452, 1, 2, 65452, 1, 3, 65452, 1, 4, 65452, 1, 5, 65452, 1, 6, 65452, 1, 7, 65452, 1, 8, 65452, 1, 9, 65452, 1, 10, 65452, 1, 11, 65452, 1, 12, 65452, 1, 13, 65452, 1, 14, 65452, 1, 15, 65452, 1, 16, 65452, 1, 17, 65452, 1, 18, 65452, 1, 19, 65452, 1, 20, 65452, 1, 21, 65452, 1, 22, 65452, 1, 23, 65452, 1, 24, 65452, 1, 25, 65452, 1, 57, 65452, 0, 58, 65452, 0, 65526, 65452, 1, 65527, 65452, 1, 65528, 65452, 1, 65529, 65452, 1, 65530, 65452, 1, 65531, 65452, 1, 65532, 65452, 1, 65533, 65452, 1, 65534, 65452, 1, 65535, 65452, 1, 65579, 65452, 0, 0, 65453, 1, 1, 65453, 1, 2, 65453, 1, 3, 65453, 1, 4, 65453, 1, 5, 65453, 1, 6, 65453, 1, 7, 65453, 1, 8, 65453, 1, 9, 65453, 1, 10, 65453, 1, 11, 65453, 1, 12, 65453, 1, 13, 65453, 1, 14, 65453, 1, 15, 65453, 1, 16, 65453, 1, 17, 65453, 1, 18, 65453, 1, 19, 65453, 1, 20, 65453, 1, 21, 65453, 1, 22, 65453, 1, 23, 65453, 1, 24, 65453, 1, 25, 65453, 1, 39, 65453, 0, 40, 65453, 0, 41, 65453, 0, 56, 65453, 0, 57, 65453, 0, 58, 65453, 0, 59, 65453, 0, 65526, 65453, 1, 65527, 65453, 1, 65528, 65453, 1, 65529, 65453, 1, 65530, 65453, 1, 65531, 65453, 1, 65532, 65453, 1, 65533, 65453, 1, 65534, 65453, 1, 65535, 65453, 1, 65579, 65453, 0, 0, 65454, 1, 1, 65454, 1, 2, 65454, 1, 3, 65454, 1, 4, 65454, 1, 5, 65454, 1, 6, 65454, 1, 7, 65454, 1, 8, 65454, 1, 9, 65454, 1, 10, 65454, 1, 11, 65454, 1, 12, 65454, 1, 13, 65454, 1, 14, 65454, 1, 15, 65454, 1, 16, 65454, 1, 17, 65454, 1, 18, 65454, 1, 19, 65454, 1, 20, 65454, 1, 21, 65454, 1, 22, 65454, 1, 23, 65454, 1, 24, 65454, 1, 25, 65454, 1, 57, 65454, 0, 58, 65454, 0, 59, 65454, 0, 65526, 65454, 1, 65527, 65454, 1, 65528, 65454, 1, 65529, 65454, 1, 65530, 65454, 1, 65531, 65454, 1, 65532, 65454, 1, 65533, 65454, 1, 65534, 65454, 1, 65535, 65454, 1, 65575, 65454, 0, 65576, 65454, 0, 65577, 65454, 0, 65578, 65454, 0, 65579, 65454, 0, 65580, 65454, 0, 65581, 65454, 0, 65582, 65454, 0, 65583, 65454, 0, 65584, 65454, 0, 65585, 65454, 0, 65586, 65454, 0, 65587, 65454, 0, 65588, 65454, 0, 65589, 65454, 0, 65590, 65454, 0, 65591, 65454, 0, 65592, 65454, 0, 65593, 65454, 0, 65594, 65454, 0, 65595, 65454, 0, 0, 65455, 1, 1, 65455, 1, 2, 65455, 1, 3, 65455, 1, 4, 65455, 1, 6, 65455, 1, 7, 65455, 1, 8, 65455, 1, 9, 65455, 1, 10, 65455, 1, 11, 65455, 1, 12, 65455, 1, 13, 65455, 1, 14, 65455, 1, 15, 65455, 1, 16, 65455, 1, 17, 65455, 1, 18, 65455, 1, 19, 65455, 1, 20, 65455, 1, 21, 65455, 1, 22, 65455, 1, 23, 65455, 1, 24, 65455, 1, 25, 65455, 1, 39, 65455, 0, 40, 65455, 0, 41, 65455, 0, 57, 65455, 0, 58, 65455, 0, 59, 65455, 0, 65526, 65455, 1, 65527, 65455, 1, 65528, 65455, 1, 65529, 65455, 1, 65530, 65455, 1, 65531, 65455, 1, 65532, 65455, 1, 65533, 65455, 1, 65534, 65455, 1, 65535, 65455, 1, 65579, 65455, 0, 6, 65456, 1, 7, 65456, 1, 8, 65456, 1, 9, 65456, 1, 10, 65456, 1, 11, 65456, 1, 12, 65456, 1, 13, 65456, 1, 14, 65456, 1, 15, 65456, 1, 16, 65456, 1, 17, 65456, 1, 18, 65456, 1, 19, 65456, 1, 20, 65456, 1, 21, 65456, 1, 22, 65456, 1, 23, 65456, 1, 24, 65456, 1, 25, 65456, 1, 42, 65456, 0, 43, 65456, 0, 44, 65456, 0, 45, 65456, 0, 46, 65456, 0, 47, 65456, 0, 48, 65456, 0, 49, 65456, 0, 50, 65456, 0, 51, 65456, 0, 52, 65456, 0, 53, 65456, 0, 54, 65456, 0, 55, 65456, 0, 65526, 65456, 1, 65527, 65456, 1, 65528, 65456, 1, 65529, 65456, 1, 65530, 65456, 1, 65531, 65456, 1, 65532, 65456, 1, 65533, 65456, 1, 65534, 65456, 1, 65535, 65456, 1, 65579, 65456, 0, 6, 65457, 1, 7, 65457, 1, 8, 65457, 1, 9, 65457, 1, 10, 65457, 1, 11, 65457, 1, 12, 65457, 1, 13, 65457, 1, 14, 65457, 1, 15, 65457, 1, 16, 65457, 1, 17, 65457, 1, 18, 65457, 1, 19, 65457, 1, 20, 65457, 1, 21, 65457, 1, 22, 65457, 1, 23, 65457, 1, 24, 65457, 1, 25, 65457, 1, 65528, 65457, 1, 65529, 65457, 1, 65530, 65457, 1, 65531, 65457, 1, 65532, 65457, 1, 65533, 65457, 1, 65579, 65457, 0, 6, 65458, 1, 7, 65458, 1, 8, 65458, 1, 9, 65458, 1, 10, 65458, 1, 11, 65458, 1, 12, 65458, 1, 13, 65458, 1, 14, 65458, 1, 15, 65458, 1, 16, 65458, 1, 17, 65458, 1, 18, 65458, 1, 19, 65458, 1, 20, 65458, 1, 21, 65458, 1, 22, 65458, 1, 23, 65458, 1, 24, 65458, 1, 25, 65458, 1, 65528, 65458, 1, 65529, 65458, 1, 65530, 65458, 1, 65531, 65458, 1, 65532, 65458, 1, 65533, 65458, 1, 65579, 65458, 0, 65589, 65458, 0, 6, 65459, 1, 7, 65459, 1, 8, 65459, 1, 9, 65459, 1, 10, 65459, 1, 11, 65459, 1, 12, 65459, 1, 13, 65459, 1, 14, 65459, 1, 15, 65459, 1, 16, 65459, 1, 17, 65459, 1, 18, 65459, 1, 19, 65459, 1, 20, 65459, 1, 21, 65459, 1, 22, 65459, 1, 23, 65459, 1, 24, 65459, 1, 25, 65459, 1, 65528, 65459, 1, 65529, 65459, 1, 65530, 65459, 1, 65531, 65459, 1, 65532, 65459, 1, 65533, 65459, 1, 6, 65460, 1, 7, 65460, 1, 8, 65460, 1, 9, 65460, 1, 10, 65460, 1, 11, 65460, 1, 12, 65460, 1, 13, 65460, 1, 14, 65460, 1, 15, 65460, 1, 16, 65460, 1, 17, 65460, 1, 18, 65460, 1, 19, 65460, 1, 20, 65460, 1, 21, 65460, 1, 22, 65460, 1, 23, 65460, 1, 24, 65460, 1, 25, 65460, 1, 65528, 65460, 1, 65529, 65460, 1, 65530, 65460, 1, 65531, 65460, 1, 65532, 65460, 1, 65533, 65460, 1, 6, 65461, 1, 7, 65461, 1, 8, 65461, 1, 9, 65461, 1, 10, 65461, 1, 11, 65461, 1, 12, 65461, 1, 13, 65461, 1, 14, 65461, 1, 15, 65461, 1, 16, 65461, 1, 17, 65461, 1, 18, 65461, 1, 19, 65461, 1, 20, 65461, 1, 21, 65461, 1, 22, 65461, 1, 23, 65461, 1, 24, 65461, 1, 25, 65461, 1, 65528, 65461, 1, 65529, 65461, 1, 65530, 65461, 1, 65531, 65461, 1, 65532, 65461, 1, 65533, 65461, 1, 13, 65462, 1, 14, 65462, 1, 15, 65462, 1, 16, 65462, 1, 17, 65462, 1, 18, 65462, 1, 65528, 65462, 1, 65529, 65462, 1, 65530, 65462, 1, 65531, 65462, 1, 65532, 65462, 1, 65533, 65462, 1, 13, 65463, 1, 14, 65463, 1, 15, 65463, 1, 16, 65463, 1, 17, 65463, 1, 18, 65463, 1, 65528, 65463, 1, 65529, 65463, 1, 65530, 65463, 1, 65531, 65463, 1, 65532, 65463, 1, 65533, 65463, 1, 13, 65464, 1, 14, 65464, 1, 15, 65464, 1, 16, 65464, 1, 17, 65464, 1, 18, 65464, 1, 65528, 65464, 1, 65529, 65464, 1, 65530, 65464, 1, 65531, 65464, 1, 65532, 65464, 1, 65533, 65464, 1, 65582, 65464, 0, 65583, 65464, 0, 65584, 65464, 0, 65585, 65464, 0, 65587, 65464, 0, 13, 65465, 1, 14, 65465, 1, 15, 65465, 1, 16, 65465, 1, 17, 65465, 1, 18, 65465, 1, 65528, 65465, 1, 65529, 65465, 1, 65530, 65465, 1, 65531, 65465, 1, 65532, 65465, 1, 65533, 65465, 1, 65582, 65465, 0, 65584, 65465, 0, 65585, 65465, 0, 65587, 65465, 0, 65588, 65465, 0, 13, 65466, 1, 14, 65466, 1, 15, 65466, 1, 16, 65466, 1, 17, 65466, 1, 18, 65466, 1, 65528, 65466, 1, 65529, 65466, 1, 65530, 65466, 1, 65531, 65466, 1, 65532, 65466, 1, 65533, 65466, 1, 65579, 65466, 0, 65580, 65466, 0, 65581, 65466, 0, 65582, 65466, 0, 65584, 65466, 0, 65585, 65466, 0, 65587, 65466, 0, 65588, 65466, 0, 13, 65467, 1, 14, 65467, 1, 15, 65467, 1, 16, 65467, 1, 17, 65467, 1, 18, 65467, 1, 65528, 65467, 1, 65529, 65467, 1, 65530, 65467, 1, 65531, 65467, 1, 65532, 65467, 1, 65533, 65467, 1, 65579, 65467, 0, 65580, 65467, 0, 65581, 65467, 0, 65582, 65467, 0, 65584, 65467, 0, 65585, 65467, 0, 65587, 65467, 0, 65588, 65467, 0, 65591, 65467, 0, 65592, 65467, 0, 13, 65468, 1, 14, 65468, 1, 15, 65468, 1, 16, 65468, 1, 17, 65468, 1, 18, 65468, 1, 65528, 65468, 1, 65529, 65468, 1, 65530, 65468, 1, 65531, 65468, 1, 65532, 65468, 1, 65533, 65468, 1, 65575, 65468, 0, 65576, 65468, 0, 65577, 65468, 0, 65578, 65468, 0, 65579, 65468, 0, 65580, 65468, 0, 65581, 65468, 0, 65582, 65468, 0, 65584, 65468, 0, 65585, 65468, 0, 65587, 65468, 0, 65588, 65468, 0, 65591, 65468, 0, 65592, 65468, 0, 65593, 65468, 0, 65594, 65468, 0, 13, 65469, 1, 14, 65469, 1, 15, 65469, 1, 16, 65469, 1, 17, 65469, 1, 18, 65469, 1, 65528, 65469, 1, 65529, 65469, 1, 65530, 65469, 1, 65531, 65469, 1, 65532, 65469, 1, 65533, 65469, 1, 65575, 65469, 0, 65576, 65469, 0, 65577, 65469, 0, 65578, 65469, 0, 65579, 65469, 0, 65580, 65469, 0, 65581, 65469, 0, 65582, 65469, 0, 65583, 65469, 0, 65584, 65469, 0, 65585, 65469, 0, 65586, 65469, 0, 65587, 65469, 0, 65588, 65469, 0, 65591, 65469, 0, 65592, 65469, 0, 65593, 65469, 0, 65594, 65469, 0, 13, 65470, 1, 14, 65470, 1, 15, 65470, 1, 16, 65470, 1, 17, 65470, 1, 18, 65470, 1, 65528, 65470, 1, 65529, 65470, 1, 65530, 65470, 1, 65531, 65470, 1, 65532, 65470, 1, 65533, 65470, 1, 65575, 65470, 0, 65576, 65470, 0, 65577, 65470, 0, 65578, 65470, 0, 65579, 65470, 0, 65580, 65470, 0, 65581, 65470, 0, 65582, 65470, 0, 65584, 65470, 0, 65585, 65470, 0, 65587, 65470, 0, 65588, 65470, 0, 65591, 65470, 0, 65592, 65470, 0, 65593, 65470, 0, 65594, 65470, 0, 13, 65471, 1, 14, 65471, 1, 15, 65471, 1, 16, 65471, 1, 17, 65471, 1, 18, 65471, 1, 65528, 65471, 1, 65529, 65471, 1, 65530, 65471, 1, 65531, 65471, 1, 65532, 65471, 1, 65533, 65471, 1, 65579, 65471, 0, 65580, 65471, 0, 65581, 65471, 0, 65582, 65471, 0, 65584, 65471, 0, 65585, 65471, 0, 65587, 65471, 0, 65588, 65471, 0, 65591, 65471, 0, 13, 65472, 1, 14, 65472, 1, 15, 65472, 1, 16, 65472, 1, 17, 65472, 1, 18, 65472, 1, 65528, 65472, 1, 65529, 65472, 1, 65530, 65472, 1, 65531, 65472, 1, 65532, 65472, 1, 65533, 65472, 1, 65579, 65472, 0, 65580, 65472, 0, 65581, 65472, 0, 65582, 65472, 0, 65584, 65472, 0, 65585, 65472, 0, 65586, 65472, 0, 65587, 65472, 0, 65588, 65472, 0, 13, 65473, 1, 14, 65473, 1, 15, 65473, 1, 16, 65473, 1, 17, 65473, 1, 18, 65473, 1, 65528, 65473, 1, 65529, 65473, 1, 65530, 65473, 1, 65531, 65473, 1, 65532, 65473, 1, 65533, 65473, 1, 65582, 65473, 0, 65583, 65473, 0, 65584, 65473, 0, 65585, 65473, 0, 65586, 65473, 0, 65587, 65473, 0, 65588, 65473, 0, 13, 65474, 1, 14, 65474, 1, 15, 65474, 1, 16, 65474, 1, 17, 65474, 1, 18, 65474, 1, 65528, 65474, 1, 65529, 65474, 1, 65530, 65474, 1, 65531, 65474, 1, 65532, 65474, 1, 65533, 65474, 1, 65587, 65474, 0, 13, 65475, 1, 14, 65475, 1, 15, 65475, 1, 16, 65475, 1, 17, 65475, 1, 18, 65475, 1, 65528, 65475, 1, 65529, 65475, 1, 65530, 65475, 1, 65531, 65475, 1, 65532, 65475, 1, 65533, 65475, 1, 13, 65476, 1, 14, 65476, 1, 15, 65476, 1, 16, 65476, 1, 17, 65476, 1, 18, 65476, 1, 65528, 65476, 1, 65529, 65476, 1, 65530, 65476, 1, 65531, 65476, 1, 65532, 65476, 1, 65533, 65476, 1, 13, 65477, 1, 14, 65477, 1, 15, 65477, 1, 16, 65477, 1, 17, 65477, 1, 18, 65477, 1, 13, 65478, 1, 14, 65478, 1, 15, 65478, 1, 16, 65478, 1, 17, 65478, 1, 18, 65478, 1, 44, 65478, 0, 46, 65478, 0, 49, 65478, 196608, 50, 65478, 196608, 51, 65478, 196608, 13, 65479, 1, 14, 65479, 1, 15, 65479, 1, 16, 65479, 1, 17, 65479, 1, 18, 65479, 1, 40, 65479, 0, 44, 65479, 0, 46, 65479, 0, 49, 65479, 196608, 51, 65479, 196608, 13, 65480, 1, 14, 65480, 1, 15, 65480, 1, 16, 65480, 1, 17, 65480, 1, 18, 65480, 1, 40, 65480, 0, 41, 65480, 0, 42, 65480, 0, 43, 65480, 0, 44, 65480, 0, 46, 65480, 0, 49, 65480, 196608, 51, 65480, 196608, 4, 65481, 1, 5, 65481, 1, 6, 65481, 1, 7, 65481, 1, 8, 65481, 1, 9, 65481, 1, 10, 65481, 1, 13, 65481, 1, 14, 65481, 1, 15, 65481, 1, 16, 65481, 1, 17, 65481, 1, 18, 65481, 1, 40, 65481, 0, 41, 65481, 0, 42, 65481, 0, 43, 65481, 0, 44, 65481, 0, 45, 65481, 0, 46, 65481, 0, 49, 65481, 196608, 51, 65481, 196608, 4, 65482, 1, 5, 65482, 1, 6, 65482, 1, 7, 65482, 1, 8, 65482, 1, 9, 65482, 1, 10, 65482, 1, 11, 65482, 1, 12, 65482, 1, 13, 65482, 1, 14, 65482, 1, 15, 65482, 1, 16, 65482, 1, 17, 65482, 1, 18, 65482, 1, 19, 65482, 1, 20, 65482, 1, 40, 65482, 0, 41, 65482, 0, 42, 65482, 0, 43, 65482, 0, 44, 65482, 0, 46, 65482, 0, 49, 65482, 196608, 51, 65482, 196608, 4, 65483, 1, 5, 65483, 1, 6, 65483, 1, 7, 65483, 1, 8, 65483, 1, 9, 65483, 1, 10, 65483, 1, 11, 65483, 1, 12, 65483, 1, 13, 65483, 1, 14, 65483, 1, 15, 65483, 1, 16, 65483, 1, 17, 65483, 1, 18, 65483, 1, 19, 65483, 1, 20, 65483, 1, 40, 65483, 0, 44, 65483, 0, 46, 65483, 0, 49, 65483, 196608, 4, 65484, 1, 5, 65484, 1, 6, 65484, 1, 7, 65484, 1, 8, 65484, 1, 9, 65484, 1, 10, 65484, 1, 11, 65484, 1, 12, 65484, 1, 13, 65484, 1, 14, 65484, 1, 15, 65484, 1, 16, 65484, 1, 17, 65484, 1, 18, 65484, 1, 19, 65484, 1, 20, 65484, 1, 44, 65484, 0, 46, 65484, 0, 49, 65484, 196608, 4, 65485, 1, 5, 65485, 1, 6, 65485, 1, 7, 65485, 1, 8, 65485, 1, 9, 65485, 1, 10, 65485, 1, 11, 65485, 1, 12, 65485, 1, 13, 65485, 1, 14, 65485, 1, 15, 65485, 1, 16, 65485, 1, 17, 65485, 1, 18, 65485, 1, 19, 65485, 1, 20, 65485, 1, 44, 65485, 0, 46, 65485, 0, 49, 65485, 196608, 4, 65486, 1, 5, 65486, 1, 6, 65486, 1, 7, 65486, 1, 8, 65486, 1, 9, 65486, 1, 10, 65486, 1, 11, 65486, 1, 12, 65486, 1, 13, 65486, 1, 14, 65486, 1, 15, 65486, 1, 16, 65486, 1, 17, 65486, 1, 18, 65486, 1, 19, 65486, 1, 20, 65486, 1, 43, 65486, 0, 44, 65486, 0, 45, 65486, 0, 46, 65486, 0, 49, 65486, 196608, 4, 65487, 1, 5, 65487, 1, 6, 65487, 1, 7, 65487, 1, 8, 65487, 1, 9, 65487, 1, 10, 65487, 1, 11, 65487, 1, 12, 65487, 1, 13, 65487, 1, 14, 65487, 1, 15, 65487, 1, 16, 65487, 1, 17, 65487, 1, 18, 65487, 1, 19, 65487, 1, 20, 65487, 1, 4, 65488, 1, 5, 65488, 1, 6, 65488, 1, 7, 65488, 1, 8, 65488, 1, 9, 65488, 1, 10, 65488, 1, 11, 65488, 1, 12, 65488, 1, 13, 65488, 1, 14, 65488, 1, 15, 65488, 1, 16, 65488, 1, 17, 65488, 1, 18, 65488, 1, 19, 65488, 1, 20, 65488, 1, 43, 65488, 0, 44, 65488, 0, 45, 65488, 0, 4, 65489, 1, 5, 65489, 1, 6, 65489, 1, 7, 65489, 1, 8, 65489, 1, 9, 65489, 1, 10, 65489, 1, 11, 65489, 1, 12, 65489, 1, 13, 65489, 1, 14, 65489, 1, 15, 65489, 1, 16, 65489, 1, 17, 65489, 1, 18, 65489, 1, 19, 65489, 1, 20, 65489, 1, 43, 65489, 0, 45, 65489, 0, 4, 65490, 1, 5, 65490, 1, 6, 65490, 1, 7, 65490, 1, 8, 65490, 1, 9, 65490, 1, 10, 65490, 1, 11, 65490, 1, 12, 65490, 1, 13, 65490, 1, 14, 65490, 1, 15, 65490, 1, 16, 65490, 1, 17, 65490, 1, 18, 65490, 1, 19, 65490, 1, 20, 65490, 1, 43, 65490, 0, 45, 65490, 0, 3, 65491, 1, 4, 65491, 1, 5, 65491, 1, 6, 65491, 1, 11, 65491, 1, 12, 65491, 1, 13, 65491, 1, 14, 65491, 1, 15, 65491, 1, 16, 65491, 1, 17, 65491, 1, 18, 65491, 1, 19, 65491, 1, 20, 65491, 1, 43, 65491, 0, 45, 65491, 0, 3, 65492, 1, 4, 65492, 1, 5, 65492, 1, 6, 65492, 1, 13, 65492, 1, 14, 65492, 1, 15, 65492, 1, 16, 65492, 1, 17, 65492, 1, 18, 65492, 1, 39, 65492, 0, 40, 65492, 0, 41, 65492, 0, 42, 65492, 0, 43, 65492, 0, 45, 65492, 0, 46, 65492, 0, 47, 65492, 0, 48, 65492, 0, 49, 65492, 0, 3, 65493, 1, 4, 65493, 1, 5, 65493, 1, 6, 65493, 1, 13, 65493, 1, 14, 65493, 1, 15, 65493, 1, 16, 65493, 1, 17, 65493, 1, 18, 65493, 1, 39, 65493, 0, 42, 65493, 0, 43, 65493, 0, 45, 65493, 0, 46, 65493, 0, 47, 65493, 0, 48, 65493, 0, 49, 65493, 0, 2, 65494, 1, 3, 65494, 1, 4, 65494, 1, 5, 65494, 1, 6, 65494, 1, 7, 65494, 1, 13, 65494, 1, 14, 65494, 1, 15, 65494, 1, 16, 65494, 1, 17, 65494, 1, 18, 65494, 1, 39, 65494, 0, 40, 65494, 0, 41, 65494, 0, 42, 65494, 0, 43, 65494, 0, 45, 65494, 0, 46, 65494, 0, 47, 65494, 0, 48, 65494, 0, 49, 65494, 0, 2, 65495, 1, 3, 65495, 1, 4, 65495, 1, 5, 65495, 1, 6, 65495, 1, 7, 65495, 1, 13, 65495, 1, 14, 65495, 1, 15, 65495, 1, 16, 65495, 1, 17, 65495, 1, 18, 65495, 1, 43, 65495, 0, 45, 65495, 0, 2, 65496, 1, 3, 65496, 1, 4, 65496, 1, 5, 65496, 1, 6, 65496, 1, 7, 65496, 1, 13, 65496, 1, 14, 65496, 1, 15, 65496, 1, 16, 65496, 1, 17, 65496, 1, 18, 65496, 1, 43, 65496, 0, 45, 65496, 0, 2, 65497, 1, 3, 65497, 1, 4, 65497, 1, 5, 65497, 1, 6, 65497, 1, 7, 65497, 1, 13, 65497, 1, 14, 65497, 1, 15, 65497, 1, 16, 65497, 1, 17, 65497, 1, 18, 65497, 1, 43, 65497, 0, 45, 65497, 0, 2, 65498, 1, 3, 65498, 1, 4, 65498, 1, 5, 65498, 1, 6, 65498, 1, 7, 65498, 1, 13, 65498, 1, 14, 65498, 1, 15, 65498, 1, 16, 65498, 1, 17, 65498, 1, 18, 65498, 1, 43, 65498, 0, 44, 65498, 0, 45, 65498, 0, 3, 65499, 1, 4, 65499, 1, 5, 65499, 1, 6, 65499, 1, 13, 65499, 1, 14, 65499, 1, 15, 65499, 1, 16, 65499, 1, 17, 65499, 1, 18, 65499, 1, 3, 65500, 1, 4, 65500, 1, 5, 65500, 1, 6, 65500, 1, 13, 65500, 1, 14, 65500, 1, 15, 65500, 1, 16, 65500, 1, 17, 65500, 1, 18, 65500, 1, 3, 65501, 1, 4, 65501, 1, 5, 65501, 1, 6, 65501, 1, 13, 65501, 1, 14, 65501, 1, 15, 65501, 1, 16, 65501, 1, 17, 65501, 1, 18, 65501, 1, 6, 65502, 1, 7, 65502, 1, 8, 65502, 1, 9, 65502, 1, 10, 65502, 1, 11, 65502, 1, 12, 65502, 1, 13, 65502, 1, 14, 65502, 1, 15, 65502, 1, 16, 65502, 1, 17, 65502, 1, 18, 65502, 1, 19, 65502, 1, 20, 65502, 1, 21, 65502, 1, 22, 65502, 1, 23, 65502, 1, 24, 65502, 1, 25, 65502, 1, 6, 65503, 1, 7, 65503, 1, 8, 65503, 1, 9, 65503, 1, 10, 65503, 1, 11, 65503, 1, 12, 65503, 1, 13, 65503, 1, 14, 65503, 1, 15, 65503, 1, 16, 65503, 1, 17, 65503, 1, 18, 65503, 1, 19, 65503, 1, 20, 65503, 1, 21, 65503, 1, 22, 65503, 1, 23, 65503, 1, 24, 65503, 1, 25, 65503, 1, 6, 65504, 1, 7, 65504, 1, 8, 65504, 1, 9, 65504, 1, 10, 65504, 1, 11, 65504, 1, 12, 65504, 1, 13, 65504, 1, 14, 65504, 1, 15, 65504, 1, 16, 65504, 1, 17, 65504, 1, 18, 65504, 1, 19, 65504, 1, 20, 65504, 1, 21, 65504, 1, 22, 65504, 1, 23, 65504, 1, 24, 65504, 1, 25, 65504, 1, 6, 65505, 1, 7, 65505, 1, 8, 65505, 1, 9, 65505, 1, 10, 65505, 1, 11, 65505, 1, 12, 65505, 1, 13, 65505, 1, 14, 65505, 1, 15, 65505, 1, 16, 65505, 1, 17, 65505, 1, 18, 65505, 1, 19, 65505, 1, 20, 65505, 1, 21, 65505, 1, 22, 65505, 1, 23, 65505, 1, 24, 65505, 1, 25, 65505, 1, 6, 65506, 1, 7, 65506, 1, 8, 65506, 1, 9, 65506, 1, 10, 65506, 1, 11, 65506, 1, 12, 65506, 1, 13, 65506, 1, 14, 65506, 1, 15, 65506, 1, 16, 65506, 1, 17, 65506, 1, 18, 65506, 1, 19, 65506, 1, 20, 65506, 1, 21, 65506, 1, 22, 65506, 1, 23, 65506, 1, 24, 65506, 1, 25, 65506, 1, 6, 65507, 1, 7, 65507, 1, 8, 65507, 1, 9, 65507, 1, 10, 65507, 1, 11, 65507, 1, 12, 65507, 1, 13, 65507, 1, 14, 65507, 1, 15, 65507, 1, 16, 65507, 1, 17, 65507, 1, 18, 65507, 1, 19, 65507, 1, 20, 65507, 1, 21, 65507, 1, 22, 65507, 1, 23, 65507, 1, 24, 65507, 1, 25, 65507, 1, 6, 65508, 1, 7, 65508, 1, 8, 65508, 1, 9, 65508, 1, 10, 65508, 1, 11, 65508, 1, 12, 65508, 1, 13, 65508, 1, 14, 65508, 1, 15, 65508, 1, 16, 65508, 1, 17, 65508, 1, 18, 65508, 1, 19, 65508, 1, 20, 65508, 1, 21, 65508, 1, 22, 65508, 1, 23, 65508, 1, 24, 65508, 1, 25, 65508, 1, 6, 65509, 1, 7, 65509, 1, 8, 65509, 1, 9, 65509, 1, 10, 65509, 1, 11, 65509, 1, 12, 65509, 1, 13, 65509, 1, 14, 65509, 1, 15, 65509, 1, 16, 65509, 1, 17, 65509, 1, 18, 65509, 1, 19, 65509, 1, 20, 65509, 1, 21, 65509, 1, 22, 65509, 1, 23, 65509, 1, 24, 65509, 1, 25, 65509, 1, 6, 65510, 1, 7, 65510, 1, 8, 65510, 1, 9, 65510, 1, 10, 65510, 1, 11, 65510, 1, 12, 65510, 1, 13, 65510, 1, 14, 65510, 1, 15, 65510, 1, 16, 65510, 1, 17, 65510, 1, 18, 65510, 1, 19, 65510, 1, 20, 65510, 1, 21, 65510, 1, 22, 65510, 1, 23, 65510, 1, 24, 65510, 1, 25, 65510, 1, 6, 65511, 1, 7, 65511, 1, 8, 65511, 1, 9, 65511, 1, 10, 65511, 1, 11, 65511, 1, 12, 65511, 1, 13, 65511, 1, 14, 65511, 1, 15, 65511, 1, 16, 65511, 1, 17, 65511, 1, 18, 65511, 1, 19, 65511, 1, 20, 65511, 1, 21, 65511, 1, 22, 65511, 1, 23, 65511, 1, 24, 65511, 1, 25, 65511, 1, 6, 65512, 1, 7, 65512, 1, 8, 65512, 1, 9, 65512, 1, 10, 65512, 1, 11, 65512, 1, 12, 65512, 1, 13, 65512, 1, 14, 65512, 1, 15, 65512, 1, 16, 65512, 1, 17, 65512, 1, 18, 65512, 1, 19, 65512, 1, 20, 65512, 1, 21, 65512, 1, 22, 65512, 1, 23, 65512, 1, 24, 65512, 1, 25, 65512, 1, 6, 65513, 1, 7, 65513, 1, 8, 65513, 1, 9, 65513, 1, 10, 65513, 1, 11, 65513, 1, 12, 65513, 1, 13, 65513, 1, 14, 65513, 1, 15, 65513, 1, 16, 65513, 1, 17, 65513, 1, 18, 65513, 1, 19, 65513, 1, 20, 65513, 1, 21, 65513, 1, 22, 65513, 1, 23, 65513, 1, 24, 65513, 1, 25, 65513, 1, 6, 65514, 1, 7, 65514, 1, 8, 65514, 1, 9, 65514, 1, 10, 65514, 1, 11, 65514, 1, 12, 65514, 1, 13, 65514, 1, 14, 65514, 1, 15, 65514, 1, 16, 65514, 1, 17, 65514, 1, 18, 65514, 1, 19, 65514, 1, 20, 65514, 1, 21, 65514, 1, 22, 65514, 1, 23, 65514, 1, 24, 65514, 1, 25, 65514, 1, 6, 65515, 1, 7, 65515, 1, 8, 65515, 1, 9, 65515, 1, 10, 65515, 1, 11, 65515, 1, 12, 65515, 1, 13, 65515, 1, 14, 65515, 1, 15, 65515, 1, 16, 65515, 1, 17, 65515, 1, 18, 65515, 1, 19, 65515, 1, 20, 65515, 1, 21, 65515, 1, 22, 65515, 1, 23, 65515, 1, 24, 65515, 1, 25, 65515, 1, 6, 65516, 1, 7, 65516, 1, 8, 65516, 1, 9, 65516, 1, 10, 65516, 1, 11, 65516, 1, 12, 65516, 1, 13, 65516, 1, 14, 65516, 1, 15, 65516, 1, 16, 65516, 1, 17, 65516, 1, 18, 65516, 1, 19, 65516, 1, 20, 65516, 1, 21, 65516, 1, 22, 65516, 1, 23, 65516, 1, 24, 65516, 1, 25, 65516, 1, 6, 65517, 1, 7, 65517, 1, 8, 65517, 1, 9, 65517, 1, 10, 65517, 1, 11, 65517, 1, 12, 65517, 1, 13, 65517, 1, 14, 65517, 1, 15, 65517, 1, 16, 65517, 1, 17, 65517, 1, 18, 65517, 1, 19, 65517, 1, 20, 65517, 1, 21, 65517, 1, 22, 65517, 1, 23, 65517, 1, 24, 65517, 1, 25, 65517, 1, 6, 65518, 1, 7, 65518, 1, 8, 65518, 1, 9, 65518, 1, 10, 65518, 1, 11, 65518, 1, 12, 65518, 1, 13, 65518, 1, 14, 65518, 1, 15, 65518, 1, 16, 65518, 1, 17, 65518, 1, 18, 65518, 1, 19, 65518, 1, 20, 65518, 1, 21, 65518, 1, 22, 65518, 1, 23, 65518, 1, 24, 65518, 1, 25, 65518, 1, 6, 65519, 1, 7, 65519, 1, 8, 65519, 1, 9, 65519, 1, 10, 65519, 1, 11, 65519, 1, 12, 65519, 1, 13, 65519, 1, 14, 65519, 1, 15, 65519, 1, 16, 65519, 1, 17, 65519, 1, 18, 65519, 1, 19, 65519, 1, 20, 65519, 1, 21, 65519, 1, 22, 65519, 1, 23, 65519, 1, 24, 65519, 1, 25, 65519, 1, 6, 65520, 1, 7, 65520, 1, 8, 65520, 1, 9, 65520, 1, 10, 65520, 1, 11, 65520, 1, 12, 65520, 1, 13, 65520, 1, 14, 65520, 1, 15, 65520, 1, 16, 65520, 1, 17, 65520, 1, 18, 65520, 1, 19, 65520, 1, 20, 65520, 1, 21, 65520, 1, 22, 65520, 1, 23, 65520, 1, 24, 65520, 1, 25, 65520, 1, 6, 65521, 1, 7, 65521, 1, 8, 65521, 1, 9, 65521, 1, 10, 65521, 1, 11, 65521, 1, 12, 65521, 1, 13, 65521, 1, 14, 65521, 1, 15, 65521, 1, 16, 65521, 1, 17, 65521, 1, 18, 65521, 1, 19, 65521, 1, 20, 65521, 1, 21, 65521, 1, 22, 65521, 1, 23, 65521, 1, 24, 65521, 1, 25, 65521, 1, 13, 65522, 1, 14, 65522, 1, 15, 65522, 1, 16, 65522, 1, 17, 65522, 1, 18, 65522, 1, 13, 65523, 1, 14, 65523, 1, 15, 65523, 1, 16, 65523, 1, 17, 65523, 1, 18, 65523, 1, 13, 65524, 1, 14, 65524, 1, 15, 65524, 1, 16, 65524, 1, 17, 65524, 1, 18, 65524, 1, 13, 65525, 1, 14, 65525, 1, 15, 65525, 1, 16, 65525, 1, 17, 65525, 1, 18, 65525, 1, 13, 65526, 1, 14, 65526, 1, 15, 65526, 1, 16, 65526, 1, 17, 65526, 1, 18, 65526, 1, 13, 65527, 1, 14, 65527, 1, 15, 65527, 1, 16, 65527, 1, 17, 65527, 1, 18, 65527, 1, 13, 65528, 1, 14, 65528, 1, 15, 65528, 1, 16, 65528, 1, 17, 65528, 1, 18, 65528, 1, 13, 65529, 1, 14, 65529, 1, 15, 65529, 1, 16, 65529, 1, 17, 65529, 1, 18, 65529, 1, 13, 65530, 1, 14, 65530, 1, 15, 65530, 1, 16, 65530, 1, 17, 65530, 1, 18, 65530, 1, 13, 65531, 1, 14, 65531, 1, 15, 65531, 1, 16, 65531, 1, 17, 65531, 1, 18, 65531, 1, 10, 65532, 1, 11, 65532, 1, 12, 65532, 1, 13, 65532, 1, 14, 65532, 1, 15, 65532, 1, 16, 65532, 1, 10, 65533, 1, 11, 65533, 1, 12, 65533, 1, 13, 65533, 1, 14, 65533, 1, 15, 65533, 1, 16, 65533, 1, 0, 65534, 1, 1, 65534, 1, 2, 65534, 1, 3, 65534, 1, 4, 65534, 1, 5, 65534, 1, 6, 65534, 1, 7, 65534, 1, 8, 65534, 1, 9, 65534, 1, 10, 65534, 1, 11, 65534, 1, 12, 65534, 1, 13, 65534, 1, 14, 65534, 1, 15, 65534, 1, 16, 65534, 1, 0, 65535, 1, 1, 65535, 1, 2, 65535, 1, 3, 65535, 1, 4, 65535, 1, 5, 65535, 1, 6, 65535, 1, 7, 65535, 1, 8, 65535, 1, 9, 65535, 1, 10, 65535, 1, 11, 65535, 1, 12, 65535, 1, 13, 65535, 1, 14, 65535, 1, 15, 65535, 1, 16, 65535, 1 )
+}
+script = ExtResource( 4 )
+__meta__ = {
+"_editor_clip_": 0,
+"_editor_floor_": Vector3( 0, 0, 0 )
+}
+
+[node name="Point" type="Spatial" parent="Map"]
+transform = Transform( 1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -6.75, 0.5, -95.25 )
+visible = false
+
+[node name="CSGCylinder" type="CSGCylinder" parent="Map/Point"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 4, 0, 0 )
+height = 8.0
+cone = true
+material = ExtResource( 5 )
+
+[node name="Navigation" type="Navigation" parent="Map"]
+
+[node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Map/Navigation"]
+navmesh = SubResource( 17 )
+
+[node name="GridMap" type="GridMap" parent="Map/Navigation/NavigationMeshInstance" groups=[
+"Terrain",
+]]
+mesh_library = ExtResource( 7 )
+cell_size = Vector3( 1.5, 1, 1.5 )
+cell_scale = 1.5
+collision_layer = 33
+data = {
+"cells": PoolIntArray(  )
+}
+__meta__ = {
+"_editor_clip_": 0,
+"_editor_floor_": Vector3( 0, 0, 0 )
+}
+
+[node name="Obstacles" type="Spatial" parent="Map/Navigation"]
+
+[node name="GoldPiles" type="Spatial" parent="Map/Navigation"]
+
+[node name="Lights" type="Spatial" parent="Map/Navigation"]
+
+[node name="Items" type="Spatial" parent="Map/Navigation"]
+
+[node name="NPCs" type="Spatial" parent="Map/Navigation"]
+
+[node name="Footprints" type="Spatial" parent="Map/Navigation"]
+
+[node name="Camera" type="Camera" parent="Map"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 109.063, 0 )
+projection = 1
+size = 200.0
+far = 1584.2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 3 )
+
+[node name="MatchTimer" type="Timer" parent="."]
+wait_time = 300.0
+one_shot = true
+
+[node name="NPCSpawnTimer" type="Timer" parent="."]
+wait_time = 30.0
+
+[connection signal="pressed" from="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton" to="EndScreens" method="_on_PlayAgainButton_pressed"]
+[connection signal="pressed" from="EndScreens/LostScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton" to="EndScreens" method="_on_MainMenuButton_pressed"]
+[connection signal="pressed" from="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer/PlayAgainButton" to="EndScreens" method="_on_PlayAgainButton_pressed"]
+[connection signal="pressed" from="EndScreens/WinScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton" to="EndScreens" method="_on_MainMenuButton_pressed"]
+[connection signal="pressed" from="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer/ResumeButton" to="EndScreens" method="_on_ResumeButton_pressed"]
+[connection signal="pressed" from="EndScreens/PauseScreen/CenterContainer2/VBoxContainer/CenterContainer2/MainMenuButton" to="EndScreens" method="_on_MainMenuButton_pressed"]
+[connection signal="timeout" from="MatchTimer" to="." method="_on_MatchTimer_timeout"]
+[connection signal="timeout" from="NPCSpawnTimer" to="Map" method="_on_NPCSpawnTimer_timeout"]

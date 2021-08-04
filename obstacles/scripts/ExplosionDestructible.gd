@@ -16,6 +16,8 @@ onready var anim_player: AnimationPlayer = $AnimationPlayer
 func _do_damage():
 	if state != State.EXPLODED:
 		return
+		
+	get_tree().call_group("Player", "on_general_bomb_exploded", self.global_transform.origin)
 	
 	for body in explosion_area.get_overlapping_bodies():
 #		print("\nbody in tnt: ", body, "groups: ", body.get_groups())

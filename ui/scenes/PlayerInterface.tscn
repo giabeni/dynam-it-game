@@ -121,10 +121,8 @@ tracks/1/keys = {
 [node name="PlayerUI" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 20.0
-margin_top = 20.0
-margin_right = -20.0
-margin_bottom = -20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -133,6 +131,12 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -141,11 +145,12 @@ __meta__ = {
 margin_right = 1240.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 0, 50 )
+size_flags_horizontal = 3
 
 [node name="GoldContainer2" type="Control" parent="VBoxContainer/TopBar"]
-margin_right = 200.0
+margin_right = 150.0
 margin_bottom = 50.0
-rect_min_size = Vector2( 200, 0 )
+rect_min_size = Vector2( 150, 0 )
 
 [node name="TimerButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer2"]
 margin_right = 127.0
@@ -163,14 +168,13 @@ __meta__ = {
 }
 
 [node name="Space" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 204.0
-margin_right = 832.0
+margin_left = 154.0
+margin_right = 154.0
 margin_bottom = 50.0
-size_flags_horizontal = 3
 
 [node name="GoldContainer3" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 836.0
-margin_right = 1036.0
+margin_left = 158.0
+margin_right = 358.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 200, 0 )
 
@@ -191,14 +195,13 @@ __meta__ = {
 }
 
 [node name="GoldContainer" type="Control" parent="VBoxContainer/TopBar"]
-margin_left = 1040.0
-margin_right = 1240.0
+margin_left = 362.0
+margin_right = 362.0
 margin_bottom = 50.0
-rect_min_size = Vector2( 200, 0 )
 
 [node name="GoldButton" type="Button" parent="VBoxContainer/TopBar/GoldContainer"]
-margin_left = -32.2053
-margin_right = 192.795
+margin_left = -32.0
+margin_right = 159.0
 margin_bottom = 46.0
 focus_mode = 0
 custom_styles/normal = SubResource( 1 )
@@ -247,20 +250,20 @@ margin_bottom = 680.0
 rect_min_size = Vector2( 0, 60 )
 
 [node name="Ranking" type="Control" parent="VBoxContainer/Footer2"]
-margin_right = 300.0
+margin_right = 20.0
 margin_bottom = 60.0
-rect_min_size = Vector2( 300, 0 )
+rect_min_size = Vector2( 20, 0 )
 
 [node name="Center" type="CenterContainer" parent="VBoxContainer/Footer2"]
-margin_left = 304.0
+margin_left = 24.0
 margin_right = 1036.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 300, 0 )
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Footer2/Center"]
-margin_left = 137.0
-margin_right = 595.0
+margin_left = 277.0
+margin_right = 735.0
 margin_bottom = 60.0
 
 [node name="DynamitesContainer" type="Control" parent="VBoxContainer/Footer2/Center/HBoxContainer"]
@@ -273,10 +276,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -100.0
+margin_left = -91.0
 margin_top = -17.0
 margin_right = 30.0
-margin_bottom = 30.677
+margin_bottom = 31.0
 focus_mode = 0
 custom_styles/normal = SubResource( 4 )
 custom_fonts/font = SubResource( 5 )

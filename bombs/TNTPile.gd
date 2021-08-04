@@ -10,11 +10,15 @@ onready var spark2: Particles = $Sparks/Spark2
 onready var spark3: Particles = $Sparks/Spark3
 onready var sparks: Spatial = $Sparks
 onready var light: OmniLight = $Light
-onready var explosion: Particles = $Explosion
-onready var explosion2: Particles = $Explosion2
 onready var mesh = $tnt_pile
 onready var explosion_area = $DamageArea
 onready var anim_player: AnimationPlayer = $AnimationPlayer
+onready var shockwave_rect: ColorRect = $CanvasLayer/ShockwaveRect
+onready var dust_particles: Particles = $DustParticles
+onready var smoke_particles: Particles = $SmokeParticles
+onready var explosion_sparks_particles: Particles = $ExplosionSparks
+onready var explosion_mesh: MeshInstance = $ExplosionMesh
+onready var visibility_notifier: VisibilityNotifier = $VisibilityNotifier
 
 enum State {
 	CARRY,
@@ -26,13 +30,11 @@ var state = State.CARRY
 var is_from_player = false
 var bomb_range = 2.5
 
-func _ready():
-	pass
-	
 
 func _physics_process(delta):
 	if state == State.DROPPED:
 		sparks.translate(Vector3.RIGHT * delta * 0.025)
+
 
 func drop():
 	set_as_toplevel(true)
@@ -51,8 +53,11 @@ func _explode():
 	mesh.hide()
 	sparks.hide()
 	emit_signal("bomb_exploded")
-	anim_player.play("Explode")
+	get_tree().call_group("Player", "on_general_bomb_exploded", self.global_transform.origin)
 	
+	_set_shockwave_center()
+	_shake_camera()
+	anim_player.play("Explode")	
 
 
 func _on_Timer_timeout():
@@ -116,18 +121,42 @@ func _on_DamageArea_body_entered(body: Spatial):
 		if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
 			body.destroy()
 	
-	
 
 func _on_animation_finished(anim_name):
 	if anim_name == "Explode":
 		call_deferred("queue_free")
-		
+
+
 func is_dropped():
 	return state == State.DROPPED or is_set_as_toplevel()
-	
+
+
 func set_range(amount):
 	bomb_range = amount
 	if is_instance_valid(explosion_area):
 		explosion_area.get_node("DamageCollisionShape").shape.radius  = amount
-	$Range.radius = amount * 1.1
-		
+	$Range.radius = amount * 1.15
+
+
+func _set_shockwave_center():
+	shockwave_rect.visible = visibility_notifier.is_on_screen() and not get_viewport().get_camera().is_position_behind(global_transform.origin)
+	var center = get_viewport().get_camera().unproject_position(self.global_transform.origin) / get_viewport().size
+	(shockwave_rect.material as ShaderMaterial).set_shader_param("center", center)
+	
+	
+func _shake_camera():
+	var camera = get_viewport().get_camera()
+	var distance = camera.global_transform.origin.distance_to(self.global_transform.origin)
+	if visibility_notifier.is_on_screen() and camera.has_method("add_trauma"):
+		camera.add_trauma(1 / distance * distance * distance)
+	
+
+
+func _on_VisibilityNotifier_screen_exited():
+	sleeping = true
+	self.hide()
+
+
+func _on_VisibilityNotifier_screen_entered():
+	sleeping = false
+	self.show()

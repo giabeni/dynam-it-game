@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://map/scripts/ProceduralMap.gd" type="Script" id=1]
 [ext_resource path="res://tiles/libs/CaveLib.meshlib" type="MeshLibrary" id=2]
@@ -19,6 +19,17 @@
 [ext_resource path="res://test/scripts/Match.gd" type="Script" id=17]
 [ext_resource path="res://ui/textures/full_progress.png" type="Texture" id=18]
 [ext_resource path="res://map/scripts/NavGrid.gd" type="Script" id=19]
+[ext_resource path="res://obstacles/scenes/RockWall.tscn" type="PackedScene" id=20]
+[ext_resource path="res://obstacles/scenes/MineCar.tscn" type="PackedScene" id=21]
+[ext_resource path="res://obstacles/scenes/WoodWall.tscn" type="PackedScene" id=22]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall2.tscn" type="PackedScene" id=23]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall4.tscn" type="PackedScene" id=24]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall5.tscn" type="PackedScene" id=25]
+[ext_resource path="res://obstacles/scenes/Barrel.tscn" type="PackedScene" id=26]
+[ext_resource path="res://obstacles/scenes/Crate.tscn" type="PackedScene" id=27]
+[ext_resource path="res://obstacles/scenes/TNTBarrel.tscn" type="PackedScene" id=28]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall3.tscn" type="PackedScene" id=29]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockPillar.tscn" type="PackedScene" id=30]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
@@ -126,6 +137,7 @@ item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Match" type="Spatial"]
 script = ExtResource( 17 )
+NPCS_COUNT = 5
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
@@ -146,6 +158,7 @@ __meta__ = {
 }
 
 [node name="LostScreen" type="Control" parent="EndScreens"]
+pause_mode = 2
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -274,6 +287,7 @@ __meta__ = {
 stream = ExtResource( 11 )
 
 [node name="WinScreen" type="Control" parent="EndScreens"]
+pause_mode = 2
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -403,6 +417,7 @@ stream = ExtResource( 13 )
 volume_db = -7.812
 
 [node name="PauseScreen" type="Control" parent="EndScreens"]
+pause_mode = 2
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -627,6 +642,10 @@ autoplay = true
 
 [node name="Map" type="Spatial" parent="."]
 script = ExtResource( 1 )
+NPCS_COUNT = 1
+WALLS_COUNT = 40
+WALL_OBSTACLES_SCENES = [ ExtResource( 22 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 25 ) ]
+OBJECTS_SCENES = [ ExtResource( 26 ), ExtResource( 27 ), ExtResource( 28 ), ExtResource( 30 ), ExtResource( 29 ) ]
 
 [node name="PaintedGrid" type="GridMap" parent="Map"]
 visible = false
@@ -662,6 +681,7 @@ navmesh = SubResource( 17 )
 ]]
 mesh_library = ExtResource( 2 )
 cell_size = Vector3( 1.5, 1, 1.5 )
+cell_octant_size = 64
 cell_scale = 1.5
 collision_layer = 33
 data = {

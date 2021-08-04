@@ -93,7 +93,6 @@ onready var lights: Spatial = $Navigation/Lights
 onready var items: Spatial = $Navigation/Items
 onready var npcs: Spatial = $Navigation/NPCs
 onready var screens: Control = $"../EndScreens"
-onready var player = $"../Player"
 onready var nav_grid: NavGrid = $PaintedGrid
 
 
@@ -120,6 +119,8 @@ export(Array, PackedScene) var OBJECTS_SCENES = [
 ]
 export(PackedScene) var NPC_SCENE = preload("res://npcs/scenes/NPC.tscn")
 export(PackedScene) var LIGHT_SCENE = preload("res://tiles/scenes/LightBulb.tscn")
+export(NodePath) var PLAYER1_PATH = "../Player"
+export(NodePath) var PLAYER2_PATH = ""
 
 var GRID_SIZE = Vector3(10, 0, 10)
 var x_limits = [INF, -INF]
@@ -130,6 +131,8 @@ var baked_nav_mesh = PoolVector3Array([])
 var should_bake_nav_meshes = false
 var loading_progress = 0
 var spawning_points = []
+var player1
+var player2
 
 signal finished_grid
 signal finished_walls
@@ -137,13 +140,19 @@ signal finished_objects
 signal npcs_spawned
 
 func _ready():
+	if not PLAYER1_PATH == "":
+		player1 = get_node(PLAYER1_PATH)
+	if not PLAYER2_PATH == "":
+		player2 = get_node(PLAYER2_PATH)
 #	$PaintedGrid.hide()
 	_set_npcs_paused(true)
 #	randomize()
 	
 	# Adjust the size of grid to match the map size
 	GRID_SIZE = MAP_SIZE / grid.cell_size
-	player.controller.set_physics_process(false)
+	player1.controller.set_physics_process(false)
+	if is_instance_valid(player2):
+		player2.controller.set_physics_process(false)
 	
 	screens.set_loading_screen(5, "Creating mine's corridors...")
 	if grid.get_used_cells().size() <= 0:
@@ -203,7 +212,9 @@ func _ready():
 	get_parent().start_match()
 #	yield(get_tree().create_timer(15), "timeout")
 	_set_npcs_paused(false)
-	player.enable()
+	player1.enable()
+	if is_instance_valid(player2):
+		player2.enable()
 
 
 func _generate_map():
@@ -325,7 +336,7 @@ func _generate_grid_map():
 		
 	var total_area = 0
 	
-	# Fill first open door with all
+	# Fill first open door with wall
 	var first_point = Vector3(-1, 0, 0)
 	var first_wall_orientation = _get_orientation(90, 90)
 	grid.set_cell_item(first_point.x, first_point.y, first_point.z, Tiles.PLATAFORMA, first_wall_orientation)
@@ -452,7 +463,7 @@ func _spawn_npcs():
 			npc.paused = true
 			npc.obstacles = obstacles
 			npc.gold_piles = gold_piles
-			npc.player = player
+			npc.player = player1
 			npcs.add_child(npc)
 			npc.global_transform.origin = middle_point + Vector3.UP * 0.5
 			yield(get_tree(), "physics_frame")
@@ -617,10 +628,10 @@ func _input(event):
 		$Camera.size -= 20
 	elif Input.is_action_just_pressed("ui_focus_next") and not $Camera.current:
 		$Camera.current = true
-		$"../Player".camera.current = false
+		player1.camera.current = false
 	elif Input.is_action_just_pressed("ui_focus_next") and $Camera.current:
 		$Camera.current = false
-		$"../Player".camera.current = true
+		player1.camera.current = true
 	elif Input.is_action_just_pressed("ui_page_up"):
 		_generate_map()
 		
@@ -637,14 +648,15 @@ func _input(event):
 
 func _on_NPCSpawnTimer_timeout():
 	print(">> Spawning new NPC")
-	if get_parent().ui.npcs_count - get_parent().ui.npcs_dead < 15:
+	if get_parent().SPAWN_NPCS_TIMER_ACTIVE and get_parent().npcs_count - get_parent().npcs_dead < 6:
 		var npc = NPC_SCENE.instance()
 		npc.NAV_GRID_PATH = $PaintedGrid.get_path()
 		npc.paused = false
 		npc.obstacles = obstacles
 		npc.gold_piles = gold_piles
-		npc.player = player
+		npc.player = player1
 		npcs.add_child(npc)
 		npc.global_transform.origin = spawning_points[randi() % spawning_points.size()]
 		npc.remove_inner_area()
-		get_parent().ui.increment_npc_count()
+		get_parent().increment_npc_count()
+		get_parent().set_npc_signals(npc)

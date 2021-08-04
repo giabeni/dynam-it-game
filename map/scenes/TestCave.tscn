@@ -1,0 +1,154 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://tiles/libs/CaveLib.meshlib" type="MeshLibrary" id=1]
+[ext_resource path="res://tiles/scenes/LightBulb.tscn" type="PackedScene" id=2]
+[ext_resource path="res://environments/CaveEnv.tres" type="Environment" id=3]
+[ext_resource path="res://ui/scenes/PlayerInterface.tscn" type="PackedScene" id=4]
+[ext_resource path="res://player/scenes/Player.tscn" type="PackedScene" id=5]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall2.tscn" type="PackedScene" id=8]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcCeiling.tscn" type="PackedScene" id=9]
+[ext_resource path="res://obstacles/scenes/GoldRocks.tscn" type="PackedScene" id=10]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall5.tscn" type="PackedScene" id=11]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockPillar.tscn" type="PackedScene" id=12]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockDoubleCeiling.tscn" type="PackedScene" id=13]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcLong.tscn" type="PackedScene" id=14]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall4.tscn" type="PackedScene" id=15]
+[ext_resource path="res://obstacles/scenes/rock-walls/RockWall3.tscn" type="PackedScene" id=16]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockCornerCeiling.tscn" type="PackedScene" id=17]
+[ext_resource path="res://obstacles/scenes/WoodWall.tscn" type="PackedScene" id=18]
+
+[node name="Spatial" type="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.855283, 0 )
+
+[node name="GridMap" type="GridMap" parent="." groups=[
+"Terrain",
+]]
+mesh_library = ExtResource( 1 )
+cell_size = Vector3( 1.5, 1.5, 1.5 )
+cell_scale = 1.5
+collision_layer = 33
+data = {
+"cells": PoolIntArray( 720844, 1, 65550, 24, 4, 1441794, 65510, 4, 1048581, 65531, 8, 851982, 65530, 9, 1441795, 24, 14, 1441797, 65510, 14, 1048578, 30, 18, 589838, -131123, 18, 65550, 9, 19, 2, 65515, 19, 2, 65525, 19, 4, 65535, 19, 2, -262195, 19, 8, -262175, 19, 7, 65531, 25, 327694, 9, 65535, 2, 19, 65535, 4, 30, 65535, 589838, 65505, 65535, 655367, 65515, 65535, 2, 65525, 65535, 8, 393175, 65535, 655367 )
+}
+__meta__ = {
+"_editor_clip_": 0,
+"_editor_floor_": Vector3( 0, -3, 0 )
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 3 )
+
+[node name="Player" parent="." instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3.29982, 1.55789, 0 )
+UI_PATH = NodePath("../PlayerUI")
+FOOTPRINTS_PATH = NodePath("../Footprints")
+START_DISABLED = false
+
+[node name="Footprints" type="Spatial" parent="."]
+
+[node name="PlayerUI" parent="." instance=ExtResource( 4 )]
+
+[node name="Lights" type="Spatial" parent="."]
+
+[node name="LightBulb4" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3749, 0 )
+
+[node name="LightBulb5" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 35.2553, 1.03286, 0 )
+
+[node name="LightBulb6" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 35.2553, 1.03286, 29.1865 )
+
+[node name="LightBulb7" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.57293, 1.03286, 29.1865 )
+
+[node name="LightBulb8" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -37.5655, 1.03286, 29.1865 )
+
+[node name="LightBulb9" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -62.8734, -4.62215, 29.1865 )
+
+[node name="LightBulb12" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -38.7831, -3.49114, 29.1865 )
+
+[node name="LightBulb13" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.2111, -3.91762, 1.05507 )
+
+[node name="LightBulb10" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -62.8734, 8.92214, -0.581791 )
+
+[node name="LightBulb11" parent="Lights" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -50.3193, 3.26713, -0.581791 )
+
+[node name="Walls" type="Spatial" parent="."]
+
+[node name="RockWall2" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -3.49691e-08, 0, 0.8, 0, 0.822414, 0, -0.821211, 0, -3.58963e-08, -16.5843, 0.847915, -1.24485 )
+
+[node name="RockWall3" parent="Walls" instance=ExtResource( 16 )]
+transform = Transform( 0.945692, 0, 0.0248469, 0, 1.37496, 0, -0.0185546, 0, 1.2664, -0.464825, 0.915967, 6.7408 )
+
+[node name="RockWall4" parent="Walls" instance=ExtResource( 16 )]
+transform = Transform( 0.945692, 0, 0.0248469, 0, 1.72564, 0, -0.0185546, 0, 1.2664, -1.87396, 0.915967, -8.05638 )
+
+[node name="RockWall5" parent="Walls" instance=ExtResource( 15 )]
+transform = Transform( -0.0103697, 0, 0.707759, 0, 0.999212, 0, -0.797235, 0, -0.0209464, 2.47624, 1.08569, 0.0154517 )
+
+[node name="RockWall6" parent="Walls" instance=ExtResource( 11 )]
+transform = Transform( 0.469306, 0, -0.607019, 0, 0.593777, 0, 0.445592, 0, 0.759518, 35.726, 1.67916, -1.13121 )
+
+[node name="RockPillar" parent="Walls" instance=ExtResource( 12 )]
+transform = Transform( 0.860281, 0, 0.314582, 0, 0.7, 0, -0.240403, 0, 0.657424, -4.98456, -0.0543306, 5.80644 )
+
+[node name="RockPillar2" parent="Walls" instance=ExtResource( 12 )]
+transform = Transform( 0.860281, 0, 0.314582, 0, 0.7, 0, -0.240403, 0, 0.657424, -9.64575, -0.0543306, 3.20978 )
+
+[node name="GoldPile" parent="Walls" instance=ExtResource( 10 )]
+transform = Transform( -3.49691e-08, 0, 0.8, 0, 0.822414, 0, -0.821211, 0, -3.58963e-08, -6.29044, 1.33154, -8.10191 )
+
+[node name="WoodWall" parent="Walls" instance=ExtResource( 18 )]
+transform = Transform( -3.15181e-08, 0, 0.72105, 0, 0.697354, 0, -0.850085, 0, -3.71584e-08, -34.6041, 0.842724, -0.613946 )
+
+[node name="RockWall7" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 29.0815, 1.86064, 29.4796 )
+
+[node name="RockWall8" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 26.4809, 1.86064, 29.4796 )
+
+[node name="RockWall9" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 23.7402, 1.86064, 29.4796 )
+
+[node name="RockWall10" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 20.7187, 1.86064, 29.4796 )
+
+[node name="RockWall11" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 18.2256, 1.86064, 29.4796 )
+
+[node name="RockWall12" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 15.2416, 1.86064, 29.4796 )
+
+[node name="RockWall13" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 12.3416, 1.86064, 29.4796 )
+
+[node name="RockWall14" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 9.49824, 1.86064, 29.4796 )
+
+[node name="RockWall15" parent="Walls" instance=ExtResource( 8 )]
+transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, -2.61347e-08, 6.03954, 1.86064, 29.4796 )
+
+[node name="Ceilings" type="Spatial" parent="."]
+
+[node name="RockDoubleCeiling" parent="Ceilings" instance=ExtResource( 13 )]
+transform = Transform( -1.13444e-07, 0, -0.696316, 0, 0.5, 0, 0.5, 0, -8.14603e-08, -7.53249, 8.66794, -0.897081 )
+
+[node name="RockDoubleCeiling2" parent="Ceilings" instance=ExtResource( 13 )]
+transform = Transform( -1.69885e-07, 0, -1.04275, 0, 0.5, 0, 0.5, 0, -8.14603e-08, -1.6518, 8.66794, -0.897081 )
+
+[node name="RockArcLong" parent="Ceilings" instance=ExtResource( 14 )]
+transform = Transform( -1.085e-07, 0, -0.665969, 0, 0.77828, 0, 0.770107, 0, -1.25466e-07, -22.0252, 0.925559, -0.961297 )
+
+[node name="RockArcCeiling" parent="Ceilings" instance=ExtResource( 9 )]
+transform = Transform( -3.15181e-08, 0, 0.72105, 0, 0.697354, 0, -0.850085, 0, -3.71584e-08, -30.9973, 6.63919, -0.605954 )
+
+[node name="RockCornerCeiling" parent="Ceilings" instance=ExtResource( 17 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -38.1055, 7.07487, -0.792804 )

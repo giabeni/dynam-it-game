@@ -24,7 +24,6 @@ onready var weapon_timer: Timer = $WeaponTimer
 onready var bomb_interval_timer: Timer = $BombIntervalTimer
 onready var random_following_timer: Timer = $RandomFollowingTimer
 onready var skeleton: Skeleton = $CharacterArmature/Skeleton
-onready var body_bone: PhysicalBone = $"CharacterArmature/Skeleton/Physical Bone abdomen"
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
@@ -650,3 +649,12 @@ func set_dizzy(dizzy: bool):
 	is_dizzy = dizzy
 	anim_tree.set("parameters/DeadOrAlive/current", 0 if not dizzy else 2)
 	
+
+func _on_VisibilityNotifier_screen_exited():
+	hide()
+
+
+func _on_VisibilityNotifier_screen_entered():
+	show()
+
+

@@ -101,7 +101,7 @@ collision_layer = 5
 collision_mask = 3
 mode = 1
 script = ExtResource( 2 )
-ITEM_PROB = 0.3
+ITEM_PROB = 0.1
 MIN_IMPACT_TO_DESTROY = 4000.0
 
 [node name="support001" type="MeshInstance" parent="."]
@@ -141,3 +141,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.62032, 0.884827, 0 )
 
 [node name="Hitpoint3" type="Position3D" parent="Hitpoints"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.92617, 5.12581, 0 )
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.44221, 0 )
+aabb = AABB( -7.46923, -5.78517, -2.179, 14.9385, 11.5703, 4.35799 )

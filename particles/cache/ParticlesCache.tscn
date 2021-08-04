@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=61 format=2]
 
 [ext_resource path="res://particles/cache/ParticlesCache.gd" type="Script" id=1]
 [ext_resource path="res://particles/particle_materials/WickSpark.material" type="Material" id=2]
@@ -14,8 +14,12 @@
 [ext_resource path="res://particles/circle_02.png" type="Texture" id=12]
 [ext_resource path="res://particles/smoke_03.png" type="Texture" id=13]
 [ext_resource path="res://tiles/models/MineWall.material" type="Material" id=14]
+[ext_resource path="res://particles/particle_materials/FragmentsShaderParticles.material" type="Material" id=15]
+[ext_resource path="res://particles/scenes/DustParticles.tscn" type="PackedScene" id=16]
+[ext_resource path="res://particles/materials/explode-shader.material" type="Material" id=17]
+[ext_resource path="res://assets/forcefield_shader/force_field1.tres" type="Shader" id=18]
 
-[sub_resource type="SpatialMaterial" id=13]
+[sub_resource type="SpatialMaterial" id=20]
 albedo_color = Color( 0.992157, 0.882353, 0, 1 )
 emission_enabled = true
 emission = Color( 0.996078, 1, 0.564706, 1 )
@@ -23,11 +27,11 @@ emission_energy = 1.44
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="CubeMesh" id=14]
-material = SubResource( 13 )
+[sub_resource type="CubeMesh" id=21]
+material = SubResource( 20 )
 size = Vector3( 0.01, 0.08, 0.01 )
 
-[sub_resource type="SpatialMaterial" id=15]
+[sub_resource type="SpatialMaterial" id=22]
 flags_transparent = true
 flags_unshaded = true
 params_billboard_mode = 3
@@ -36,18 +40,18 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 albedo_texture = ExtResource( 8 )
 
-[sub_resource type="QuadMesh" id=16]
-material = SubResource( 15 )
+[sub_resource type="QuadMesh" id=23]
+material = SubResource( 22 )
 size = Vector2( 25, 25 )
 
-[sub_resource type="SphereMesh" id=17]
+[sub_resource type="SphereMesh" id=24]
 material = ExtResource( 7 )
 radius = 5.0
 height = 10.0
 radial_segments = 8
 rings = 8
 
-[sub_resource type="SpatialMaterial" id=18]
+[sub_resource type="SpatialMaterial" id=25]
 flags_transparent = true
 vertex_color_use_as_albedo = true
 params_blend_mode = 1
@@ -58,18 +62,18 @@ particles_anim_loop = false
 albedo_color = Color( 0.831373, 0.831373, 0.831373, 1 )
 albedo_texture = ExtResource( 6 )
 
-[sub_resource type="QuadMesh" id=19]
-material = SubResource( 18 )
+[sub_resource type="QuadMesh" id=26]
+material = SubResource( 25 )
 
-[sub_resource type="Curve" id=20]
+[sub_resource type="Curve" id=27]
 min_value = -5.0
 max_value = 72.37
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 1, Vector2( 1, 0 ), 0.0, 0.0, 1, 0 ]
 
-[sub_resource type="CurveTexture" id=21]
-curve = SubResource( 20 )
+[sub_resource type="CurveTexture" id=28]
+curve = SubResource( 27 )
 
-[sub_resource type="ParticlesMaterial" id=22]
+[sub_resource type="ParticlesMaterial" id=29]
 emission_shape = 2
 emission_box_extents = Vector3( 3, 3, 1 )
 flag_align_y = true
@@ -78,13 +82,13 @@ spread = 141.93
 gravity = Vector3( 0, -10, 0 )
 angular_velocity = 1.17
 linear_accel = 52.26
-radial_accel_curve = SubResource( 21 )
+radial_accel_curve = SubResource( 28 )
 damping = 10.0
 angle = 9.8
 angle_random = 0.25
 scale = 0.4
 
-[sub_resource type="ParticlesMaterial" id=23]
+[sub_resource type="ParticlesMaterial" id=30]
 emission_shape = 2
 emission_box_extents = Vector3( 3, 1, 1 )
 flag_align_y = true
@@ -99,7 +103,7 @@ angle = 8.4
 angle_random = 0.69
 scale_random = 0.97
 
-[sub_resource type="ParticlesMaterial" id=24]
+[sub_resource type="ParticlesMaterial" id=31]
 emission_shape = 2
 emission_box_extents = Vector3( 3, 3, 1 )
 flag_align_y = true
@@ -113,19 +117,19 @@ radial_accel_random = 0.73
 damping = 10.0
 angle = -10.2
 angle_random = 0.5
-scale_random = 0.97
+scale_random = 1.0
 
-[sub_resource type="CubeMesh" id=25]
+[sub_resource type="CubeMesh" id=32]
 material = ExtResource( 11 )
 size = Vector3( 0.3, 0.8, 0.3 )
 
-[sub_resource type="Curve" id=26]
+[sub_resource type="Curve" id=33]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.996656, 0.282452 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=27]
-curve = SubResource( 26 )
+[sub_resource type="CurveTexture" id=34]
+curve = SubResource( 33 )
 
-[sub_resource type="ParticlesMaterial" id=28]
+[sub_resource type="ParticlesMaterial" id=35]
 emission_shape = 1
 emission_sphere_radius = 0.05
 flag_rotate_y = true
@@ -138,9 +142,9 @@ angle = 9.5
 angle_random = 0.3
 scale = 1.99
 scale_random = 1.0
-scale_curve = SubResource( 27 )
+scale_curve = SubResource( 34 )
 
-[sub_resource type="SpatialMaterial" id=29]
+[sub_resource type="SpatialMaterial" id=36]
 flags_transparent = true
 vertex_color_use_as_albedo = true
 params_blend_mode = 1
@@ -152,25 +156,25 @@ emission_energy = 1.0
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="QuadMesh" id=30]
-material = SubResource( 29 )
+[sub_resource type="QuadMesh" id=37]
+material = SubResource( 36 )
 size = Vector2( 1, 0.25 )
 
-[sub_resource type="Gradient" id=31]
+[sub_resource type="Gradient" id=38]
 offsets = PoolRealArray( 0.0035461, 0.0992908, 1 )
 colors = PoolColorArray( 0.938965, 0.388074, 0.205399, 1, 0.939177, 0.388466, 0.20601, 0.903915, 0.941176, 0.392157, 0.211765, 0 )
 
-[sub_resource type="GradientTexture" id=32]
-gradient = SubResource( 31 )
+[sub_resource type="GradientTexture" id=39]
+gradient = SubResource( 38 )
 
-[sub_resource type="Curve" id=33]
+[sub_resource type="Curve" id=40]
 max_value = 1.94
 _data = [ Vector2( 0.0200669, 1.94 ), 0.0, 0.0, 0, 0, Vector2( 0.585284, 1.51329 ), -2.44866, -2.44866, 0, 0, Vector2( 0.983278, 0.163221 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=34]
-curve = SubResource( 33 )
+[sub_resource type="CurveTexture" id=41]
+curve = SubResource( 40 )
 
-[sub_resource type="ParticlesMaterial" id=35]
+[sub_resource type="ParticlesMaterial" id=42]
 emission_shape = 2
 emission_box_extents = Vector3( 1, 1, 1 )
 direction = Vector3( 0, 1, 0 )
@@ -182,10 +186,10 @@ tangential_accel = -0.12
 damping = 0.5
 scale = 1.76
 scale_random = 1.0
-scale_curve = SubResource( 34 )
-color_ramp = SubResource( 32 )
+scale_curve = SubResource( 41 )
+color_ramp = SubResource( 39 )
 
-[sub_resource type="SpatialMaterial" id=36]
+[sub_resource type="SpatialMaterial" id=43]
 flags_transparent = true
 vertex_color_use_as_albedo = true
 params_blend_mode = 1
@@ -196,11 +200,11 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 albedo_texture = ExtResource( 13 )
 
-[sub_resource type="QuadMesh" id=37]
-material = SubResource( 36 )
+[sub_resource type="QuadMesh" id=44]
+material = SubResource( 43 )
 size = Vector2( 2, 4 )
 
-[sub_resource type="ParticlesMaterial" id=38]
+[sub_resource type="ParticlesMaterial" id=45]
 emission_shape = 1
 emission_sphere_radius = 0.3
 flag_align_y = true
@@ -213,8 +217,7 @@ angle_random = 0.69
 scale = 0.03
 scale_random = 0.16
 
-[sub_resource type="ArrayMesh" id=39]
-resource_name = "Stone_lit_013"
+[sub_resource type="ArrayMesh" id=46]
 surfaces/0 = {
 "aabb": AABB( -0.522505, -7.64977e-08, -0.612918, 1.02287, 0.635329, 1.17463 ),
 "array_data": PoolByteArray( 112, 125, 209, 190, 114, 12, 154, 62, 139, 139, 150, 62, 147, 65, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 112, 125, 209, 190, 114, 12, 154, 62, 139, 139, 150, 62, 175, 97, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 114, 12, 154, 62, 139, 139, 150, 62, 195, 29, 107, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 114, 12, 154, 62, 139, 139, 150, 62, 204, 89, 72, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 241, 164, 34, 63, 7, 144, 220, 62, 175, 97, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 241, 164, 34, 63, 7, 144, 220, 62, 195, 29, 107, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 241, 164, 34, 63, 7, 144, 220, 62, 52, 35, 109, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 241, 164, 34, 63, 7, 144, 220, 62, 83, 95, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 241, 164, 34, 63, 7, 144, 220, 62, 100, 68, 36, 0, 127, 0, 0, 129, 11, 57, 18, 57, 123, 180, 96, 62, 115, 12, 154, 62, 7, 144, 220, 62, 47, 10, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 123, 180, 96, 62, 115, 12, 154, 62, 7, 144, 220, 62, 52, 35, 109, 0, 127, 0, 0, 129, 11, 57, 18, 57, 123, 180, 96, 62, 115, 12, 154, 62, 7, 144, 220, 62, 100, 68, 36, 0, 127, 0, 0, 129, 11, 57, 18, 57, 123, 180, 96, 62, 115, 12, 154, 62, 7, 144, 220, 62, 106, 56, 39, 0, 127, 0, 0, 129, 11, 57, 18, 57, 123, 180, 96, 62, 115, 12, 154, 62, 7, 144, 220, 62, 108, 51, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 116, 12, 154, 62, 101, 83, 173, 186, 147, 65, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 116, 12, 154, 62, 101, 83, 173, 186, 175, 97, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 116, 12, 154, 62, 101, 83, 173, 186, 180, 91, 213, 0, 127, 0, 0, 127, 11, 57, 18, 57, 112, 125, 209, 190, 116, 12, 154, 62, 101, 83, 173, 186, 223, 122, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 242, 164, 34, 63, 14, 82, 173, 186, 175, 97, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 242, 164, 34, 63, 14, 82, 173, 186, 180, 91, 213, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 242, 164, 34, 63, 14, 82, 173, 186, 78, 90, 214, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 242, 164, 34, 63, 14, 82, 173, 186, 83, 95, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 54, 113, 238, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 78, 90, 214, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 83, 95, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 96, 76, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 100, 68, 36, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 106, 56, 39, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 98, 193, 62, 116, 12, 154, 62, 121, 83, 173, 186, 109, 56, 225, 0, 127, 0, 0, 127, 11, 57, 18, 57, 112, 125, 209, 190, 117, 12, 154, 62, 109, 5, 127, 190, 147, 65, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 112, 125, 209, 190, 117, 12, 154, 62, 109, 5, 127, 190, 190, 41, 157, 0, 127, 0, 0, 127, 11, 57, 18, 57, 112, 125, 209, 190, 117, 12, 154, 62, 109, 5, 127, 190, 214, 89, 177, 0, 127, 0, 0, 127, 11, 57, 18, 57, 112, 125, 209, 190, 117, 12, 154, 62, 109, 5, 127, 190, 223, 122, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 180, 91, 213, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 190, 41, 157, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 223, 122, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 25, 53, 144, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 54, 113, 238, 0, 127, 0, 0, 127, 11, 57, 18, 57, 235, 81, 236, 187, 14, 54, 210, 62, 40, 22, 242, 190, 78, 90, 214, 0, 127, 0, 0, 127, 11, 57, 18, 57, 123, 180, 96, 62, 118, 12, 154, 62, 39, 22, 242, 190, 9, 82, 161, 0, 127, 0, 0, 127, 11, 57, 18, 57, 123, 180, 96, 62, 118, 12, 154, 62, 39, 22, 242, 190, 25, 53, 144, 0, 127, 0, 0, 127, 11, 57, 18, 57, 123, 180, 96, 62, 118, 12, 154, 62, 39, 22, 242, 190, 54, 113, 238, 0, 127, 0, 0, 127, 11, 57, 18, 57, 123, 180, 96, 62, 118, 12, 154, 62, 39, 22, 242, 190, 96, 76, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 67, 25, 7, 62, 208, 147, 196, 62, 157, 74, 231, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 67, 25, 7, 62, 208, 147, 196, 62, 225, 133, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 67, 25, 7, 62, 208, 147, 196, 62, 226, 37, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 194, 5, 191, 67, 25, 7, 62, 208, 147, 196, 62, 0, 136, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 216, 16, 119, 0, 127, 0, 0, 129, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 225, 133, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 226, 37, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 0, 130, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 0, 74, 102, 0, 127, 0, 0, 129, 11, 57, 18, 57, 0, 0, 0, 0, 8, 71, 164, 179, 38, 204, 15, 63, 50, 14, 115, 0, 127, 0, 0, 129, 11, 57, 18, 57, 71, 217, 150, 62, 8, 71, 164, 179, 38, 204, 15, 63, 0, 130, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 71, 217, 150, 62, 8, 71, 164, 179, 38, 204, 15, 63, 0, 74, 102, 0, 127, 0, 0, 129, 11, 57, 18, 57, 71, 217, 150, 62, 8, 71, 164, 179, 38, 204, 15, 63, 111, 43, 42, 0, 127, 0, 0, 129, 11, 57, 18, 57, 71, 217, 150, 62, 8, 71, 164, 179, 38, 204, 15, 63, 113, 39, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 194, 5, 191, 4, 215, 35, 178, 153, 153, 25, 179, 134, 32, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 4, 215, 35, 178, 153, 153, 25, 179, 157, 74, 231, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 4, 215, 35, 178, 153, 153, 25, 179, 0, 136, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 225, 194, 5, 191, 4, 215, 35, 178, 153, 153, 25, 179, 0, 129, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 4, 215, 35, 178, 153, 153, 25, 179, 225, 133, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 4, 215, 35, 178, 153, 153, 25, 179, 0, 129, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 4, 215, 35, 178, 153, 153, 25, 179, 0, 136, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 215, 23, 0, 63, 4, 215, 35, 178, 153, 153, 25, 179, 0, 129, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 215, 23, 0, 63, 4, 215, 35, 178, 153, 153, 25, 179, 49, 147, 216, 0, 127, 0, 0, 127, 11, 57, 18, 57, 215, 23, 0, 63, 4, 215, 35, 178, 153, 153, 25, 179, 110, 57, 232, 0, 127, 0, 0, 127, 11, 57, 18, 57, 215, 23, 0, 63, 4, 215, 35, 178, 153, 153, 25, 179, 113, 39, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 215, 23, 0, 63, 4, 215, 35, 178, 153, 153, 25, 179, 115, 40, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 5, 212, 247, 50, 196, 223, 164, 190, 134, 32, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 5, 212, 247, 50, 196, 223, 164, 190, 195, 9, 146, 0, 127, 0, 0, 127, 11, 57, 18, 57, 225, 194, 5, 191, 5, 212, 247, 50, 196, 223, 164, 190, 0, 129, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 195, 9, 146, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 202, 28, 145, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 224, 73, 158, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 0, 129, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 3, 30, 133, 0, 127, 0, 0, 127, 11, 57, 18, 57, 0, 0, 0, 0, 86, 109, 136, 51, 54, 232, 28, 191, 49, 147, 216, 0, 127, 0, 0, 127, 11, 57, 18, 57, 71, 217, 150, 62, 75, 25, 7, 62, 55, 232, 28, 191, 224, 73, 158, 0, 127, 0, 0, 127, 11, 57, 18, 57, 71, 217, 150, 62, 75, 25, 7, 62, 55, 232, 28, 191, 49, 147, 216, 0, 127, 0, 0, 127, 11, 57, 18, 57, 71, 217, 150, 62, 75, 25, 7, 62, 55, 232, 28, 191, 110, 57, 232, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 134, 32, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 147, 65, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 157, 74, 231, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 204, 89, 72, 0, 127, 0, 0, 129, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 216, 16, 119, 0, 127, 0, 0, 129, 11, 57, 18, 57, 61, 34, 241, 190, 202, 57, 74, 62, 213, 154, 192, 62, 226, 37, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 195, 29, 107, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 204, 89, 72, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 216, 16, 119, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 47, 10, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 50, 14, 115, 0, 127, 0, 0, 129, 11, 57, 18, 57, 20, 174, 159, 59, 232, 164, 187, 62, 168, 79, 3, 63, 52, 35, 109, 0, 127, 0, 0, 129, 11, 57, 18, 57, 10, 223, 139, 62, 201, 57, 74, 62, 61, 225, 213, 62, 0, 74, 102, 0, 127, 0, 0, 129, 11, 57, 18, 57, 10, 223, 139, 62, 201, 57, 74, 62, 61, 225, 213, 62, 47, 10, 117, 0, 127, 0, 0, 129, 11, 57, 18, 57, 10, 223, 139, 62, 201, 57, 74, 62, 61, 225, 213, 62, 50, 14, 115, 0, 127, 0, 0, 129, 11, 57, 18, 57, 10, 223, 139, 62, 201, 57, 74, 62, 61, 225, 213, 62, 108, 51, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 10, 223, 139, 62, 201, 57, 74, 62, 61, 225, 213, 62, 111, 43, 42, 0, 127, 0, 0, 129, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 106, 56, 39, 0, 127, 0, 0, 129, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 108, 51, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 109, 56, 225, 0, 127, 0, 0, 127, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 111, 43, 42, 0, 127, 0, 0, 129, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 113, 39, 41, 0, 127, 0, 0, 129, 11, 57, 18, 57, 174, 231, 220, 62, 205, 57, 74, 62, 181, 156, 182, 58, 115, 40, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 224, 73, 158, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 3, 30, 133, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 9, 82, 161, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 96, 76, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 109, 56, 225, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 110, 57, 232, 0, 127, 0, 0, 127, 11, 57, 18, 57, 10, 223, 139, 62, 209, 57, 74, 62, 95, 137, 14, 191, 115, 40, 224, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 190, 41, 157, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 202, 28, 145, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 214, 89, 177, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 3, 30, 133, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 9, 82, 161, 0, 127, 0, 0, 127, 11, 57, 18, 57, 20, 174, 159, 59, 191, 82, 104, 62, 95, 137, 14, 191, 25, 53, 144, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 207, 57, 74, 62, 78, 127, 170, 190, 134, 32, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 207, 57, 74, 62, 78, 127, 170, 190, 147, 65, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 207, 57, 74, 62, 78, 127, 170, 190, 195, 9, 146, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 207, 57, 74, 62, 78, 127, 170, 190, 202, 28, 145, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 207, 57, 74, 62, 78, 127, 170, 190, 214, 89, 177, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 205, 57, 74, 62, 181, 156, 182, 58, 134, 32, 0, 0, 127, 0, 0, 127, 11, 57, 18, 57, 61, 34, 241, 190, 205, 57, 74, 62, 181, 156, 182, 58, 147, 65, 0, 0, 127, 0, 0, 129, 11, 57, 18, 57 ),
@@ -228,7 +231,7 @@ surfaces/0 = {
 "vertex_count": 124
 }
 
-[sub_resource type="ParticlesMaterial" id=40]
+[sub_resource type="ParticlesMaterial" id=47]
 lifetime_randomness = 0.54
 emission_shape = 1
 emission_sphere_radius = 0.03
@@ -242,17 +245,93 @@ angle_random = 0.69
 scale = 0.06
 scale_random = 0.04
 
-[sub_resource type="SpatialMaterial" id=12]
+[sub_resource type="SpatialMaterial" id=48]
 albedo_color = Color( 0.764706, 0.0352941, 0.0352941, 1 )
 metallic = 0.3
 roughness = 0.34
 
-[sub_resource type="SphereMesh" id=41]
-material = SubResource( 12 )
+[sub_resource type="SphereMesh" id=49]
+material = SubResource( 48 )
 radius = 0.2
 height = 0.7
 radial_segments = 16
 rings = 16
+
+[sub_resource type="Curve" id=50]
+_data = [ Vector2( 0.00724638, 0.413462 ), 0.0, 0.0, 0, 0, Vector2( 0.253623, 0.663462 ), 0.0, 0.0, 0, 0, Vector2( 0.630435, 0.0192307 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=51]
+curve = SubResource( 50 )
+
+[sub_resource type="ParticlesMaterial" id=52]
+direction = Vector3( 0, 1, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 12.09
+initial_velocity_random = 0.73
+angular_velocity = 324.24
+damping = 1.56
+scale_random = 0.54
+scale_curve = SubResource( 51 )
+
+[sub_resource type="QuadMesh" id=53]
+material = ExtResource( 17 )
+size = Vector2( 20, 20 )
+
+[sub_resource type="ParticlesMaterial" id=54]
+gravity = Vector3( 0, 0, 0 )
+
+[sub_resource type="ShaderMaterial" id=55]
+shader = ExtResource( 18 )
+shader_param/main_color = Color( 0.0745098, 0, 0, 0.592157 )
+shader_param/intersection_color = Color( 1, 0, 0, 0.505882 )
+shader_param/emission_color = Color( 0.4, 0, 0, 1 )
+shader_param/intersection_max_threshold = 2.0
+shader_param/displ_amount = 0.1
+shader_param/near = 0.15
+shader_param/far = 300.0
+
+[sub_resource type="SphereMesh" id=56]
+material = SubResource( 55 )
+height = 2.116
+
+[sub_resource type="Curve" id=57]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=17]
+curve = SubResource( 57 )
+
+[sub_resource type="ParticlesMaterial" id=58]
+flag_align_y = true
+direction = Vector3( 0, 0, 1 )
+spread = 180.0
+gravity = Vector3( 0, -10, 0 )
+initial_velocity = 15.35
+initial_velocity_random = 0.27
+tangential_accel = 0.43
+angle = 180.0
+scale = 1.43
+scale_random = 1.0
+scale_curve = SubResource( 17 )
+
+[sub_resource type="SpatialMaterial" id=19]
+vertex_color_use_as_albedo = true
+albedo_color = Color( 0.972549, 0.682353, 0, 1 )
+metallic = 1.0
+roughness = 0.3
+emission_enabled = true
+emission = Color( 0.94902, 0.435294, 0.372549, 1 )
+emission_energy = 1.46
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="CylinderMesh" id=59]
+material = SubResource( 19 )
+top_radius = 0.065
+bottom_radius = 0.023
+height = 0.63
+radial_segments = 8
+rings = 2
 
 [node name="ParticlesCache" type="Spatial"]
 script = ExtResource( 1 )
@@ -264,7 +343,7 @@ amount = 256
 lifetime = 0.71
 speed_scale = 1.17
 process_material = ExtResource( 2 )
-draw_pass_1 = SubResource( 14 )
+draw_pass_1 = SubResource( 21 )
 
 [node name="Explosion" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -275,7 +354,7 @@ speed_scale = 4.0
 explosiveness = 1.0
 visibility_aabb = AABB( -44.2456, -34.8084, -31.9045, 88.4911, 69.6168, 63.8091 )
 process_material = ExtResource( 5 )
-draw_pass_1 = SubResource( 16 )
+draw_pass_1 = SubResource( 23 )
 
 [node name="Explosion2" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
@@ -287,7 +366,7 @@ speed_scale = 4.0
 explosiveness = 1.0
 local_coords = false
 process_material = ExtResource( 4 )
-draw_pass_1 = SubResource( 17 )
+draw_pass_1 = SubResource( 24 )
 
 [node name="SmokeParticles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56037, -0.281316 )
@@ -295,7 +374,7 @@ emitting = false
 amount = 32
 lifetime = 0.42
 process_material = ExtResource( 3 )
-draw_pass_1 = SubResource( 19 )
+draw_pass_1 = SubResource( 26 )
 
 [node name="FragmentParticles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.54276, 0 )
@@ -305,7 +384,7 @@ lifetime = 0.88
 one_shot = true
 explosiveness = 0.32
 visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
-process_material = SubResource( 22 )
+process_material = SubResource( 29 )
 draw_pass_1 = ExtResource( 10 )
 
 [node name="FragmentParticles2" type="Particles" parent="."]
@@ -316,7 +395,7 @@ lifetime = 0.5
 one_shot = true
 explosiveness = 0.5
 visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
-process_material = SubResource( 23 )
+process_material = SubResource( 30 )
 draw_pass_1 = ExtResource( 9 )
 
 [node name="FragmentParticles3" type="Particles" parent="."]
@@ -327,15 +406,31 @@ lifetime = 0.5
 one_shot = true
 explosiveness = 0.64
 visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
-process_material = SubResource( 24 )
-draw_pass_1 = SubResource( 25 )
+process_material = SubResource( 31 )
+draw_pass_1 = SubResource( 32 )
+
+[node name="FragmentParticles4" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.87096, 0 )
+emitting = false
+amount = 256
+lifetime = 6.0
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+visibility_aabb = AABB( -6.50564, -6.35718, -4.35329, 13.0113, 12.7144, 8.70659 )
+local_coords = false
+process_material = ExtResource( 15 )
+draw_pass_1 = ExtResource( 9 )
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="DizzyParticles" type="Particles" parent="."]
 transform = Transform( -1, 1.50996e-07, 0, -1.50996e-07, -1, 0, 0, 0, 1, 0, 3.33996, 0.434436 )
 emitting = false
 amount = 15
-process_material = SubResource( 28 )
-draw_pass_1 = SubResource( 30 )
+process_material = SubResource( 35 )
+draw_pass_1 = SubResource( 37 )
 
 [node name="DustParticles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.860842, 0 )
@@ -346,8 +441,8 @@ one_shot = true
 explosiveness = 0.46
 visibility_aabb = AABB( -6.47991, -4.9883, -6.33408, 12.7775, 15.0695, 12.7016 )
 local_coords = false
-process_material = SubResource( 35 )
-draw_pass_1 = SubResource( 37 )
+process_material = SubResource( 42 )
+draw_pass_1 = SubResource( 44 )
 
 [node name="WallParticles" type="Particles" parent="."]
 transform = Transform( -0.866025, -0.5, 0, 0.5, -0.866025, 0, 0, 0, 1, 0.537748, 0.922175, 0 )
@@ -358,8 +453,8 @@ one_shot = true
 explosiveness = 1.0
 visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
 local_coords = false
-process_material = SubResource( 38 )
-draw_pass_1 = SubResource( 39 )
+process_material = SubResource( 45 )
+draw_pass_1 = SubResource( 46 )
 
 [node name="BloodParticles" type="Particles" parent="."]
 transform = Transform( -0.866025, -0.5, 0, 0.5, -0.866025, 0, 0, 0, 1, 0.537748, 0.922175, 0 )
@@ -370,5 +465,42 @@ one_shot = true
 explosiveness = 1.0
 visibility_aabb = AABB( -10.37, -4.81818, -4.35329, 20.74, 9.63637, 8.70659 )
 local_coords = false
-process_material = SubResource( 40 )
-draw_pass_1 = SubResource( 41 )
+process_material = SubResource( 47 )
+draw_pass_1 = SubResource( 49 )
+
+[node name="DustParticles2" parent="." instance=ExtResource( 16 )]
+
+[node name="SmokeParticles2" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
+emitting = false
+amount = 10
+lifetime = 2.76
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 52 )
+draw_pass_1 = SubResource( 53 )
+
+[node name="ExplosionFireParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.447077, 0 )
+emitting = false
+amount = 1
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 52 )
+draw_pass_1 = SubResource( 53 )
+
+[node name="RangeBombParticles" type="Particles" parent="."]
+process_material = SubResource( 54 )
+draw_pass_1 = SubResource( 56 )
+
+[node name="ExplosionSparks" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.51199, 0 )
+emitting = false
+amount = 64
+lifetime = 2.01
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 58 )
+draw_pass_1 = SubResource( 59 )

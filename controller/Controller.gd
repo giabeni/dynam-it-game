@@ -20,6 +20,7 @@ var body: Spatial
 var gimbalH: Spatial
 var gimbalV: Spatial
 var mouse_rotation = Vector2()
+var new_mouse_rotation = Vector2()
 var zoom_factor = 1
 var current_zoom = 1
 
@@ -43,11 +44,20 @@ func _ready():
 	gimbalH =  $h
 	gimbalV =  $h/v
 	pass
+	
 
 func _input(event):
 	
-	if event is InputEventMouseMotion :
-		mouse_rotation = event.relative * 1000 / OS.window_size
+	if not player.INPUT_SRC == player.CONTROLLER_1:
+		if event is InputEventMouseMotion :
+			mouse_rotation = event.relative * 1000 / OS.window_size
+			
+	else:
+		new_mouse_rotation = Vector2(
+			Input.get_action_strength("look_right") - Input.get_action_strength("look_left"),
+			Input.get_action_strength("look_down") - Input.get_action_strength("look_up"))
+			
+		
 	
 #	if event is InputEventMouseButton:
 #		match event.button_index:
@@ -60,9 +70,9 @@ func _input(event):
 	
 
 func _physics_process(delta):
-
+	
 	# Horizontal Translation ----------------------
-	if Input.is_action_pressed("move_forward") ||  Input.is_action_pressed("move_backward") ||  Input.is_action_pressed("move_left") ||  Input.is_action_pressed("move_right"):
+	if player.INPUT_SRC == player.WASD and (Input.is_action_pressed("move_forward") ||  Input.is_action_pressed("move_backward") ||  Input.is_action_pressed("move_left") ||  Input.is_action_pressed("move_right")):
 		h_rot = gimbalH.global_transform.basis.get_euler().y
 		direction = Vector3(
 			Input.get_action_strength("move_left") - Input.get_action_strength("move_right"),
@@ -77,6 +87,19 @@ func _physics_process(delta):
 #		else:
 #			movement_speed = WALK_SPEED
 		
+	elif player.INPUT_SRC == player.CONTROLLER_1 and (Input.is_action_pressed("move_forward_joystick") ||  Input.is_action_pressed("move_backward_joystick") ||  Input.is_action_pressed("move_left_joystick") ||  Input.is_action_pressed("move_right_joystick")):
+		h_rot = gimbalH.global_transform.basis.get_euler().y
+		direction = Vector3(
+			Input.get_action_strength("move_left_joystick") - Input.get_action_strength("move_right_joystick"),
+			0,
+			Input.get_action_strength("move_forward_joystick") - Input.get_action_strength("move_backward_joystick"))
+		
+#		strafe_dir = direction
+		direction = direction.rotated(Vector3.UP, h_rot).normalized()
+		
+#		if not Input.is_action_pressed("run"):
+		movement_speed = RUN_SPEED
+	
 	else:
 		movement_speed = 0
 #		strafe_dir = Vector3.ZERO
@@ -94,11 +117,16 @@ func _physics_process(delta):
 		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION * 2)
 	
 	# Camera rotation
-	gimbalH.rotate_y(deg2rad(-mouse_rotation.x) * delta * MOUSE_SENSITIVITY)
-	gimbalV.rotate_x(deg2rad(-mouse_rotation.y) * delta * MOUSE_SENSITIVITY)
+	if player.INPUT_SRC == player.CONTROLLER_1:
+		mouse_rotation = lerp(mouse_rotation, new_mouse_rotation * 20, delta * 6)
+		
+	var sensitivity = Settings.JOYSTICK.CAMERA_SENSITIVITY if player.INPUT_SRC == player.CONTROLLER_1 else Settings.MOUSE.CAMERA_SENSITIVITY
+	gimbalH.rotate_y(deg2rad(-mouse_rotation.x) * delta * sensitivity.x)
+	gimbalV.rotate_x(deg2rad(-mouse_rotation.y) * delta * sensitivity.y)
 	var max_vertical_rotation = MAX_ROTATION if player.aiming else 0
 	gimbalV.rotation_degrees.x = clamp(gimbalV.rotation_degrees.x, -max_vertical_rotation, max_vertical_rotation)
-	mouse_rotation = Vector2()
+	if not player.INPUT_SRC == player.CONTROLLER_1:
+		mouse_rotation = Vector2()
 	
 	# Vertical velocity
 	if not player.is_on_floor():
@@ -107,14 +135,17 @@ func _physics_process(delta):
 		vertical_velocity = 0
 	
 	# Main movement
-	velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, is_instance_valid(player.grabbed_object))
+	if not get_parent().is_dizzy:
+		velocity = player.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, is_instance_valid(player.grabbed_object))
 	
 	# Interact with rigid bodies
-	for col in player.get_slide_count():
-		var collision = player.get_slide_collision(col)
-		if collision.collider.is_in_group("Pushables") and (not is_instance_valid(player.grabbed_object) or collision.collider_id != player.grabbed_object.get_instance_id()):
-			(collision.collider as RigidBody).apply_central_impulse(-collision.normal * INERTIA * 0.1)
-			collision.collider.play_drag_sound()
+#	for col in player.get_slide_count():
+#		var collision = player.get_slide_collision(col)
+#		if collision == null:
+#			return
+#		if is_instance_valid(collision.collider) and collision.collider.is_in_group("Pushables") and (not is_instance_valid(player.grabbed_object) or collision.collider_id != player.grabbed_object.get_instance_id()):
+#			(collision.collider as RigidBody).apply_central_impulse(-collision.normal * INERTIA * 0.1)
+#			collision.collider.play_drag_sound()
 	
 	#Zoom
 	current_zoom = lerp(current_zoom, zoom_factor, delta * ZOOM_SPEED)

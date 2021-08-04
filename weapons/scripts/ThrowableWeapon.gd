@@ -31,7 +31,7 @@ func throw(direction, force):
 		outline.show()
 		yield(get_tree().create_timer(3), "timeout")
 		state = States.COLLECTABLE
-	#	._on_CollectableArea_body_entered(player)
+		player._on_WeaponTimer_timeout(true)
 
 
 func can_damage():

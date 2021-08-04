@@ -5,6 +5,12 @@ enum States {
 	DEAD
 }
 
+enum {
+	WASD,
+	CONTROLLER_1,
+	CONTROLLER_2
+}
+
 onready var controller = $Controller
 onready var camera: Camera = $Controller/h/v/Camera
 onready var anim_tree: AnimationTree = $AnimationTree
@@ -31,7 +37,10 @@ export(PackedScene) var FOOTPRINT_SCENE = preload("res://player/scenes/Footprint
 export(NodePath) var UI_PATH
 export(NodePath) var FOOTPRINTS_PATH = '../Map/Navigation/Footprints'
 export(float) var THROW_FORCE = 700
+export(float) var MIN_IMPACT_TO_BE_DIZZY = 2000
 export(bool) var IS_MULTIPLAYER = false
+export(bool) var START_DISABLED = true
+export(int) var INPUT_SRC = WASD
 
 var bomb: Bomb
 var weapon: Weapon
@@ -47,6 +56,7 @@ var bomb_range = 2.5
 var max_bombs: int = 1
 var dropped_bombs: int = 0
 var player_ui: PlayerUI
+var is_dizzy = false
 var grabbed_object: RigidBody = null
 var throw_force_amount = 0
 var impulse = Vector3.ZERO
@@ -64,17 +74,20 @@ func _ready():
 	footprints = get_node(FOOTPRINTS_PATH)
 	
 	controller.set_camera_position("DEFAULT")	
-	set_physics_process(false)
-	set_process(false)
-	set_process_internal(false)
-	set_physics_process_internal(false)
-	controller.set_physics_process(false)
+	if START_DISABLED:
+		set_physics_process(false)
+		set_process(false)
+		set_process_internal(false)
+		set_physics_process_internal(false)
+		controller.set_physics_process(false)
 	
 	yield(get_tree(), "physics_frame")
 	player_ui.set_dynamites(max_bombs)
 	player_ui.set_speed(controller.RUN_SPEED)
 	player_ui.set_range(bomb_range)
 	
+	if not START_DISABLED:
+		_spawn_bomb()
 
 func enable():
 	set_physics_process(true)
@@ -101,7 +114,7 @@ func _physics_process(delta):
 			var aim_size = 1 + throw_force_amount
 			aim_circle.inner_radius = aim_circle.outer_radius - aim_circle.outer_radius * throw_force_amount
 		elif has_weapon:
-			if Input.is_action_pressed("attack"):
+			if Input.is_action_pressed("attack_" + str(INPUT_SRC)):
 				aim_circle.show()
 				aiming = true
 				controller.set_camera_position("AIM_WEAPON")
@@ -141,14 +154,39 @@ func _spawn_bomb():
 	has_bomb = true
 	bomb = BOMB_SCENE.instance()
 	bomb.set_range(bomb_range)
-	bomb_loc.add_child(bomb)
+	bomb_loc.call_deferred("add_child", bomb)
 	target_blend_carry = 1
 	bomb.connect("bomb_exploded", self, "_on_bomb_exploded")
 
 
+func _can_drop_bomb():
+	return has_bomb and not is_instance_valid(grabbed_object) and not is_dizzy
+
+	
+func _on_bomb_dropped():
+	has_bomb = false
+	if dropped_bombs < max_bombs and not has_bomb:
+		_spawn_bomb()
+
+
+func _on_bomb_exploded():
+	dropped_bombs -= 1
+	if dropped_bombs < max_bombs and not has_bomb:
+		_spawn_bomb()
+
+
+func on_general_bomb_exploded(origin: Vector3):
+	var distance = origin.distance_to(global_transform.origin)
+	if distance < 50:
+		var vibration = (50 - distance)/50 
+		var duration = (50 - distance)/50 * 1.5
+		Input.start_joy_vibration(0, vibration * 0.8, vibration * 0.6, duration)
+
+
+
 func _grab_objects():
 	if not is_instance_valid(grabbed_object):
-		if Input.is_action_just_pressed("grab"):
+		if Input.is_action_just_pressed("grab_" + str(INPUT_SRC)):
 			for body in grab_area.get_overlapping_bodies():
 				if body.is_in_group("Grabbables"):
 					body.set_grabbed_by(carry_loc, self)
@@ -157,7 +195,7 @@ func _grab_objects():
 						bomb.hide()
 					return
 	else:
-		if Input.is_action_just_pressed("grab"):
+		if Input.is_action_just_pressed("grab_" + str(INPUT_SRC)):
 			grabbed_object.set_grabbed_by(null, null)
 			grabbed_object = null
 			throw_force_amount = 0
@@ -166,13 +204,13 @@ func _grab_objects():
 			
 
 func _throw_object():
-	if Input.is_action_pressed("attack"):
+	if Input.is_action_pressed("attack_" + str(INPUT_SRC)):
 		aim_circle.show()
 		aiming = true
 		controller.set_camera_position("AIM")
-		throw_force_amount += 0.01
+		throw_force_amount += 0.02
 		throw_force_amount = clamp(throw_force_amount, 0.1, 1)
-	elif Input.is_action_just_released("attack") and is_instance_valid(grabbed_object):
+	elif Input.is_action_just_released("attack_" + str(INPUT_SRC)) and is_instance_valid(grabbed_object):
 		grabbed_object.set_grabbed_by(null, self)
 		controller.set_camera_position("DEFAULT")
 		var direction = -camera.global_transform.basis.z
@@ -189,7 +227,7 @@ func _throw_object():
 func _set_animations(delta):
 	
 	if state == States.ALIVE:
-		anim_tree.set("parameters/DeadOrAlive/current", 0)
+		anim_tree.set("parameters/DeadOrAlive/current", 0 if not is_dizzy else 2)
 		
 		var h_velocity: Vector2 = Vector2(controller.velocity.x, controller.velocity.z)
 		vel_factor = h_velocity.length() / controller.RUN_SPEED
@@ -216,38 +254,36 @@ func _set_animations(delta):
 		anim_tree.set("parameters/DeadOrAlive/current", 1)
 
 
-func _can_drop_bomb():
-	return has_bomb and not is_instance_valid(grabbed_object)
-
+func on_obstacle_destroyed(origin: Vector3):
+	var distance = origin.distance_to(global_transform.origin)
+	if distance < 50:
+		var vibration = (50 - distance)/50 
+		var duration = (50 - distance)/50 * 0.5
+		Input.start_joy_vibration(0, vibration * 0.7, vibration * 0.5 , duration)
 	
-func _on_bomb_dropped():
-	has_bomb = false
-	if dropped_bombs < max_bombs and not has_bomb:
-		_spawn_bomb()
 
-
-func _on_bomb_exploded():
-	dropped_bombs -= 1
-	if dropped_bombs < max_bombs and not has_bomb:
-		_spawn_bomb()
-
-	
 func _input(event: InputEvent):
-	if event.is_action_released("drop_bomb"):
-		if has_weapon:
+	if event.is_action_released("drop_bomb_" + str(INPUT_SRC)):
+		if has_weapon and not is_dizzy:
 			_attack()
 			aiming = false
 			
 		elif _can_drop_bomb():
 			_drop_bomb()
 		
-	elif event.is_action_released("attack"):
+	elif event.is_action_released("attack_" + str(INPUT_SRC)):
 		_attack()
 		aiming = false
 		
 		
 	elif event.is_action("reset"):
 		get_tree().reload_current_scene()
+		
+	
+	elif event.is_action_pressed("switch_control"):
+		INPUT_SRC += 1
+		if INPUT_SRC == 2:
+			INPUT_SRC = 0
 	
 		
 func is_alive():
@@ -264,6 +300,7 @@ func _drop_bomb():
 
 
 func on_explosion_hit(_impulse = Vector3.ZERO):
+	Input.start_joy_vibration(0, 0.8, 0.8, 2)	
 	breath_sound.stop()
 	smoke_particles.emitting = true
 	ear_ring_sound.play()
@@ -277,6 +314,7 @@ func on_explosion_hit(_impulse = Vector3.ZERO):
 
 	yield(get_tree().create_timer(5), "timeout")
 	smoke_particles.emitting = false
+
 
 func on_gold_collected():
 	gold += 1
@@ -353,7 +391,7 @@ func on_weapon_hit(_impulse = Vector3.ZERO):
 	
 
 func _attack():
-	if not has_weapon or not is_instance_valid(weapon):
+	if not has_weapon or not is_instance_valid(weapon) or is_dizzy:
 		return
 	
 	if anim_tree.get("parameters/Slash/active") or not weapon.damage_free_timer.is_stopped():
@@ -395,6 +433,8 @@ func _on_CarryArea_body_exited(body):
 		
 
 func _add_footprint(is_right_foot: bool):
+	if not footprints:
+		return
 	if controller.velocity.length() > 0.1:
 		var foot = foot_right if is_right_foot else foot_left
 		var footprint = FOOTPRINT_SCENE.instance()
@@ -402,3 +442,9 @@ func _add_footprint(is_right_foot: bool):
 		footprint.global_transform.origin = foot.global_transform.origin
 		footprint.global_transform.origin.y = 0.7
 		footprint.scale = Vector3.ONE * rand_range(0.8, 1.2)
+
+	
+func set_dizzy(dizzy: bool):
+	is_dizzy = dizzy
+	anim_tree.set("parameters/DeadOrAlive/current", 0 if not dizzy else 2)
+	

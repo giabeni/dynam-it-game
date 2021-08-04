@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://obstacles/sounds/crate-destroy.wav" type="AudioStream" id=1]
 [ext_resource path="res://particles/explosion04.png" type="Texture" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://powerups/scenes/BlueDiamond.tscn" type="PackedScene" id=15]
 [ext_resource path="res://powerups/scenes/Dinamite.tscn" type="PackedScene" id=16]
 [ext_resource path="res://obstacles/sounds/wood-drag.wav" type="AudioStream" id=17]
+[ext_resource path="res://obstacles/scenes/ObstacleCommon.tscn" type="PackedScene" id=18]
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "Cylinder001"
@@ -296,7 +297,7 @@ linear_damp = 1.0
 angular_damp = 1.0
 script = ExtResource( 8 )
 ITEMS_SCENES = [ ExtResource( 16 ), ExtResource( 14 ), ExtResource( 15 ) ]
-ITEM_PROB = 0.4
+ITEM_PROB = 0.3
 TIME_TO_EXPLODE = 5.0
 MIN_IMPACT_TO_DESTROY = 500.0
 state = 1
@@ -431,3 +432,9 @@ stream = ExtResource( 17 )
 unit_db = 71.325
 unit_size = 94.6
 max_db = 6.0
+
+[node name="ObstacleCommon" parent="." instance=ExtResource( 18 )]
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.77762, 0 )
+aabb = AABB( -2.59341, -3.06158, -2.179, 5.18685, 6.12313, 4.35799 )

@@ -140,4 +140,8 @@ shape = SubResource( 5 )
 stream = ExtResource( 2 )
 unit_size = 20.0
 
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.87068, 0 )
+aabb = AABB( -7.93271, -7.77172, -7.78872, 15.8654, 15.5434, 15.5774 )
+
 [connection signal="body_entered" from="CollectableArea" to="." method="_on_CollectableArea_body_entered"]

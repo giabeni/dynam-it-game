@@ -1,0 +1,80 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type spatial;
+render_mode cull_disabled;
+
+uniform vec4 base_albedo : hint_color;
+
+uniform float metallic_1;
+uniform float metallic_2;
+uniform float roughness_1 : hint_range(0,1);
+uniform float roughness_2 : hint_range(0,1);
+
+uniform sampler2D texture_emission : hint_black_albedo;
+uniform vec4 emission : hint_color;
+uniform float emission_energy;
+
+uniform sampler2D texture_normal : hint_normal;
+
+uniform float fresnel_power = 3.0;
+uniform float fresnel_color_intensity = 1.0;
+uniform float fresnel_min : hint_range(0.0, 1.0) = 0.0;
+uniform float fresnel_max : hint_range(0.0, 1.0) = 1.0;
+uniform vec4 fresnel_color : hint_color;
+
+uniform float fresnel_pulse_speed = 1.0;
+uniform float emission_pulse_speed = 1.0;
+
+
+void fragment() {
+	ALBEDO = base_albedo.rgb;
+	
+	METALLIC = metallic_2;
+	ROUGHNESS = roughness_2;
+	
+	NORMALMAP = texture(texture_normal, UV).rgb;
+	
+	vec3 emission_tex = texture(texture_emission, UV).rgb;
+	float bright = emission_energy;
+	if (emission_tex.r < 0.6) {
+		bright = 0.0;
+		METALLIC = metallic_1;
+		ROUGHNESS = roughness_1;
+	}
+
+	float normal_dot_view = clamp(dot(normalize(NORMAL), normalize(VIEW)), -2.0 , 2.0);
+	float fresnel = pow((1.0 - normal_dot_view), fresnel_power);
+	
+	float fresnel_time_factor = clamp(sin(TIME * fresnel_pulse_speed), fresnel_min, fresnel_max);
+	float emission_time_factor = clamp(sin(TIME * emission_pulse_speed) + 0.33, 0.33, 1);
+	
+	EMISSION = ((emission.rgb*emission_tex)*bright * emission_time_factor) + (fresnel * fresnel_color.rgb * fresnel_color_intensity * fresnel_time_factor);
+}"
+
+[sub_resource type="OpenSimplexNoise" id=2]
+period = 10.0
+persistence = 0.297
+lacunarity = 1.6
+
+[sub_resource type="NoiseTexture" id=3]
+seamless = true
+noise = SubResource( 2 )
+
+[resource]
+shader = SubResource( 1 )
+shader_param/base_albedo = Color( 0.32549, 0.290196, 0.223529, 1 )
+shader_param/metallic_1 = null
+shader_param/metallic_2 = 2.0
+shader_param/roughness_1 = 0.944
+shader_param/roughness_2 = 0.0
+shader_param/emission = Color( 0.882353, 0.196078, 0.372549, 1 )
+shader_param/emission_energy = 1.266
+shader_param/fresnel_power = 6.171
+shader_param/fresnel_color_intensity = 0.417
+shader_param/fresnel_min = 0.217
+shader_param/fresnel_max = 1.0
+shader_param/fresnel_color = Color( 0.835294, 0.0784314, 0.27451, 1 )
+shader_param/fresnel_pulse_speed = 0.5
+shader_param/emission_pulse_speed = 0.5
+shader_param/texture_emission = SubResource( 3 )
