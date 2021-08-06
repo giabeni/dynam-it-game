@@ -42,6 +42,7 @@ func _ready():
 	
 
 func _physics_process(delta):
+	
 	# Follow path
 	if path_node < path.size():
 		var distance_to_path: Vector3 = path[path_node] - npc.global_transform.origin
@@ -68,12 +69,13 @@ func _physics_process(delta):
 	# Main movement
 	if npc.is_alive() and not npc.is_dizzy:
 		velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
-
+	
 
 func move_to(target_pos, custom_path = null):
 	if not custom_path:
 		path = navigation.get_simple_path(npc.global_transform.origin, target_pos, true)
 		path_node = 0
+		
 	else:
 		path = custom_path
 		path_node = 0

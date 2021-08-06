@@ -92,6 +92,8 @@ onready var gold_piles: Spatial = $Navigation/GoldPiles
 onready var lights: Spatial = $Navigation/Lights
 onready var items: Spatial = $Navigation/Items
 onready var npcs: Spatial = $Navigation/NPCs
+onready var arcs: Spatial = $Navigation/Arcs
+onready var ceilings: Spatial = $Navigation/Ceiling
 onready var screens: Control = $"../EndScreens"
 onready var nav_grid: NavGrid = $PaintedGrid
 
@@ -117,6 +119,11 @@ export(Array, PackedScene) var OBJECTS_SCENES = [
 	preload("res://obstacles/scenes/Crate.tscn"),
 	preload("res://obstacles/scenes/TNTBarrel.tscn"),
 ]
+
+
+export(Array, PackedScene) var ARC_SCENES = []
+export(Array, PackedScene) var CEILING_SCENES = []
+
 export(PackedScene) var NPC_SCENE = preload("res://npcs/scenes/NPC.tscn")
 export(PackedScene) var LIGHT_SCENE = preload("res://tiles/scenes/LightBulb.tscn")
 export(NodePath) var PLAYER1_PATH = "../Player"
@@ -140,10 +147,15 @@ signal finished_objects
 signal npcs_spawned
 
 func _ready():
+	self.owner = get_parent()
 	if not PLAYER1_PATH == "":
 		player1 = get_node(PLAYER1_PATH)
 	if not PLAYER2_PATH == "":
 		player2 = get_node(PLAYER2_PATH)
+		
+	
+	$Camera.current = true
+	player1.camera.current = false
 #	$PaintedGrid.hide()
 	_set_npcs_paused(true)
 #	randomize()
@@ -188,12 +200,12 @@ func _ready():
 	
 	screens.set_loading_screen(loading_progress, "Adding gold piles...")	
 	_add_objects([GOLD_PILE_SCENE], GOLD_PILES_COUNT, "Adding gold piles...", 0.6, 0.75, 15, gold_piles)
-	yield(self, "finished_objects")
+#	yield(self, "finished_objects")
 	print(">> Added gold piles")
 	
 	screens.set_loading_screen(loading_progress, "Spawning destrutible items...")		
 	_add_objects(OBJECTS_SCENES, ITEMS_COUNT, "Adding destructible objects...")
-	yield(self, "finished_objects")
+#	yield(self, "finished_objects")
 	print(">> Added items")
 	
 #	if should_bake_nav_meshes and Engine.editor_hint:
@@ -248,12 +260,14 @@ func _add_walls():
 			var wall_scene: PackedScene = WALL_OBSTACLES_SCENES[randi() % WALL_OBSTACLES_SCENES.size()]
 			var wall: Destructible = wall_scene.instance()
 			obstacles.add_child(wall)
+			wall.owner = self.owner
 			wall_cells[String(cell)] = true
 			var orientation = grid.get_cell_item_orientation(cell.x, cell.y, cell.z)
 			var angle = _get_rotation_from_orientation(orientation)
 			var cross_dir = Vector3(1, 0, 0).rotated(Vector3.UP, angle.y + deg2rad(90))
 			var cells = [cell - 2 * cross_dir, cell - cross_dir, cell, cell + cross_dir, cell + 2 * cross_dir]
-			$PaintedGrid.disable_cells(cells)
+			nav_grid.disable_cells_inside_AABB(cur_point, wall.mesh_instance.get_transformed_aabb())
+#			$PaintedGrid.disable_cells(cells)
 			wall.nav_grid_cells = cells
 			wall.connect("on_destroyed", self, "_on_object_destroyed")
 			wall.global_transform.origin = cur_point
@@ -280,10 +294,49 @@ func _add_lights():
 			cur_point.y += 0.75
 		var light: Spatial = LIGHT_SCENE.instance()
 		lights.add_child(light)
+		light.owner = self.owner
 		light.global_transform.origin = cur_point
 
 
 func _add_objects(scenes: Array, quantity: int, text: String, min_scale = 1, max_scale = 1, max_rotation = 0, parent = items):
+	var count = 0
+	while count < quantity:
+		
+		var scene = scenes[randi() % scenes.size()]
+		var object: Destructible = scene.instance()
+		
+		parent.add_child(object)
+		object.owner = self.owner
+		
+		object.scale.x = rand_range(min_scale, max_scale)
+		object.scale.y = rand_range(min_scale, max_scale)
+		object.scale.z = rand_range(min_scale, max_scale)
+		object.rotation_degrees.x = rand_range(-max_rotation, max_rotation)
+		object.rotation_degrees.y = rand_range(0, 360)
+		object.rotation_degrees.z = rand_range(-max_rotation, max_rotation)
+		
+		var nav_point = nav_grid.get_random_available_position_for_obstacle(object.mesh_instance.get_transformed_aabb())
+		
+		object.global_transform.origin = nav_point
+		if object.is_blocking_npc():
+			object.call_deferred("queue_free")
+			continue
+		else:
+			object.remove_inner_area()
+			count += 1
+			loading_progress += 74 / (ITEMS_COUNT + GOLD_PILES_COUNT)
+			screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] " + text)
+			
+			### Updates paint grid with AABB overlaps
+			if is_instance_valid(object.mesh_instance):
+				var aabb = object.mesh_instance.get_transformed_aabb()
+				nav_grid.disable_cells_inside_AABB(object.global_transform.origin, aabb)
+					
+					
+	emit_signal("finished_objects")
+	
+
+func _add_objects_by_physics(scenes: Array, quantity: int, text: String, min_scale = 1, max_scale = 1, max_rotation = 0, parent = items):
 	var count = 0
 	while count < quantity:
 		var x = rand_range(x_limits[0], x_limits[1])
@@ -294,6 +347,7 @@ func _add_objects(scenes: Array, quantity: int, text: String, min_scale = 1, max
 			var scene = scenes[randi() % scenes.size()]
 			var object: Destructible = scene.instance()
 			parent.add_child(object)
+			object.owner = self.owner
 			
 			object.global_transform.origin = nav_point
 			object.scale.x = rand_range(min_scale, max_scale)
@@ -324,10 +378,17 @@ func _add_objects(scenes: Array, quantity: int, text: String, min_scale = 1, max
 				count += 1
 				loading_progress += 74 / (ITEMS_COUNT + GOLD_PILES_COUNT)
 				screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] " + text)
-
+				
+				### Updates paint grid with AABB overlaps
+				if is_instance_valid(object.mesh_instance):
+					var aabb = object.mesh_instance.get_transformed_aabb()
+					nav_grid.disable_cells_inside_AABB(object.global_transform.origin, aabb)
+					
+					
 	emit_signal("finished_objects")
-	
-	
+
+
+
 func _generate_grid_map():
 	
 	var angles = [0]
@@ -401,6 +462,31 @@ func _generate_grid_map():
 
 					arrow.translation = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
 					arrow.rotation_degrees.y = angle
+					
+					# Adds specific walls according to tile
+					if tile in [Tiles.CORREDOR_MEDIO, Tiles.CORREDOR_CURTO]:
+						# Adds a arc
+						var arc_scene: PackedScene = ARC_SCENES[randi() % ARC_SCENES.size()]
+						var arc: Destructible = arc_scene.instance()
+						arc.rotation_degrees.y = -90 + angle
+						arcs.add_child(arc)
+						arc.owner = self.owner
+						var world_position = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
+						arc.global_transform.origin = world_position
+						if arc.name.find("RockArcCeiling") >= 0:
+							arc.global_transform.origin.y += 6.5
+					
+					elif tile in [Tiles.HALL_GRANDE, Tiles.HALL_T, Tiles.HALL_X] and randf() < 0.5:
+						# Adds a ceiliing if tile is Hall 50% of the times
+						var ceiling_scene: PackedScene = CEILING_SCENES[randi() % CEILING_SCENES.size()]
+						var ceiling: Destructible = ceiling_scene.instance()
+						ceiling.rotation_degrees.y = -90 + angle
+						ceilings.add_child(ceiling)
+						ceiling.owner = self.owner
+						var world_position = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
+						ceiling.global_transform.origin = world_position
+						ceiling.global_transform.origin.y += 7
+					
 					break
 			
 			if not could_add_tile:
@@ -415,6 +501,14 @@ func _generate_grid_map():
 	
 	# If area is too smal (less than a half), tries again
 	if total_area <= MIN_AREA:
+		for n in arcs.get_children():
+			arcs.remove_child(n)
+			n.queue_free()
+
+		for n in ceilings.get_children():
+			ceilings.remove_child(n)
+			n.queue_free()
+			
 		_generate_map()
 		return
 	
@@ -465,6 +559,7 @@ func _spawn_npcs():
 			npc.gold_piles = gold_piles
 			npc.player = player1
 			npcs.add_child(npc)
+			npc.owner = self.owner
 			npc.global_transform.origin = middle_point + Vector3.UP * 0.5
 			yield(get_tree(), "physics_frame")
 			yield(get_tree(), "physics_frame")
@@ -646,9 +741,9 @@ func _input(event):
 				$Camera.size += 5
 
 
-func _on_NPCSpawnTimer_timeout():
+func _on_NPCSpawnTimer_timeout(force = false):
 	print(">> Spawning new NPC")
-	if get_parent().SPAWN_NPCS_TIMER_ACTIVE and get_parent().npcs_count - get_parent().npcs_dead < 6:
+	if (get_parent().SPAWN_NPCS_TIMER_ACTIVE and get_parent().npcs_count - get_parent().npcs_dead < 6) or force:
 		var npc = NPC_SCENE.instance()
 		npc.NAV_GRID_PATH = $PaintedGrid.get_path()
 		npc.paused = false
@@ -656,7 +751,9 @@ func _on_NPCSpawnTimer_timeout():
 		npc.gold_piles = gold_piles
 		npc.player = player1
 		npcs.add_child(npc)
-		npc.global_transform.origin = spawning_points[randi() % spawning_points.size()]
+		npc.owner = self.owner
+		var initial_spawn_points_size = spawning_points.size() if spawning_points.size() else 1
+		npc.global_transform.origin = spawning_points[randi() % initial_spawn_points_size]
 		npc.remove_inner_area()
 		get_parent().increment_npc_count()
 		get_parent().set_npc_signals(npc)

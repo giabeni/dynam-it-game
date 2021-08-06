@@ -3677,7 +3677,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.414332 )
 shape = SubResource( 11 )
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.968019, 0.20414, 0.145831, 0.0249989, -0.499899, 0.865722, 0.249629, 0.841683, 0.478809, -0.389331, 1.16845, 0.630564 )
+transform = Transform( -0.962461, 0.202879, 0.1803, 0.0807001, -0.420343, 0.90377, 0.259143, 0.884395, 0.388192, -0.388055, 1.23371, 0.667985 )
 bone_name = "fist._r"
 
 [node name="SlashMesh" type="MeshInstance" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3713,7 +3713,7 @@ transform = Transform( -1, 1.98872e-07, 1.48958e-05, 1.48924e-05, -0.0117172, 0.
 bone_name = "foot._l"
 
 [node name="HeadBone" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( 0.997469, -0.0368221, -0.0608167, 0.0383432, 0.998976, 0.0240368, 0.0598693, -0.0263078, 0.99786, -0.024028, 2.12733, 0.0128577 )
+transform = Transform( 0.999126, -0.0220337, -0.0355114, 0.0229188, 0.999433, 0.0247123, 0.0349468, -0.0255045, 0.999064, -0.0146733, 2.1387, 0.00260438 )
 bone_name = "head"
 
 [node name="SpotLight" type="SpotLight" parent="CharacterArmature/Skeleton/HeadBone"]

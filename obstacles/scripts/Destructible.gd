@@ -28,6 +28,7 @@ export(float, 0, 10) var TIME_TO_EXPLODE = 7
 export(float) var MIN_IMPACT_TO_DESTROY = 2000
 export(float) var FRAGMENTS_FORCE = 250
 
+var mesh_instance: MeshInstance
 var destroyed = false
 var thrown = false
 var inner_area: Area
@@ -46,7 +47,7 @@ var item_scene: PackedScene = null
 var rocks_falling_sound: AudioStreamPlayer3D
 
 var src_rb: RigidBody
-export(NodePath) var mesh_path: NodePath = "./MasterBrush004"
+export(NodePath) var mesh_path: NodePath = "MasterBrush004"
 var src_mesh: MeshInstance
 var fragments_container: Spatial
 var fragments: Array = []
@@ -100,6 +101,9 @@ func _ready():
 	if has_node("VisibilityEnabler"):
 		$VisibilityEnabler.connect("screen_entered", self, "_on_screen_entered")
 		$VisibilityEnabler.connect("screen_exited", self, "_on_screen_exited")
+		
+	if has_node(mesh_path):
+		mesh_instance = get_node(mesh_path)
 			
 
 

@@ -145,3 +145,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.61075, -2.29206, 3.69353 )
 [node name="RocksFallingSound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 7 )
 unit_size = 16.6
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.135633, 1.01077 )
+aabb = AABB( -4.91817, -2.80796, -3.74907, 9.83634, 5.61588, 7.49813 )

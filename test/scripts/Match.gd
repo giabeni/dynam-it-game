@@ -82,6 +82,7 @@ func set_npc_signals(npc):
 func on_npc_died():
 	npcs_dead += 1
 	ui.increment_npc_dead_count()
+	procedural_map._on_NPCSpawnTimer_timeout(true)
 #	if state == MatchState.STARTED and npcs_alive <= 0:
 #		$EndScreens.on_win()
 		
@@ -105,6 +106,12 @@ func increment_npc_count():
 	ui.increment_npc_count()
 	
 
-func _input(event):
+func _input(event: InputEvent):
 	if event.is_action_released("toggle_fullscreen"):
 		OS.window_fullscreen = not OS.window_fullscreen
+		
+	if event.is_action_pressed("save_scene"):
+		var packed_scene = PackedScene.new()
+		packed_scene.pack(get_tree().get_current_scene())
+		ResourceSaver.save("res://runtime_scenes/match_scene.tscn", packed_scene)
+		print("Scene saved!")

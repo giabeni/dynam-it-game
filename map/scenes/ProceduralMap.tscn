@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://map/scripts/ProceduralMap.gd" type="Script" id=1]
 [ext_resource path="res://tiles/libs/CaveLib.meshlib" type="MeshLibrary" id=2]
@@ -30,6 +30,11 @@
 [ext_resource path="res://obstacles/scenes/TNTBarrel.tscn" type="PackedScene" id=28]
 [ext_resource path="res://obstacles/scenes/rock-walls/RockWall3.tscn" type="PackedScene" id=29]
 [ext_resource path="res://obstacles/scenes/rock-walls/RockPillar.tscn" type="PackedScene" id=30]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcBigCurved.tscn" type="PackedScene" id=31]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcCeiling.tscn" type="PackedScene" id=32]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcTop.tscn" type="PackedScene" id=33]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockArcLong.tscn" type="PackedScene" id=34]
+[ext_resource path="res://obstacles/scenes/rock-ceilings/RockDoubleCeiling.tscn" type="PackedScene" id=35]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
@@ -116,6 +121,13 @@ albedo_color = Color( 0.113725, 0.811765, 0.254902, 0.733333 )
 material = SubResource( 14 )
 size = Vector3( 1, 1, 1 )
 
+[sub_resource type="SpatialMaterial" id=18]
+albedo_color = Color( 0.580392, 0.513726, 0.0784314, 1 )
+
+[sub_resource type="CubeMesh" id=19]
+material = SubResource( 18 )
+size = Vector3( 1, 1, 1 )
+
 [sub_resource type="MeshLibrary" id=16]
 item/0/name = ""
 item/0/mesh = SubResource( 11 )
@@ -132,12 +144,17 @@ item/2/mesh = SubResource( 15 )
 item/2/mesh_transform = null
 item/2/shapes = [  ]
 item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/3/name = "Obstacle"
+item/3/mesh = SubResource( 19 )
+item/3/mesh_transform = null
+item/3/shapes = [  ]
+item/3/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [sub_resource type="NavigationMesh" id=17]
 
 [node name="Match" type="Spatial"]
 script = ExtResource( 17 )
-NPCS_COUNT = 5
+NPCS_COUNT = 1
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
@@ -150,6 +167,7 @@ visible = false
 
 [node name="EndScreens" type="Control" parent="."]
 pause_mode = 2
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 7 )
@@ -646,6 +664,8 @@ NPCS_COUNT = 1
 WALLS_COUNT = 40
 WALL_OBSTACLES_SCENES = [ ExtResource( 22 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 25 ) ]
 OBJECTS_SCENES = [ ExtResource( 26 ), ExtResource( 27 ), ExtResource( 28 ), ExtResource( 30 ), ExtResource( 29 ) ]
+ARC_SCENES = [ ExtResource( 31 ), ExtResource( 34 ), ExtResource( 33 ), ExtResource( 32 ) ]
+CEILING_SCENES = [ ExtResource( 35 ) ]
 
 [node name="PaintedGrid" type="GridMap" parent="Map"]
 visible = false
@@ -693,6 +713,10 @@ __meta__ = {
 }
 
 [node name="Obstacles" type="Spatial" parent="Map/Navigation"]
+
+[node name="Arcs" type="Spatial" parent="Map/Navigation"]
+
+[node name="Ceiling" type="Spatial" parent="Map/Navigation"]
 
 [node name="GoldPiles" type="Spatial" parent="Map/Navigation"]
 

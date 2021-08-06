@@ -171,6 +171,7 @@ mode = 1
 script = ExtResource( 2 )
 ITEMS_SCENES = [ ExtResource( 7 ) ]
 MIN_IMPACT_TO_DESTROY = 12000.0
+mesh_path = NodePath("Meshes/MasterBrush025")
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( -0.913456, 2.28823e-07, 0, -1.37928e-07, -1.51543, 0, 0, 0, 0.958801, 0, 0, 0 )

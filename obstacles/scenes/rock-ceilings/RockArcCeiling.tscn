@@ -131,7 +131,7 @@ unit_size = 40.0
 [node name="Hitpoints" type="Spatial" parent="."]
 
 [node name="Hitpoint" type="Position3D" parent="Hitpoints"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.721149, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.55773, 0 )
 
 [node name="Hitpoint2" type="Position3D" parent="Hitpoints"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.79895, -0.585617, 0.863069 )
@@ -148,3 +148,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2829, -2.50845, 0.694851 )
 [node name="RocksFallingSound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 7 )
 unit_size = 16.6
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.66825, 0 )
+aabb = AABB( -5.96172, -2.68089, -2.64565, 11.9234, 5.36174, 5.29128 )

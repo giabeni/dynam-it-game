@@ -300,6 +300,7 @@ ITEMS_SCENES = [ ExtResource( 16 ), ExtResource( 14 ), ExtResource( 15 ) ]
 ITEM_PROB = 0.3
 TIME_TO_EXPLODE = 5.0
 MIN_IMPACT_TO_DESTROY = 500.0
+mesh_path = NodePath("support001")
 state = 1
 
 [node name="support001" type="MeshInstance" parent="."]

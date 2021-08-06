@@ -115,7 +115,8 @@ func _spawn_bomb():
 	bomb_interval_timer.wait_time = 1
 	bomb_interval_timer.start()
 	has_bomb = true
-	
+
+
 func is_alive():
 	return state in [States.EXPLORING, States.FOLLOWING]
 
@@ -149,8 +150,8 @@ func _set_animations(delta):
 		anim_tree.set("parameters/DeadOrAlive/current", 1)
 	
 	_set_weapon_color(delta)
-		
-		
+
+
 
 func _can_drop_bomb():
 	return has_bomb and dropped_bombs < max_bombs and not has_weapon and not is_dizzy
@@ -174,8 +175,9 @@ func _set_weapon_color(delta):
 			var outline_color = lerp(weapon.outline_color, Color.red, 2 - bomb_interval_timer.time_left)
 			weapon.set_outline_color(outline_color)
 		else:
-			weapon.outline.hide()
-			weapon.set_outline_color(Color.white)
+			if is_instance_valid(weapon.outline):
+				weapon.outline.hide()
+				weapon.set_outline_color(Color.white)
 
 
 func _on_bomb_dropped():
@@ -201,8 +203,7 @@ func _drop_bomb():
 	controller.move_to(escape_point)
 	$BombEscapeTimer.start()
 #			print("Escaping!!!!! ", escape_point)
-	is_escaping_from_bomb = true
-	
+	is_escaping_from_bomb = true	
 
 func _die():
 	if is_alive():
@@ -655,6 +656,6 @@ func _on_VisibilityNotifier_screen_exited():
 
 
 func _on_VisibilityNotifier_screen_entered():
-	show()
+	hide()
 
 

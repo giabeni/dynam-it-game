@@ -90,7 +90,7 @@ __meta__ = {
 ITEM_PROB = 0.268
 
 [node name="MasterBrush004" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.1568, -0.611245, 0 )
+transform = Transform( 0.5, 0, 0, 0, 0.624244, 0, 0, 0, 1.2036, -6.20941, -0.533498, -8.99599 )
 mesh = SubResource( 1 )
 material/0 = ExtResource( 2 )
 __meta__ = {
@@ -98,7 +98,7 @@ __meta__ = {
 }
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.1568, -0.611245, 0 )
+transform = Transform( 0.5, 0, 0, 0, 0.624244, 0, 0, 0, 1.2036, -6.20941, -0.533498, -8.99599 )
 shape = SubResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -112,6 +112,7 @@ stream = ExtResource( 5 )
 unit_size = 40.0
 
 [node name="Hitpoints" type="Spatial" parent="."]
+transform = Transform( 0.5, 0, 0, 0, 0.624244, 0, 0, 0, 1.2036, 0, 0.229634, -8.99599 )
 
 [node name="Hitpoint" type="Position3D" parent="Hitpoints"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.721149, 0 )
@@ -129,9 +130,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.7153, -4.66097, -0.100584 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5467, -4.49217, 1.06078 )
 
 [node name="FragmentParticles" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.84825, 0 )
+transform = Transform( 1, 0, 0, 0, 1.24849, 0, 0, 0, 2.40719, 0, -2.07788, -8.99599 )
 visibility_aabb = AABB( -15.0987, -3.89383, -4.35329, 30.1975, 7.78769, 8.70659 )
 
 [node name="RocksFallingSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.229634, -8.99599 )
 stream = ExtResource( 6 )
 unit_size = 16.6
+
+[node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.64294, 0 )
+aabb = AABB( -16.5854, -6.7153, -3.74907, 33.1708, 13.4306, 7.49813 )

@@ -3529,7 +3529,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.890478, 0.303017, 0.339455, 0.143501, -0.520928, 0.841452, 0.431806, 0.798008, 0.420392, -0.298272, 1.24005, 0.658967 )
+transform = Transform( -0.984525, 0.168228, 0.0490889, -0.0402697, -0.4898, 0.870904, 0.170554, 0.855452, 0.488996, -0.415653, 1.14441, 0.631356 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3545,7 +3545,7 @@ __meta__ = {
 }
 
 [node name="HeadBone" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( 0.987201, 0.078808, 0.138645, -0.082204, 0.996436, 0.0189317, -0.136659, -0.0300865, 0.990162, 0.0517546, 2.15159, -0.0319003 )
+transform = Transform( 0.984711, -0.0885123, -0.150034, 0.0922802, 0.995565, 0.0183265, 0.147746, -0.0318913, 0.988511, -0.0581799, 2.11787, 0.0372509 )
 bone_name = "head"
 
 [node name="SpotLight" type="SpotLight" parent="CharacterArmature/Skeleton/HeadBone"]
@@ -3703,7 +3703,6 @@ unit_size = 99.5
 max_db = 6.0
 
 [node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
-freeze_bodies = false
 
 [connection signal="timeout" from="TargetDetectionTimer" to="." method="_on_TargetDetectionTimer_timeout"]
 [connection signal="timeout" from="BombIntervalTimer" to="." method="_on_BombIntervalTimer_timeout"]

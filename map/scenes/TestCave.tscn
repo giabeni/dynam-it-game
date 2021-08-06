@@ -28,11 +28,11 @@ cell_size = Vector3( 1.5, 1.5, 1.5 )
 cell_scale = 1.5
 collision_layer = 33
 data = {
-"cells": PoolIntArray( 720844, 1, 65550, 24, 4, 1441794, 65510, 4, 1048581, 65531, 8, 851982, 65530, 9, 1441795, 24, 14, 1441797, 65510, 14, 1048578, 30, 18, 589838, -131123, 18, 65550, 9, 19, 2, 65515, 19, 2, 65525, 19, 4, 65535, 19, 2, -262195, 19, 8, -262175, 19, 7, 65531, 25, 327694, 9, 65535, 2, 19, 65535, 4, 30, 65535, 589838, 65505, 65535, 655367, 65515, 65535, 2, 65525, 65535, 8, 393175, 65535, 655367 )
+"cells": PoolIntArray( 720844, 1, 65550, 24, 4, 1441794, 65510, 4, 1048581, 65531, 8, 851982, 65530, 9, 1441795, 24, 14, 1441797, 65510, 14, 1048578, 30, 18, 589838, -131123, 18, 65550, 9, 19, 2, 65515, 19, 2, 65525, 19, 4, 65535, 19, 2, -262195, 19, 8, -262175, 19, 7, 65531, 25, 327694, 0, 65504, 1048578, 0, 65518, 2, 65523, 65518, 3, 9, 65535, 2, 19, 65535, 4, 30, 65535, 589838, 65505, 65535, 655367, 65515, 65535, 2, 65525, 65535, 8, 393175, 65535, 655367 )
 }
 __meta__ = {
 "_editor_clip_": 0,
-"_editor_floor_": Vector3( 0, -3, 0 )
+"_editor_floor_": Vector3( 0, 0, 0 )
 }
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -142,13 +142,22 @@ transform = Transform( -4.21216e-08, 0, -0.963631, 0, 0.626369, 0, 0.597893, 0, 
 transform = Transform( -1.13444e-07, 0, -0.696316, 0, 0.5, 0, 0.5, 0, -8.14603e-08, -7.53249, 8.66794, -0.897081 )
 
 [node name="RockDoubleCeiling2" parent="Ceilings" instance=ExtResource( 13 )]
-transform = Transform( -1.69885e-07, 0, -1.04275, 0, 0.5, 0, 0.5, 0, -8.14603e-08, -1.6518, 8.66794, -0.897081 )
+transform = Transform( -2.8213e-07, 0, -1, 0, 1, 0, 1, 0, -2.8213e-07, -13.9479, 8.66794, -0.897085 )
+
+[node name="RockDoubleCeiling3" parent="Ceilings" instance=ExtResource( 13 )]
+transform = Transform( 1.94707e-07, 0, 1, 0, 1, 0, -1, 0, 1.94707e-07, -50.0518, 1.28835, 28.9554 )
 
 [node name="RockArcLong" parent="Ceilings" instance=ExtResource( 14 )]
-transform = Transform( -1.085e-07, 0, -0.665969, 0, 0.77828, 0, 0.770107, 0, -1.25466e-07, -22.0252, 0.925559, -0.961297 )
+transform = Transform( -1.62921e-07, 0, -1, 0, 1, 0, 1, 0, -1.62921e-07, -22.025, 0, -0.961 )
 
 [node name="RockArcCeiling" parent="Ceilings" instance=ExtResource( 9 )]
-transform = Transform( -3.15181e-08, 0, 0.72105, 0, 0.697354, 0, -0.850085, 0, -3.71584e-08, -30.9973, 6.63919, -0.605954 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -30.9973, 6.50491, -0.605954 )
 
 [node name="RockCornerCeiling" parent="Ceilings" instance=ExtResource( 17 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -38.1055, 7.07487, -0.792804 )
+
+[node name="RockArcLong" parent="." instance=ExtResource( 14 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 7.39009, 0, -26.4634 )
+
+[node name="RockArcLong2" parent="." instance=ExtResource( 14 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.419275, 0, -47.4952 )
