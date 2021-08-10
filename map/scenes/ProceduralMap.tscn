@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=2]
+[gd_scene load_steps=57 format=2]
 
 [ext_resource path="res://map/scripts/ProceduralMap.gd" type="Script" id=1]
 [ext_resource path="res://tiles/libs/CaveLib.meshlib" type="MeshLibrary" id=2]
@@ -121,14 +121,14 @@ albedo_color = Color( 0.113725, 0.811765, 0.254902, 0.733333 )
 material = SubResource( 14 )
 size = Vector3( 1, 1, 1 )
 
-[sub_resource type="SpatialMaterial" id=18]
+[sub_resource type="SpatialMaterial" id=16]
 albedo_color = Color( 0.580392, 0.513726, 0.0784314, 1 )
 
-[sub_resource type="CubeMesh" id=19]
-material = SubResource( 18 )
+[sub_resource type="CubeMesh" id=17]
+material = SubResource( 16 )
 size = Vector3( 1, 1, 1 )
 
-[sub_resource type="MeshLibrary" id=16]
+[sub_resource type="MeshLibrary" id=18]
 item/0/name = ""
 item/0/mesh = SubResource( 11 )
 item/0/mesh_transform = null
@@ -145,16 +145,23 @@ item/2/mesh_transform = null
 item/2/shapes = [  ]
 item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/3/name = "Obstacle"
-item/3/mesh = SubResource( 19 )
+item/3/mesh = SubResource( 17 )
 item/3/mesh_transform = null
 item/3/shapes = [  ]
 item/3/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
-[sub_resource type="NavigationMesh" id=17]
+[sub_resource type="NavigationMesh" id=19]
+
+[sub_resource type="ProceduralSky" id=20]
+
+[sub_resource type="Environment" id=21]
+background_mode = 2
+background_sky = SubResource( 20 )
 
 [node name="Match" type="Spatial"]
 script = ExtResource( 17 )
-NPCS_COUNT = 1
+NPCS_COUNT = 4
+SPAWN_NPCS_TIMER_ACTIVE = false
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.50982, 1.93561, 0 )
@@ -660,8 +667,8 @@ autoplay = true
 
 [node name="Map" type="Spatial" parent="."]
 script = ExtResource( 1 )
-NPCS_COUNT = 1
-WALLS_COUNT = 40
+CEILINGS_PROB = 0.737
+ARCS_PROB = 0.504
 WALL_OBSTACLES_SCENES = [ ExtResource( 22 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 25 ) ]
 OBJECTS_SCENES = [ ExtResource( 26 ), ExtResource( 27 ), ExtResource( 28 ), ExtResource( 30 ), ExtResource( 29 ) ]
 ARC_SCENES = [ ExtResource( 31 ), ExtResource( 34 ), ExtResource( 33 ), ExtResource( 32 ) ]
@@ -669,7 +676,7 @@ CEILING_SCENES = [ ExtResource( 35 ) ]
 
 [node name="PaintedGrid" type="GridMap" parent="Map"]
 visible = false
-mesh_library = SubResource( 16 )
+mesh_library = SubResource( 18 )
 cell_size = Vector3( 1.5, 1, 1.5 )
 cell_scale = 1.5
 data = {
@@ -694,7 +701,7 @@ material = ExtResource( 3 )
 [node name="Navigation" type="Navigation" parent="Map"]
 
 [node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Map/Navigation"]
-navmesh = SubResource( 17 )
+navmesh = SubResource( 19 )
 
 [node name="GridMap" type="GridMap" parent="Map/Navigation/NavigationMeshInstance" groups=[
 "Terrain",
@@ -730,6 +737,7 @@ __meta__ = {
 
 [node name="Camera" type="Camera" parent="Map"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 109.063, 0 )
+environment = SubResource( 21 )
 projection = 1
 size = 200.0
 far = 1584.2

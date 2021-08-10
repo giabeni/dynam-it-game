@@ -16,6 +16,7 @@ export(float) var ANGULAR_ACCELERATION = 7
 export(float) var ACCELERATION = 4
 export(float) var GRAVITY = 5
 export(float) var INERTIA = 3
+export(float) var NEW_TARGET_DETECTED_INTERVAL = 0.5
 
 var navigation: NavGrid
 var npc: Spatial
@@ -39,6 +40,8 @@ func _ready():
 #	target = get_tree().current_scene.get_node("Player")
 	if NAV_PATH:
 		navigation = get_node(NAV_PATH)
+		
+	$DetectTargetTimer.wait_time = NEW_TARGET_DETECTED_INTERVAL
 	
 
 func _physics_process(delta):
@@ -53,23 +56,29 @@ func _physics_process(delta):
 		else:
 			movement_speed = RUN_SPEED
 			direction = distance_to_path.normalized()
-			
-	velocity = lerp(velocity, direction * movement_speed, delta * ACCELERATION)
 	
-	# Body rotation
-	var angle_dir_rot = atan2(direction.x, direction.z) - npc.rotation.y
-	body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
-	
-	# Vertical velocity
-	if not npc.is_on_floor():
-		vertical_velocity += GRAVITY * delta
-	else:
-		vertical_velocity = 0
 	
 	# Main movement
-	if npc.is_alive() and not npc.is_dizzy:
-		velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
+	if npc.is_alive() and not npc.is_dizzy:	
+		apply_movement(delta)
+		
+
+func apply_movement(delta):
+		velocity = lerp(velocity, direction * movement_speed, delta * ACCELERATION)
+		
+		# Body rotation
+		var angle_dir_rot = atan2(direction.x, direction.z) - npc.rotation.y
+		body.rotation.y = lerp_angle(body.rotation.y, angle_dir_rot, delta * ANGULAR_ACCELERATION)
+		
+		# Vertical velocity
+		if not npc.is_on_floor():
+			vertical_velocity += GRAVITY * delta
+		else:
+			vertical_velocity = 0
 	
+		velocity = npc.move_and_slide(velocity + Vector3.DOWN * vertical_velocity, Vector3.UP, false, 4, PI/4, false)
+
+
 
 func move_to(target_pos, custom_path = null):
 	if not custom_path:

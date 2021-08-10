@@ -105,6 +105,8 @@ export(int, 0, 100) var NPCS_COUNT = 10
 export(int, 0, 100) var GOLD_PILES_COUNT = 40
 export(int, 0, 100) var ITEMS_COUNT = 35
 export(int, 0, 100) var WALLS_COUNT = 30
+export(float, 0, 1) var CEILINGS_PROB = 1
+export(float, 0, 1) var ARCS_PROB = 1
 
 export(PackedScene) var GOLD_PILE_SCENE = preload("res://obstacles/scenes/GoldRocks.tscn")
 
@@ -223,7 +225,9 @@ func _ready():
 #	$PaintedGrid.hide()	
 	get_parent().start_match()
 #	yield(get_tree().create_timer(15), "timeout")
+
 	_set_npcs_paused(false)
+	
 	player1.enable()
 	if is_instance_valid(player2):
 		player2.enable()
@@ -464,7 +468,7 @@ func _generate_grid_map():
 					arrow.rotation_degrees.y = angle
 					
 					# Adds specific walls according to tile
-					if tile in [Tiles.CORREDOR_MEDIO, Tiles.CORREDOR_CURTO]:
+					if tile in [Tiles.CORREDOR_MEDIO, Tiles.CORREDOR_CURTO] and randf() < ARCS_PROB:
 						# Adds a arc
 						var arc_scene: PackedScene = ARC_SCENES[randi() % ARC_SCENES.size()]
 						var arc: Destructible = arc_scene.instance()
@@ -476,7 +480,7 @@ func _generate_grid_map():
 						if arc.name.find("RockArcCeiling") >= 0:
 							arc.global_transform.origin.y += 6.5
 					
-					elif tile in [Tiles.HALL_GRANDE, Tiles.HALL_T, Tiles.HALL_X] and randf() < 0.5:
+					elif tile in [Tiles.HALL_GRANDE, Tiles.HALL_T, Tiles.HALL_X] and randf() < CEILINGS_PROB:
 						# Adds a ceiliing if tile is Hall 50% of the times
 						var ceiling_scene: PackedScene = CEILING_SCENES[randi() % CEILING_SCENES.size()]
 						var ceiling: Destructible = ceiling_scene.instance()

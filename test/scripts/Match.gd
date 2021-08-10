@@ -10,10 +10,10 @@ onready var procedural_map = $Map
 
 export var GOLD_TARGET = 32
 export var NPCS_COUNT = 10
-export var ENEMIES_COUNT = 0
 export var SEED = false
 export var MAIN_SCENE: PackedScene
 export var SPAWN_NPCS_TIMER_ACTIVE = true
+export var SPAWN_NEW_NPC_WHEN_DIED = false
 
 var npcs_dead = 0
 var npcs_count = 0
@@ -82,7 +82,8 @@ func set_npc_signals(npc):
 func on_npc_died():
 	npcs_dead += 1
 	ui.increment_npc_dead_count()
-	procedural_map._on_NPCSpawnTimer_timeout(true)
+	if SPAWN_NEW_NPC_WHEN_DIED:
+		procedural_map._on_NPCSpawnTimer_timeout(true)
 #	if state == MatchState.STARTED and npcs_alive <= 0:
 #		$EndScreens.on_win()
 		

@@ -160,3 +160,6 @@ func delete():
 	damage_area.set_deferred("monitoring", false)
 	yield(get_tree().create_timer(2.5), "timeout")
 	call_deferred("queue_free")
+	
+func is_collected():
+	return state != States.COLLECTABLE

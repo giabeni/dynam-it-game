@@ -7,7 +7,7 @@ enum States {
 	PAUSED,
 }
 
-onready var controller = $AIController
+onready var controller: Spatial = $AIController
 onready var anim_tree: AnimationTree = $AnimationTree
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
@@ -23,6 +23,11 @@ onready var hurt_sound: AudioStreamPlayer3D = $HurtSound
 onready var weapon_timer: Timer = $WeaponTimer
 onready var bomb_interval_timer: Timer = $BombIntervalTimer
 onready var random_following_timer: Timer = $RandomFollowingTimer
+onready var target_detection_timer: Timer = $TargetDetectionTimer
+onready var forget_target_timer: Timer = $ForgetTargetTimer
+onready var bomb_detection_timer: Timer = $BombDetectionTimer
+onready var bomb_escape_timer: Timer = $BombEscapeTimer
+onready var on_wall_timer: Timer = $OnWallTimer
 onready var skeleton: Skeleton = $CharacterArmature/Skeleton
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
@@ -31,6 +36,13 @@ export(PackedScene) var PICKAXE_SCENE = preload("res://weapons/scenes/Pickaxe.ts
 export(PackedScene) var MINIAXE_SCENE = preload("res://weapons/scenes/MiniAxe.tscn")
 export(NodePath) var NAV_GRID_PATH = null
 export(float) var MIN_IMPACT_TO_BE_DIZZY = 2000
+export(float, 0, 1000) var TARGET_DETECTION_INTERVAL = 1
+export(float, 0, 10) var DROP_BOMB_INTERVAL = 1
+export(float, 0, 10) var BOMB_DETECTION_INTERVAL = 1
+export(float, 0, 10) var ESCAPING_FROM_BOMB_INTERVAL = 3
+export(float, 0, 10) var FORGET_TARGET_INTERVAL = 2
+export(float, 0, 10) var FOLLOW_RANDOM_TARGET_INTERVAL = 4
+export(float, 0, 10) var DETECT_WALL_BLOCK_INTERVAL = 2
 export var paused = true
 
 var inner_area: Area 
@@ -69,11 +81,20 @@ func _ready():
 	if randf() < 0.1:
 		on_weapon_collected("MINIAXE")
 		
+	target_detection_timer.wait_time = TARGET_DETECTION_INTERVAL
+	bomb_interval_timer.wait_time = DROP_BOMB_INTERVAL
+	bomb_detection_timer.wait_time = BOMB_DETECTION_INTERVAL
+	bomb_escape_timer.wait_time = ESCAPING_FROM_BOMB_INTERVAL
+	forget_target_timer.wait_time = FORGET_TARGET_INTERVAL
+	random_following_timer.wait_time = FOLLOW_RANDOM_TARGET_INTERVAL
+		
 	if paused:
 		set_paused(true)
 		
 	if has_node("InnerArea"):
 		inner_area = get_node("InnerArea")
+		
+#	controller.set_physics_process(false)
 		
 
 func set_paused(paused):
@@ -90,11 +111,6 @@ func set_paused(paused):
 
 func _physics_process(delta):
 	_set_animations(delta)
-	
-	if controller.velocity.length() <= 0.1:
-#		print("on wall")
-		$OnWallTimer.start()
-		wall_position = global_transform.origin
 		
 	if not is_alive():
 		var vel = Vector3.DOWN * controller.GRAVITY + impulse * delta
@@ -102,6 +118,12 @@ func _physics_process(delta):
 			impulse = lerp(impulse, Vector3.ZERO, delta * controller.ACCELERATION)
 #		print("Vel = ", vel)
 		move_and_slide(vel, Vector3.UP)
+	
+	else:
+		if controller.velocity.length() <= 0.01:
+	#		print("on wall")
+			on_wall_timer.start()
+			wall_position = global_transform.origin
 
 
 func _spawn_bomb():
@@ -198,12 +220,16 @@ func _drop_bomb():
 	dropped_bombs += 1
 
 	# Escape from own bomb
-	_get_run_away_point(bomb.global_transform.origin)
-	yield(self, "found_escape_point")
+	_get_run_away_point(bomb.global_transform.origin, "start_escaping_from_bomb")
+#	yield(self, "found_escape_point")
+	
+
+func start_escaping_from_bomb():
 	controller.move_to(escape_point)
-	$BombEscapeTimer.start()
-#			print("Escaping!!!!! ", escape_point)
+	bomb_escape_timer.start()
+#	print("Escaping!!!!! ", escape_point)
 	is_escaping_from_bomb = true	
+
 
 func _die():
 	if is_alive():
@@ -224,11 +250,11 @@ func _die():
 			weapon.call_deferred("queue_free")
 
 		controller.set_physics_process(false)
-		$TargetDetectionTimer.stop()
-		$BombIntervalTimer.stop()
-		$BombDetectionTimer.stop()
-		$BombEscapeTimer.stop()
-		$OnWallTimer.stop()
+		target_detection_timer.stop()
+		bomb_interval_timer.stop()
+		bomb_detection_timer.stop()
+		bomb_escape_timer.stop()
+		on_wall_timer.stop()
 		weapon_timer.stop()
 
 
@@ -238,7 +264,7 @@ func on_explosion_hit(_impulse = Vector3.ZERO):
 		impulse = _impulse
 		_die()
 		
-		yield(get_tree().create_timer(5), "timeout")
+		yield(get_tree().create_timer(3), "timeout")
 		smoke_particles.emitting = false
 
 
@@ -304,9 +330,10 @@ func _get_player_position():
 		return null
 
 
-func _get_run_away_point(from: Vector3):
+func _get_run_away_point(from: Vector3, callback_fn: String):
 	var found_point = false
-	var tries = 20
+	var max_tries = 10
+	var tries = max_tries
 	var angle = 0
 	var min_distance = 7
 	var nav_point
@@ -318,15 +345,16 @@ func _get_run_away_point(from: Vector3):
 		var world_point = global_transform.origin + direction.normalized() * offset
 		nav_point = controller.navigation.get_closest_point(world_point)
 #		print("Escaping from bomb...[", angle  ,"]  ... ", nav_point, " ... ", tries)
-		yield(get_tree(), "idle_frame")
+#		yield(get_tree(), "idle_frame")
 		
 		if abs((nav_point - from).length()) >= min_distance or tries <= 0:
 #			print("Found run away point")
 			escape_point = nav_point
-			emit_signal("found_escape_point")
+#			emit_signal("found_escape_point")
+			self.call(callback_fn)
 			return nav_point
 		else:
-			angle += 180 / tries
+			angle += 360 / max_tries
 			tries -= 1
 			
 	return nav_point
@@ -334,11 +362,20 @@ func _get_run_away_point(from: Vector3):
 
 
 func _on_TargetDetectionTimer_timeout():
+#	print("\n\n-----------------------\nTarget detection timeout: ")
 	if is_escaping_from_bomb or not is_alive():
+#		print("Cancel: is escaping from bomb...")
 		return
 		
-#	if name == "NPC5":
-#		print("Target detection timeout: ", target_detection_area.get_overlapping_bodies())
+	var detected_bodies = target_detection_area.get_overlapping_bodies()
+	
+	
+	# Sort bodies in order of priority:
+	detected_bodies.sort_custom(self, "sort_detected_bodies")
+	
+#	for body in detected_bodies:
+#		print(body.name, " - ", body.get_groups(), " - ", sight_origin.global_transform.origin.distance_to(body.global_transform.origin))
+	
 	
 	var found_item = false
 	var found_miner = false
@@ -346,52 +383,62 @@ func _on_TargetDetectionTimer_timeout():
 	var found_obstacle_distance = INF
 	var space = get_world().direct_space_state
 	
-	for body in target_detection_area.get_overlapping_bodies():
-		if body.get_instance_id() != self.get_instance_id():
-			if body.is_in_group("Items"):
-				var hitpoint = body.hitpoint.global_transform.origin
-				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 0b10101)
-				if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
-					if ray.collider.is_in_group("Items"):
-						found_item = true
-						controller.target = body
-						state = States.FOLLOWING
-#						print("Item target found : ", body.name)
-						random_following_timer.stop()
-						return
-						
-			elif body.is_in_group("Player") and not found_item:
-				var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
-				var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
-				if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
-					if ray.collider.is_in_group("Player") and ray.collider.is_alive():
-						found_miner = true
-						controller.target = body
-						state = States.FOLLOWING
-						random_following_timer.stop()
-#						print("Player target found : ", body.name)
-						return
-						
-			elif body.is_in_group("Obstacles") and not found_miner and not found_item:
-				if state == States.EXPLORING and (not is_instance_valid(controller.target) or not controller.target.is_in_group("Obstacles")):
-					for hit_pos in body.hitpoints.get_children():
-						var hitpoint = hit_pos.global_transform.origin
-						var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
-	#					print(body.name, " - ", body, " - ", hit_pos.name, " - ", ray.collider)
-						if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
-							if ray.collider.is_in_group("Obstacles"):
-								var distance = sight_origin.global_transform.origin.distance_to(hitpoint)
-								if distance < found_obstacle_distance:
-									found_obstacle_distance = distance
-									found_obstacle = body
-	#								if name == "NPC5":
-#									print("Obstacle target found : ", body.name)
+	for body in detected_bodies:
+		if body.get_instance_id() == self.get_instance_id():
+			continue
+			
+		if body.is_in_group("Items") and body.has_method("is_collected") and not body.is_collected():
+			var hitpoint = body.hitpoint.global_transform.origin
+			var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 0b10101)
+			if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+				if ray.collider.is_in_group("Items"):
+					found_item = true
+					controller.target = body
+					state = States.FOLLOWING
+#					print("Item target found : ", body.name)
+					random_following_timer.stop()
+					controller.move_to(body.global_transform.origin)
+					return
+					
+		elif body.is_in_group("Player") and not found_item:
+			var hitpoint = body.global_transform.origin if not "body_hitpoint" in body else body.body_hitpoint.global_transform.origin
+			var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
+			if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+				if ray.collider.is_in_group("Player") and ray.collider.is_alive():
+					found_miner = true
+					controller.target = body
+					state = States.FOLLOWING
+					random_following_timer.stop()
+					controller.move_to(body.global_transform.origin)
+#					print("Player target found : ", body.name)
+					return
+					
+		elif body.is_in_group("Obstacles") and not found_miner and not found_item:
+			if state == States.EXPLORING and (not is_instance_valid(controller.target) or not controller.target.is_in_group("Obstacles")):
+				for hit_pos in body.hitpoints.get_children():
+					var hitpoint = hit_pos.global_transform.origin
+					var ray = space.intersect_ray(sight_origin.global_transform.origin, hitpoint, [self], 1)
+#					print("\n", body.name, " - ", body, " - ", hit_pos.name, " - ", not ray.empty())
+					if not ray.empty() and ray.collider.get_instance_id() == body.get_instance_id():
+						if ray.collider.is_in_group("Obstacles"):
+#							var distance = sight_origin.global_transform.origin.distance_to(hitpoint)
+#							if distance < found_obstacle_distance:
+#								found_obstacle_distance = distance
+
+							found_obstacle = body
+#							print("Obstacle target found : ", body.name)
+							controller.target = found_obstacle
+							state = States.FOLLOWING
+							random_following_timer.stop()
+							controller.move_to(found_obstacle.global_transform.origin)
+							return
 			
 	if is_instance_valid(found_obstacle):
-#		print("Obstacle chosen : ", found_obstacle.name)
+#		print("OBSTACLE CHOSEN : ", found_obstacle.name)
 		controller.target = found_obstacle
 		state = States.FOLLOWING
 		random_following_timer.stop()
+		controller.move_to(found_obstacle.global_transform.origin)
 	elif not found_miner and not found_item:
 		if not is_instance_valid(controller.target): 
 			var random_target = _get_random_destructible_target()
@@ -400,18 +447,62 @@ func _on_TargetDetectionTimer_timeout():
 				controller.target = random_target
 				state = States.EXPLORING
 				random_following_timer.stop()
+				controller.move_to(random_target.global_transform.origin)
 			elif is_instance_valid(player) and player.is_alive():
 				controller.target = player
 				state = States.EXPLORING
 				random_following_timer.stop()
+				controller.move_to(player.global_transform.origin)
+#				print("\n Following PLAYER")
 			else:
 				var random_point = _get_random_target_point()
 				if random_following_timer.is_stopped():
 					controller.move_to(random_point)
-			#		print("random target", random_point)
 					state = States.EXPLORING
 					random_following_timer.start()
 #					print("New target: RANDOM - ", random_point)
+					
+		elif is_instance_valid(controller.target):
+			state = States.FOLLOWING
+			random_following_timer.stop()
+			controller.move_to(controller.target.global_transform.origin)
+#			print("\n Following previous controller target")
+
+
+# Returns false if b >= a
+func sort_detected_bodies(a: Spatial, b: Spatial):
+	var GROUPS_PRIORITY = {
+		"Items": 0,
+		"Players": 4,
+		"Obstacles": 8,
+	}
+	
+	var priority_a = 100
+	var priority_b = 100
+	
+	for group in a.get_groups():
+		if GROUPS_PRIORITY.has(group) and GROUPS_PRIORITY[group] < priority_a:
+			priority_a = GROUPS_PRIORITY[group]
+			
+	for group in b.get_groups():
+		if GROUPS_PRIORITY.has(group) and GROUPS_PRIORITY[group] < priority_b:
+			priority_b = GROUPS_PRIORITY[group]
+			
+	if priority_a < priority_b:
+		return true
+	if priority_a > priority_b:
+		return false
+		
+	if priority_a == priority_b:
+		var distance_a = sight_origin.global_transform.origin.distance_to(a.global_transform.origin)
+		var distance_b = sight_origin.global_transform.origin.distance_to(b.global_transform.origin)
+		
+		if distance_a < distance_b:
+			return true
+		else:
+			return false
+
+	return true
 
 
 func _get_best_target_around():
@@ -480,20 +571,20 @@ func _on_BombDetectionTimer_timeout():
 		if body.get_instance_id() != self.get_instance_id() and body.is_in_group("Bombs") and body.is_dropped():
 			if not is_escaping_from_bomb or body.global_transform.origin.distance_to(escape_point) > 3:
 				# if notice a bomb, try to escape 
-				_get_run_away_point(body.global_transform.origin)
-				yield(self, "found_escape_point")
-				controller.move_to(escape_point)
+				_get_run_away_point(body.global_transform.origin, "start_escaping_from_bomb")
 				if is_instance_valid(body) and not body.is_connected("bomb_exploded", self, "_on_BombEscapeTimer_timeout"):
 					(body as Bomb).connect("bomb_exploded", self, "_on_BombEscapeTimer_timeout")
-				$BombEscapeTimer.start()
-	#			print("Escaping!!!!! ", escape_point)
-				is_escaping_from_bomb = true
+#				yield(self, "found_escape_point")
+#				controller.move_to(escape_point)
+#				bom.start()
+#	#			print("Escaping!!!!! ", escape_point)
+#				is_escaping_from_bomb = true
 
 
 func _on_BombEscapeTimer_timeout():
 #	print("No longer escaping")
 	is_escaping_from_bomb = false
-	$BombEscapeTimer.stop()
+	bomb_escape_timer.stop()
 
 
 func _on_ForgetTargetTimer_timeout():
@@ -656,6 +747,6 @@ func _on_VisibilityNotifier_screen_exited():
 
 
 func _on_VisibilityNotifier_screen_entered():
-	hide()
+	show()
 
 

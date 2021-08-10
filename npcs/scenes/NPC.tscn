@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=2]
+[gd_scene load_steps=70 format=2]
 
 [ext_resource path="res://npcs/scripts/NPC.gd" type="Script" id=1]
 [ext_resource path="res://npcs/scenes/NPC-AI.tscn" type="PackedScene" id=2]
@@ -3366,11 +3366,13 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 3/node" = SubResource( 50 )
 "nodes/TimeScale 3/position" = Vector2( 1340, 460 )
 nodes/output/position = Vector2( 2300, 200 )
-node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "TimeScale 3", "TimeScale 2", 0, "BlendRunCarry", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "TimeScale 3", 0, "Animation 3" ]
+node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "TimeScale 3", 0, "Animation 3", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "TimeScale 3", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
 
-[sub_resource type="CylinderShape" id=53]
-radius = 39.1811
-height = 4.20464
+[sub_resource type="BoxShape" id=53]
+extents = Vector3( 13.7423, 3.46729, 43.6847 )
+
+[sub_resource type="BoxShape" id=54]
+extents = Vector3( 23.7683, 5.17719, 23.5519 )
 
 [node name="NPC" type="KinematicBody" groups=[
 "Miners",
@@ -3529,7 +3531,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.984525, 0.168228, 0.0490889, -0.0402697, -0.4898, 0.870904, 0.170554, 0.855452, 0.488996, -0.415653, 1.14441, 0.631356 )
+transform = Transform( -0.915382, 0.277929, 0.291257, 0.12488, -0.491755, 0.861732, 0.382727, 0.825188, 0.415437, -0.324242, 1.24345, 0.666856 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3545,7 +3547,7 @@ __meta__ = {
 }
 
 [node name="HeadBone" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( 0.984711, -0.0885123, -0.150034, 0.0922802, 0.995565, 0.0183265, 0.147746, -0.0318913, 0.988511, -0.0581799, 2.11787, 0.0372509 )
+transform = Transform( 0.994968, 0.0490327, 0.0873778, -0.0511899, 0.998433, 0.0226189, -0.0861318, -0.0269779, 0.995919, 0.0321056, 2.14939, -0.0224103 )
 bone_name = "head"
 
 [node name="SpotLight" type="SpotLight" parent="CharacterArmature/Skeleton/HeadBone"]
@@ -3620,7 +3622,7 @@ collision_layer = 0
 collision_mask = 22
 
 [node name="CollisionShape" type="CollisionShape" parent="TargetDetectionArea"]
-transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 2.0733, 0 )
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 2.0733, 21.1392 )
 shape = SubResource( 53 )
 
 [node name="BombTriggerArea" type="Area" parent="."]
@@ -3629,8 +3631,8 @@ collision_layer = 0
 collision_mask = 14
 
 [node name="CollisionShape" type="CollisionShape" parent="BombTriggerArea"]
-transform = Transform( 0.0712044, 0, 0, 0, 1, 0, 0, 0, 0.120132, 0, 2.0733, 0 )
-shape = SubResource( 53 )
+transform = Transform( 0.0712044, 0, 0, 0, 1, 0, 0, 0, 0.120132, 0, 3.21013, 1.11299 )
+shape = SubResource( 54 )
 
 [node name="InnerArea" type="Area" parent="."]
 collision_mask = 5

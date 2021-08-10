@@ -87,15 +87,24 @@ func _do_damage():
 				
 		if body.has_method("destroy"):
 			var space = get_world().direct_space_state
+			var material = load("res://tiles/models/Light_002.material")
 			for hit_pos in body.hitpoints.get_children():
 				var hitpoint = hit_pos.global_transform.origin
 				var ray_origin = global_transform.origin + Vector3.UP * 0
 				var ray_collision = space.intersect_ray(ray_origin, hitpoint, [], 1)
 				if "collider" in ray_collision:
+					var hitpoint_mesh = MeshInstance.new()
+					hitpoint_mesh.mesh = SphereMesh.new()
+					hitpoint_mesh.mesh.radius = 0.2
+					hitpoint_mesh.mesh.height = 0.2
+					hitpoint_mesh.material_override = material
+					body.add_child(hitpoint_mesh)
+					hitpoint_mesh.global_transform.origin = hitpoint
 #					print("TNT IN OBSTACLE!: ", ray_collision.collider.get_instance_id() == body.get_instance_id())
-					if not ray_collision.empty() and ray_collision.collider.get_instance_id() == body.get_instance_id():
+					if not ray_collision.empty() and ray_collision.collider.has_method("destroy"):
 #						print("Ray bomb to TNT:  ", ray_collision.collider.name)
 						body.destroy()
+						break
 					
 
 func _on_DamageArea_body_entered(body: Spatial):

@@ -104,6 +104,7 @@ func _ready():
 		
 	if has_node(mesh_path):
 		mesh_instance = get_node(mesh_path)
+#		mesh_instance.set_surface_material(0, mesh_instance.mesh.surface_get_material(0))
 			
 
 
@@ -123,6 +124,8 @@ func destroy():
 		
 #		print("Destroying...", name)
 		$AnimationPlayer.play("Explode")
+		self.collision_layer = 0
+		self.collision_mask = 0
 		destroyed = true
 		emit_signal("on_destroyed", nav_grid_cells)
 		get_tree().call_group("Player", "on_obstacle_destroyed", self.global_transform.origin)

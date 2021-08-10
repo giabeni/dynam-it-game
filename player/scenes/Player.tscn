@@ -3506,7 +3506,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 2/node" = SubResource( 50 )
 "nodes/TimeScale 2/position" = Vector2( 535, 275.75 )
 nodes/output/position = Vector2( 2620, 160 )
-node_connections = [ "output", 0, "Punch", "TimeScale", 0, "BlendRun", "Punch", 0, "Slash", "Punch", 1, "Animation 3", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "Animation 2", "TimeScale 2", 0, "BlendRunCarry", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 4", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2" ]
+node_connections = [ "output", 0, "Punch", "TimeScale", 0, "BlendRun", "TimeScale 2", 0, "BlendRunCarry", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "Animation 2", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 4", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "Punch", 0, "Slash", "Punch", 1, "Animation 3" ]
 
 [node name="Player" type="KinematicBody" groups=[
 "Miners",
@@ -3515,6 +3515,7 @@ node_connections = [ "output", 0, "Punch", "TimeScale", 0, "BlendRun", "Punch", 
 collision_layer = 7
 collision_mask = 2
 script = ExtResource( 8 )
+SKIP_FOOTPRINTS = true
 
 [node name="SmokeParticles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56037, -0.281316 )
@@ -3677,7 +3678,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.414332 )
 shape = SubResource( 11 )
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.962461, 0.202879, 0.1803, 0.0807001, -0.420343, 0.90377, 0.259143, 0.884395, 0.388192, -0.388055, 1.23371, 0.667985 )
+transform = Transform( -0.939973, 0.246762, 0.235711, 0.0926482, -0.480246, 0.872227, 0.328431, 0.84171, 0.428557, -0.353385, 1.21975, 0.665984 )
 bone_name = "fist._r"
 
 [node name="SlashMesh" type="MeshInstance" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3713,7 +3714,7 @@ transform = Transform( -1, 1.98872e-07, 1.48958e-05, 1.48924e-05, -0.0117172, 0.
 bone_name = "foot._l"
 
 [node name="HeadBone" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( 0.999126, -0.0220337, -0.0355114, 0.0229188, 0.999433, 0.0247123, 0.0349468, -0.0255045, 0.999064, -0.0146733, 2.1387, 0.00260438 )
+transform = Transform( 0.999484, 0.0146837, 0.0285407, -0.0153958, 0.999572, 0.0248913, -0.028163, -0.0253178, 0.999283, 0.00979893, 2.13746, -0.00333196 )
 bone_name = "head"
 
 [node name="SpotLight" type="SpotLight" parent="CharacterArmature/Skeleton/HeadBone"]

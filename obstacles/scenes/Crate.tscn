@@ -238,5 +238,6 @@ unit_size = 100.0
 [node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.20715, 0 )
 aabb = AABB( -3.11777, -2.18414, -2.179, 6.23559, 4.36825, 4.35799 )
+pause_animations = false
 
 [editable path="ObstacleCommon"]

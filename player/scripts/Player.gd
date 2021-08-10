@@ -41,6 +41,7 @@ export(float) var MIN_IMPACT_TO_BE_DIZZY = 2000
 export(bool) var IS_MULTIPLAYER = false
 export(bool) var START_DISABLED = true
 export(int) var INPUT_SRC = WASD
+export(bool) var SKIP_FOOTPRINTS = false
 
 var bomb: Bomb
 var weapon: Weapon
@@ -433,6 +434,8 @@ func _on_CarryArea_body_exited(body):
 		
 
 func _add_footprint(is_right_foot: bool):
+	if SKIP_FOOTPRINTS:
+		return
 	if not footprints:
 		return
 	if controller.velocity.length() > 0.1:

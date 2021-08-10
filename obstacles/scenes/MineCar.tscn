@@ -173,3 +173,4 @@ max_db = 6.0
 [node name="VisibilityEnabler" type="VisibilityEnabler" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.44221, 0 )
 aabb = AABB( -5.1263, -3.9516, -4.89787, 10.2526, 7.90316, 9.79574 )
+pause_animations = false
