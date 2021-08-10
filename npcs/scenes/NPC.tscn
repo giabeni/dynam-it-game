@@ -3366,7 +3366,7 @@ nodes/TimeScale/position = Vector2( 540, 80 )
 "nodes/TimeScale 3/node" = SubResource( 50 )
 "nodes/TimeScale 3/position" = Vector2( 1340, 460 )
 nodes/output/position = Vector2( 2300, 200 )
-node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "TimeScale 3", 0, "Animation 3", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "TimeScale 3", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 2", 0, "BlendRunCarry" ]
+node_connections = [ "output", 0, "Slash", "TimeScale", 0, "BlendRun", "BlendCarry", 0, "TimeScale", "BlendCarry", 1, "TimeScale 2", "Slash", 0, "DeadOrAlive", "Slash", 1, "Animation 2", "TimeScale 3", 0, "Animation 3", "DeadOrAlive", 0, "BlendCarry", "DeadOrAlive", 1, "Animation", "DeadOrAlive", 2, "TimeScale 3", "TimeScale 2", 0, "BlendRunCarry" ]
 
 [sub_resource type="BoxShape" id=53]
 extents = Vector3( 13.7423, 3.46729, 43.6847 )
@@ -3531,7 +3531,7 @@ material/4 = null
 material/5 = null
 
 [node name="HandRight" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( -0.915382, 0.277929, 0.291257, 0.12488, -0.491755, 0.861732, 0.382727, 0.825188, 0.415437, -0.324242, 1.24345, 0.666856 )
+transform = Transform( -0.928885, 0.260395, 0.263378, 0.11768, -0.466765, 0.876517, 0.351176, 0.845179, 0.402928, -0.340807, 1.24806, 0.672557 )
 bone_name = "fist._r"
 
 [node name="Bomb" type="Spatial" parent="CharacterArmature/Skeleton/HandRight"]
@@ -3547,7 +3547,7 @@ __meta__ = {
 }
 
 [node name="HeadBone" type="BoneAttachment" parent="CharacterArmature/Skeleton"]
-transform = Transform( 0.994968, 0.0490327, 0.0873778, -0.0511899, 0.998433, 0.0226189, -0.0861318, -0.0269779, 0.995919, 0.0321056, 2.14939, -0.0224103 )
+transform = Transform( 0.997903, 0.0312719, 0.0566632, -0.0326752, 0.999178, 0.0240103, -0.0558658, -0.0258114, 0.998105, 0.0203948, 2.14763, -0.0168746 )
 bone_name = "head"
 
 [node name="SpotLight" type="SpotLight" parent="CharacterArmature/Skeleton/HeadBone"]
@@ -3664,6 +3664,7 @@ one_shot = true
 
 [node name="OnWallTimer" type="Timer" parent="."]
 wait_time = 2.0
+one_shot = true
 
 [node name="WeaponTimer" type="Timer" parent="."]
 one_shot = true

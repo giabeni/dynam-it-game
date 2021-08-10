@@ -139,6 +139,7 @@ var wall_cells = {}
 var baked_nav_mesh = PoolVector3Array([])
 var should_bake_nav_meshes = false
 var loading_progress = 0
+var total_loading = 0
 var spawning_points = []
 var player1
 var player2
@@ -156,11 +157,9 @@ func _ready():
 		player2 = get_node(PLAYER2_PATH)
 		
 	
-	$Camera.current = true
-	player1.camera.current = false
-#	$PaintedGrid.hide()
+#	$Camera.current = true
+#	player1.camera.current = false
 	_set_npcs_paused(true)
-#	randomize()
 	
 	# Adjust the size of grid to match the map size
 	GRID_SIZE = MAP_SIZE / grid.cell_size
@@ -168,7 +167,11 @@ func _ready():
 	if is_instance_valid(player2):
 		player2.controller.set_physics_process(false)
 	
-	screens.set_loading_screen(5, "Creating mine's corridors...")
+	# Calculate total loading
+	loading_progress = 0
+	calculate_total_loading()
+	
+	screens.set_loading_screen(loading_progress, "Creating mine's corridors...")
 	if grid.get_used_cells().size() <= 0:
 		should_bake_nav_meshes = true
 		print("Generating map...")
@@ -181,16 +184,18 @@ func _ready():
 	nav_grid.bake_points()
 		
 	print(">> Generated tiles")
-
-	screens.set_loading_screen(8, "Adding destructible walls...")
+	
+	loading_progress += 10
+	screens.set_loading_screen(loading_progress, "Adding destructible walls...")
 	_add_walls()
 	print(">> Added destructible walls")
 	
-	screens.set_loading_screen(10, "Adding lights...")	
+	loading_progress += WALLS_COUNT
+	screens.set_loading_screen(loading_progress, "Adding lights...")	
 	_add_lights()
 	print(">> Added lights")
 	
-	loading_progress = 10
+	loading_progress += 10
 	screens.set_loading_screen(loading_progress, "Spawning enemies...")
 	_spawn_npcs()
 	yield(self, "npcs_spawned")
@@ -205,7 +210,7 @@ func _ready():
 #	yield(self, "finished_objects")
 	print(">> Added gold piles")
 	
-	screens.set_loading_screen(loading_progress, "Spawning destrutible items...")		
+	screens.set_loading_screen(loading_progress, "Spawning destructible items...")		
 	_add_objects(OBJECTS_SCENES, ITEMS_COUNT, "Adding destructible objects...")
 #	yield(self, "finished_objects")
 	print(">> Added items")
@@ -216,10 +221,12 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
-	screens.set_loading_screen(99, "Finishing...")
+	loading_progress += 5
+	screens.set_loading_screen(loading_progress, "Finishing...")
 	yield(get_tree(), "idle_frame")
 
-	screens.set_loading_screen(100, "LET'S GO!")
+	loading_progress += 5
+	screens.set_loading_screen(loading_progress, "LET'S GO!")
 	print("Starting match!")
 #	$PaintedGrid.show()	
 #	$PaintedGrid.hide()	
@@ -232,6 +239,15 @@ func _ready():
 	if is_instance_valid(player2):
 		player2.enable()
 
+
+func calculate_total_loading():
+	total_loading += 10 # Generate gridmaps
+	total_loading += 10 # Generate lights
+	total_loading += 10 # Finishing
+	total_loading += WALLS_COUNT
+	total_loading += ITEMS_COUNT
+	total_loading += GOLD_PILES_COUNT
+	total_loading += NPCS_COUNT
 
 func _generate_map():
 	grid.clear()
@@ -328,7 +344,7 @@ func _add_objects(scenes: Array, quantity: int, text: String, min_scale = 1, max
 		else:
 			object.remove_inner_area()
 			count += 1
-			loading_progress += 74 / (ITEMS_COUNT + GOLD_PILES_COUNT)
+			loading_progress += 1
 			screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] " + text)
 			
 			### Updates paint grid with AABB overlaps
@@ -380,7 +396,6 @@ func _add_objects_by_physics(scenes: Array, quantity: int, text: String, min_sca
 			else:
 				object.remove_inner_area()
 				count += 1
-				loading_progress += 74 / (ITEMS_COUNT + GOLD_PILES_COUNT)
 				screens.set_loading_screen(loading_progress, "["+ str(count) +"/" + str(quantity) + "] " + text)
 				
 				### Updates paint grid with AABB overlaps
@@ -489,7 +504,7 @@ func _generate_grid_map():
 						ceiling.owner = self.owner
 						var world_position = grid.map_to_world(cur_point.x, cur_point.y, cur_point.z)
 						ceiling.global_transform.origin = world_position
-						ceiling.global_transform.origin.y += 7
+						ceiling.global_transform.origin.y += 6.5
 					
 					break
 			

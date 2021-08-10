@@ -8,11 +8,13 @@ enum States {
 }
 
 onready var controller: Spatial = $AIController
+onready var body_mesh: MeshInstance = $CharacterArmature/Skeleton/Body
 onready var anim_tree: AnimationTree = $AnimationTree
 onready var anim_player: AnimationPlayer = $AnimationPlayer
 onready var bomb_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Bomb
 onready var weapon_loc: Spatial = $CharacterArmature/Skeleton/HandRight/Weapon
 onready var smoke_particles: Particles = $SmokeParticles
+onready var dizzy_particles: Particles = $DizzyParticles
 onready var footsteps = $Footsteps
 onready var target_detection_area: Area = $TargetDetectionArea
 onready var bomb_trigger_area: Area = $BombTriggerArea
@@ -29,6 +31,7 @@ onready var bomb_detection_timer: Timer = $BombDetectionTimer
 onready var bomb_escape_timer: Timer = $BombEscapeTimer
 onready var on_wall_timer: Timer = $OnWallTimer
 onready var skeleton: Skeleton = $CharacterArmature/Skeleton
+onready var spot_light: SpotLight = $CharacterArmature/Skeleton/HeadBone/SpotLight
 
 export(PackedScene) var BOMB_SCENE = preload("res://bombs/TNTPile.tscn")
 export(PackedScene) var GOLD_SCENE = preload("res://powerups/scenes/GoldBar.tscn")
@@ -55,6 +58,7 @@ var blend_carry: float = 0
 var target_blend_carry: float = 0
 var state = States.EXPLORING
 var is_escaping_from_bomb = false
+var is_escaping_from_wall = false
 var is_dizzy = false
 var time_to_die = 0
 var impulse = Vector3.ZERO
@@ -120,10 +124,15 @@ func _physics_process(delta):
 		move_and_slide(vel, Vector3.UP)
 	
 	else:
-		if controller.velocity.length() <= 0.01:
-	#		print("on wall")
+		if controller.velocity.length() <= 1 and on_wall_timer.time_left == 0:
+			print(name, "    -   on wall")
 			on_wall_timer.start()
 			wall_position = global_transform.origin
+			
+	if is_escaping_from_wall:
+		var distance_from_wall = global_transform.origin.distance_to(wall_position)
+		if distance_from_wall >= 1:
+			is_escaping_from_wall = false 
 
 
 func _spawn_bomb():
@@ -216,6 +225,7 @@ func _on_bomb_exploded():
 
 func _drop_bomb():
 	bomb.drop()
+	bomb.owner = get_parent()
 	should_drop_bomb = true
 	dropped_bombs += 1
 
@@ -362,9 +372,9 @@ func _get_run_away_point(from: Vector3, callback_fn: String):
 
 
 func _on_TargetDetectionTimer_timeout():
-#	print("\n\n-----------------------\nTarget detection timeout: ")
-	if is_escaping_from_bomb or not is_alive():
-#		print("Cancel: is escaping from bomb...")
+	print("\n\n", self.name, "-----------------------\nTarget detection timeout: ")
+	if is_escaping_from_bomb or is_escaping_from_wall or not is_alive():
+		print("Cancel: is escaping or dead...")
 		return
 		
 	var detected_bodies = target_detection_area.get_overlapping_bodies()
@@ -395,7 +405,7 @@ func _on_TargetDetectionTimer_timeout():
 					found_item = true
 					controller.target = body
 					state = States.FOLLOWING
-#					print("Item target found : ", body.name)
+					print("Item target found : ", body.name)
 					random_following_timer.stop()
 					controller.move_to(body.global_transform.origin)
 					return
@@ -410,7 +420,7 @@ func _on_TargetDetectionTimer_timeout():
 					state = States.FOLLOWING
 					random_following_timer.stop()
 					controller.move_to(body.global_transform.origin)
-#					print("Player target found : ", body.name)
+					print("Player target found : ", body.name)
 					return
 					
 		elif body.is_in_group("Obstacles") and not found_miner and not found_item:
@@ -426,7 +436,7 @@ func _on_TargetDetectionTimer_timeout():
 #								found_obstacle_distance = distance
 
 							found_obstacle = body
-#							print("Obstacle target found : ", body.name)
+							print("Obstacle target found : ", body.name)
 							controller.target = found_obstacle
 							state = States.FOLLOWING
 							random_following_timer.stop()
@@ -434,7 +444,7 @@ func _on_TargetDetectionTimer_timeout():
 							return
 			
 	if is_instance_valid(found_obstacle):
-#		print("OBSTACLE CHOSEN : ", found_obstacle.name)
+		print("OBSTACLE CHOSEN : ", found_obstacle.name)
 		controller.target = found_obstacle
 		state = States.FOLLOWING
 		random_following_timer.stop()
@@ -443,7 +453,7 @@ func _on_TargetDetectionTimer_timeout():
 		if not is_instance_valid(controller.target): 
 			var random_target = _get_random_destructible_target()
 			if random_target:
-#				print("\n Following random destructible  ", random_target)
+				print("\n Following random destructible  ", random_target)
 				controller.target = random_target
 				state = States.EXPLORING
 				random_following_timer.stop()
@@ -453,20 +463,20 @@ func _on_TargetDetectionTimer_timeout():
 				state = States.EXPLORING
 				random_following_timer.stop()
 				controller.move_to(player.global_transform.origin)
-#				print("\n Following PLAYER")
+				print("\n Following PLAYER")
 			else:
 				var random_point = _get_random_target_point()
 				if random_following_timer.is_stopped():
 					controller.move_to(random_point)
 					state = States.EXPLORING
 					random_following_timer.start()
-#					print("New target: RANDOM - ", random_point)
+					print("New target: RANDOM - ", random_point)
 					
 		elif is_instance_valid(controller.target):
 			state = States.FOLLOWING
 			random_following_timer.stop()
 			controller.move_to(controller.target.global_transform.origin)
-#			print("\n Following previous controller target")
+			print("\n Following previous controller target")
 
 
 # Returns false if b >= a
@@ -628,12 +638,33 @@ func on_gold_collected():
 
 
 func _on_OnWallTimer_timeout():
-	if global_transform.origin.distance_to(wall_position) < 1 and is_alive():
+	if controller.velocity.length() >= 1:
+		return
+	
+	var distance_from_wall = global_transform.origin.distance_to(wall_position)
+	if distance_from_wall < 1 and is_alive():
+		state = States.EXPLORING
 		var random_point = _get_random_target_point()
+		
+		var material = load("res://tiles/models/Light_002.material")
+		var hitpoint_mesh = MeshInstance.new()
+		hitpoint_mesh.mesh = SphereMesh.new()
+		hitpoint_mesh.mesh.radius = 0.4
+		hitpoint_mesh.mesh.height = 0.8
+		hitpoint_mesh.material_override = material
+		get_parent().add_child(hitpoint_mesh)
+		hitpoint_mesh.global_transform.origin = random_point
+		
+		
+		is_escaping_from_wall = true
+		controller.target = null
 		controller.move_to(random_point)
 		
-#		print("Timeout on WALL - ", random_point)
-		state = States.EXPLORING
+		# Hack to make NPC go up so it can escape collision corners
+		var backward = global_transform.basis.z
+		translate(controller.velocity + Vector3.UP * 0.5 + backward.normalized() * 0.5)
+		
+		print("Timeout on WALL - ", random_point)
 
 
 func on_powerup_collected(type, amount):
@@ -743,10 +774,19 @@ func set_dizzy(dizzy: bool):
 	
 
 func _on_VisibilityNotifier_screen_exited():
-	hide()
-
+	body_mesh.hide()
+	dizzy_particles.hide()
+	smoke_particles.hide()
+	spot_light.hide()
+	
+	if not is_alive() and player.global_transform.origin.distance_to(global_transform.origin) > 10:
+		queue_free()
+	
 
 func _on_VisibilityNotifier_screen_entered():
-	show()
-
+	body_mesh.show()
+	dizzy_particles.show()
+	smoke_particles.show()
+	spot_light.show()
+	
 
